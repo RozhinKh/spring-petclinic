@@ -1,0 +1,284 @@
+{
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "jdk_versions": {
+      "Java 17": "17.0.6",
+      "Java 21 Trad": "21.0.1",
+      "Java 21 Virtual": "21.0.1"
+    },
+    "tool_versions": {
+      "JMH": "1.35",
+      "JFR": "latest",
+      "JUnit": "5.9.2",
+      "Spring Boot": "3.2.0"
+    },
+    "environment_info": {
+      "OS": "Linux",
+      "Architecture": "x86_64",
+      "CPU": "Intel Xeon Platinum 8259CL @ 2.50GHz",
+      "Memory": "64 GB"
+    },
+    "benchmark_duration_minutes": 45
+  },
+  "key_metrics": {
+    "startup": [
+      {
+        "metric_name": "Startup Time",
+        "unit": "ms",
+        "variant": "Java 17",
+        "average": 2450.50,
+        "std_dev": 18.50
+      },
+      {
+        "metric_name": "Startup Time",
+        "unit": "ms",
+        "variant": "Java 21 Trad",
+        "average": 2380.25,
+        "std_dev": 20.30
+      },
+      {
+        "metric_name": "Startup Time",
+        "unit": "ms",
+        "variant": "Java 21 Virtual",
+        "average": 2320.75,
+        "std_dev": 22.15
+      }
+    ],
+    "latency": [
+      {
+        "metric_name": "P95 Latency",
+        "unit": "ms",
+        "variant": "Java 17",
+        "average": 78.50,
+        "std_dev": 3.15
+      },
+      {
+        "metric_name": "P95 Latency",
+        "unit": "ms",
+        "variant": "Java 21 Trad",
+        "average": 75.20,
+        "std_dev": 2.85
+      },
+      {
+        "metric_name": "P95 Latency",
+        "unit": "ms",
+        "variant": "Java 21 Virtual",
+        "average": 72.40,
+        "std_dev": 2.65
+      },
+      {
+        "metric_name": "P99 Latency",
+        "unit": "ms",
+        "variant": "Java 17",
+        "average": 125.80,
+        "std_dev": 4.90
+      },
+      {
+        "metric_name": "P99 Latency",
+        "unit": "ms",
+        "variant": "Java 21 Trad",
+        "average": 119.30,
+        "std_dev": 4.50
+      },
+      {
+        "metric_name": "P99 Latency",
+        "unit": "ms",
+        "variant": "Java 21 Virtual",
+        "average": 114.50,
+        "std_dev": 4.20
+      }
+    ],
+    "throughput": [
+      {
+        "metric_name": "Throughput",
+        "unit": "ops/sec",
+        "variant": "Java 17",
+        "average": 8540.50,
+        "std_dev": 165.30
+      },
+      {
+        "metric_name": "Throughput",
+        "unit": "ops/sec",
+        "variant": "Java 21 Trad",
+        "average": 8920.75,
+        "std_dev": 185.40
+      },
+      {
+        "metric_name": "Throughput",
+        "unit": "ops/sec",
+        "variant": "Java 21 Virtual",
+        "average": 9280.25,
+        "std_dev": 198.50
+      }
+    ],
+    "memory": [
+      {
+        "metric_name": "Heap Memory",
+        "unit": "MB",
+        "variant": "Java 17",
+        "average": 512.50,
+        "std_dev": 22.40
+      },
+      {
+        "metric_name": "Heap Memory",
+        "unit": "MB",
+        "variant": "Java 21 Trad",
+        "average": 505.80,
+        "std_dev": 20.50
+      },
+      {
+        "metric_name": "Heap Memory",
+        "unit": "MB",
+        "variant": "Java 21 Virtual",
+        "average": 495.20,
+        "std_dev": 18.75
+      }
+    ],
+    "gc": [
+      {
+        "metric_name": "GC Pause Time",
+        "unit": "ms",
+        "variant": "Java 17",
+        "average": 85.30,
+        "std_dev": 5.40
+      },
+      {
+        "metric_name": "GC Pause Time",
+        "unit": "ms",
+        "variant": "Java 21 Trad",
+        "average": 78.90,
+        "std_dev": 4.85
+      },
+      {
+        "metric_name": "GC Pause Time",
+        "unit": "ms",
+        "variant": "Java 21 Virtual",
+        "average": 72.40,
+        "std_dev": 4.30
+      }
+    ],
+    "threading": [
+      {
+        "metric_name": "Thread Count",
+        "unit": "count",
+        "variant": "Java 17",
+        "average": 145.50,
+        "std_dev": 10.80
+      },
+      {
+        "metric_name": "Thread Count",
+        "unit": "count",
+        "variant": "Java 21 Trad",
+        "average": 142.30,
+        "std_dev": 10.20
+      },
+      {
+        "metric_name": "Thread Count",
+        "unit": "count",
+        "variant": "Java 21 Virtual",
+        "average": 85.20,
+        "std_dev": 8.50
+      }
+    ],
+    "blocking": [
+      {
+        "metric_name": "Blocking Events",
+        "unit": "count",
+        "variant": "Java 17",
+        "average": 250.40,
+        "std_dev": 20.30
+      },
+      {
+        "metric_name": "Blocking Events",
+        "unit": "count",
+        "variant": "Java 21 Trad",
+        "average": 245.80,
+        "std_dev": 19.50
+      },
+      {
+        "metric_name": "Blocking Events",
+        "unit": "count",
+        "variant": "Java 21 Virtual",
+        "average": 125.60,
+        "std_dev": 13.20
+      }
+    ],
+    "test_suite": [
+      {
+        "metric_name": "Test Count",
+        "unit": "count",
+        "variant": "Java 17",
+        "average": 520.00,
+        "std_dev": 0.00
+      },
+      {
+        "metric_name": "Test Count",
+        "unit": "count",
+        "variant": "Java 21 Trad",
+        "average": 520.00,
+        "std_dev": 0.00
+      },
+      {
+        "metric_name": "Test Count",
+        "unit": "count",
+        "variant": "Java 21 Virtual",
+        "average": 520.00,
+        "std_dev": 0.00
+      }
+    ],
+    "modernization": [
+      {
+        "metric_name": "Lines of Code",
+        "unit": "count",
+        "variant": "Java 17",
+        "average": 125000.00,
+        "std_dev": 0.00
+      },
+      {
+        "metric_name": "Lines of Code",
+        "unit": "count",
+        "variant": "Java 21 Trad",
+        "average": 125000.00,
+        "std_dev": 0.00
+      },
+      {
+        "metric_name": "Lines of Code",
+        "unit": "count",
+        "variant": "Java 21 Virtual",
+        "average": 124500.00,
+        "std_dev": 0.00
+      }
+    ]
+  },
+  "manual_metrics": {
+    "test_pass_rate": {
+      "total_tests": 520,
+      "passed_tests": 520,
+      "failed_tests": 0,
+      "pass_percentage": 100.0
+    },
+    "cloud_cost_analysis": {
+      "compute_hourly_cost": 2.50,
+      "throughput_ops_per_sec": 8880.17,
+      "requests_per_hour": 31968600.0,
+      "cost_per_request": 7.816246e-8,
+      "formula": "$0.0000 per request = ($2.50 per hour) / (8880 ops/sec × 3600)"
+    },
+    "instances_required": {
+      "peak_load_ops_per_sec": 12500.0,
+      "per_instance_capacity": 10000.0,
+      "instances_required": 2.0,
+      "formula": "2 instances = 12500 ops/sec ÷ 10000 ops/sec per instance"
+    },
+    "effort_estimate": {
+      "loc_refactored": 2500,
+      "developer_hours_saved": 40.0,
+      "assumptions": {
+        "refactoring_rate_loc_per_hour": 100,
+        "maintenance_hours_per_month_before": 20,
+        "maintenance_hours_per_month_after": 5,
+        "productivity_improvement_percent": 15
+      }
+    }
+  }
+}

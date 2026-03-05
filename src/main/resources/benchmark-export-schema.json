@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Benchmark Results Export Schema",
+  "description": "Complete benchmark results with metrics, variants, runs, and aggregated statistics",
+  "type": "object",
+  "required": ["metadata", "metrics", "statistics", "data_sources"],
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "description": "Metadata about the benchmark run",
+      "required": ["timestamp"],
+      "properties": {
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "ISO 8601 timestamp of the export"
+        },
+        "jdk_versions": {
+          "type": "object",
+          "description": "JDK versions for each variant",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "tool_versions": {
+          "type": "object",
+          "description": "Versions of benchmarking tools used",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "environment_info": {
+          "type": "object",
+          "description": "Environment information (OS, CPU, memory)",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "benchmark_duration_minutes": {
+          "type": "number",
+          "description": "Total duration of benchmark in minutes"
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "description": "Metrics organized by category",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["metric_name", "unit", "variants", "statistics"],
+          "properties": {
+            "metric_name": {
+              "type": "string",
+              "description": "Name of the metric"
+            },
+            "unit": {
+              "type": "string",
+              "description": "Unit of measurement (ms, %, MB, etc.)"
+            },
+            "data_source": {
+              "type": "string",
+              "enum": ["jmh", "jfr", "test_suite", "load_test", "actuator", "blocking", "modernization"],
+              "description": "Source of the metric"
+            },
+            "variants": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["name", "average"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Variant identifier (e.g., Java 17, Java 21 Trad)"
+                  },
+                  "average": {
+                    "type": ["number", "null"],
+                    "description": "Average value across runs"
+                  },
+                  "min": {
+                    "type": ["number", "null"],
+                    "description": "Minimum value across runs"
+                  },
+                  "max": {
+                    "type": ["number", "null"],
+                    "description": "Maximum value across runs"
+                  },
+                  "std_dev": {
+                    "type": ["number", "null"],
+                    "description": "Standard deviation across runs"
+                  },
+                  "sample_count": {
+                    "type": ["integer", "null"],
+                    "description": "Number of samples/runs"
+                  },
+                  "coefficient_of_variation": {
+                    "type": ["number", "null"],
+                    "description": "CV = std_dev / mean"
+                  }
+                }
+              }
+            },
+            "statistics": {
+              "type": "object",
+              "properties": {
+                "average": {
+                  "type": ["number", "null"]
+                },
+                "minimum": {
+                  "type": ["number", "null"]
+                },
+                "maximum": {
+                  "type": ["number", "null"]
+                },
+                "std_dev": {
+                  "type": ["number", "null"]
+                },
+                "sample_count": {
+                  "type": ["integer", "null"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "statistics": {
+      "type": "object",
+      "description": "Overall statistics summary",
+      "properties": {
+        "total_metrics": {
+          "type": "integer",
+          "description": "Total number of metrics exported"
+        },
+        "variants": {
+          "type": "integer",
+          "description": "Number of unique variants"
+        },
+        "categories": {
+          "type": "integer",
+          "description": "Number of metric categories"
+        },
+        "data_sources": {
+          "type": "integer",
+          "description": "Number of data sources"
+        }
+      }
+    },
+    "data_sources": {
+      "type": "object",
+      "description": "Metric count by data source",
+      "additionalProperties": {
+        "type": "integer"
+      }
+    }
+  }
+}
