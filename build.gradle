@@ -1,6 +1,7 @@
 plugins {
   id 'java'
   id 'checkstyle'
+  id 'jacoco'
   id 'org.springframework.boot' version '4.0.1'
   id 'io.spring.dependency-management' version '1.1.7'
   id 'org.graalvm.buildtools.native' version '0.11.3'
@@ -14,9 +15,41 @@ gradle.startParameter.excludedTaskNames += [ "checkFormatAot", "checkFormatAotTe
 group = 'org.springframework.samples'
 version = '4.0.0-SNAPSHOT'
 
+// Build variant configuration for Java version selection
+def javaVersion = System.getenv('JAVA_VERSION') ?: '17'
+
 java {
   toolchain {
-    languageVersion = JavaLanguageVersion.of(17)
+    languageVersion = JavaLanguageVersion.of(javaVersion as Integer)
+  }
+}
+
+// Additional variant-specific configuration
+ext {
+  isJava21 = javaVersion == '21'
+  // Supported variants: 'traditional' (platform threads) or 'virtual' (virtual threads)
+  isJava21Variant = System.getenv('JAVA21_VARIANT') ?: 'traditional'
+  isVirtualThreadsEnabled = javaVersion == '21' && isJava21Variant == 'virtual'
+}
+
+// Gradle variant configuration for Java 21 virtual threads
+def variants = {
+  // Java 21 Virtual Threads Variant
+  java21Virtual {
+    // Gradle doesn't require explicit variant configuration here;
+    // Spring profiles are activated via application properties
+    // Build with: JAVA_VERSION=21 JAVA21_VARIANT=virtual ./gradlew build
+    enabled = isVirtualThreadsEnabled
+  }
+  
+  // Java 21 Traditional Platform Threads Variant
+  java21Traditional {
+    enabled = javaVersion == '21' && isJava21Variant == 'traditional'
+  }
+  
+  // Java 17 Baseline Variant
+  java17Baseline {
+    enabled = javaVersion == '17'
   }
 }
 
@@ -60,6 +93,20 @@ dependencies {
 
 tasks.named('test') {
   useJUnitPlatform()
+  finalizedBy jacocoTestReport
+}
+
+jacoco {
+  toolVersion = "0.8.14"
+}
+
+jacocoTestReport {
+  dependsOn test
+  reports {
+    xml.required = true
+    csv.required = true
+    html.required = true
+  }
 }
 
 checkstyle {

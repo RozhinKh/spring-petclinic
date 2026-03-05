@@ -20,19 +20,21 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.core.style.ToStringCreator;
-import org.springframework.samples.petclinic.model.Person;
 import org.springframework.util.Assert;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 /**
  * Simple JavaBean domain object representing an owner.
@@ -46,78 +48,43 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Entity
 @Table(name = "owners")
-public class Owner extends Person {
+public record Owner(
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
+	@Column @NotBlank String firstName,
+	@Column @NotBlank String lastName,
+	@Column @NotBlank String address,
+	@Column @NotBlank String city,
+	@Column @NotBlank @Pattern(regexp = "\\d{10}", message = "{telephone.invalid}") String telephone,
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) @JoinColumn(name = "owner_id") @OrderBy("name") List<Pet> pets
+) {
 
-	@Column
-	@NotBlank
-	private String address;
-
-	@Column
-	@NotBlank
-	private String city;
-
-	@Column
-	@NotBlank
-	@Pattern(regexp = "\\d{10}", message = "{telephone.invalid}")
-	private String telephone;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "owner_id")
-	@OrderBy("name")
-	private final List<Pet> pets = new ArrayList<>();
-
-	public String getAddress() {
-		return this.address;
+	public Owner(Integer id, String firstName, String lastName, String address, String city, String telephone) {
+		this(id, firstName, lastName, address, city, telephone, new ArrayList<>());
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public Owner(String firstName, String lastName) {
+		this(null, firstName, lastName, null, null, null, new ArrayList<>());
 	}
 
-	public String getCity() {
-		return this.city;
-	}
-
-	public void setCity(String city) {
-		this.city = city;
-	}
-
-	public String getTelephone() {
-		return this.telephone;
-	}
-
-	public void setTelephone(String telephone) {
-		this.telephone = telephone;
-	}
-
-	public List<Pet> getPets() {
-		return this.pets;
+	public Owner() {
+		this(null, null, null, null, null, null, new ArrayList<>());
 	}
 
 	public void addPet(Pet pet) {
-		if (pet.isNew()) {
-			getPets().add(pet);
+		if (pet != null && pet.isNew() && pets != null) {
+			pets.add(pet);
 		}
 	}
 
-	/**
-	 * Return the Pet with the given name, or null if none found for this Owner.
-	 * @param name to test
-	 * @return the Pet with the given name, or null if no such Pet exists for this Owner
-	 */
 	public Pet getPet(String name) {
 		return getPet(name, false);
 	}
 
-	/**
-	 * Return the Pet with the given id, or null if none found for this Owner.
-	 * @param id to test
-	 * @return the Pet with the given id, or null if no such Pet exists for this Owner
-	 */
 	public Pet getPet(Integer id) {
-		for (Pet pet : getPets()) {
+		if (pets == null) return null;
+		for (Pet pet : pets) {
 			if (!pet.isNew()) {
-				Integer compId = pet.getId();
+				Integer compId = pet.id();
 				if (Objects.equals(compId, id)) {
 					return pet;
 				}
@@ -126,15 +93,10 @@ public class Owner extends Person {
 		return null;
 	}
 
-	/**
-	 * Return the Pet with the given name, or null if none found for this Owner.
-	 * @param name to test
-	 * @param ignoreNew whether to ignore new pets (pets that are not saved yet)
-	 * @return the Pet with the given name, or null if no such Pet exists for this Owner
-	 */
 	public Pet getPet(String name, boolean ignoreNew) {
-		for (Pet pet : getPets()) {
-			String compName = pet.getName();
+		if (pets == null) return null;
+		for (Pet pet : pets) {
+			String compName = pet.name();
 			if (compName != null && compName.equalsIgnoreCase(name)) {
 				if (!ignoreNew || !pet.isNew()) {
 					return pet;
@@ -146,31 +108,26 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId())
+		return new ToStringCreator(this).append("id", this.id)
 			.append("new", this.isNew())
-			.append("lastName", this.getLastName())
-			.append("firstName", this.getFirstName())
+			.append("lastName", this.lastName)
+			.append("firstName", this.firstName)
 			.append("address", this.address)
 			.append("city", this.city)
 			.append("telephone", this.telephone)
 			.toString();
 	}
 
-	/**
-	 * Adds the given {@link Visit} to the {@link Pet} with the given identifier.
-	 * @param petId the identifier of the {@link Pet}, must not be {@literal null}.
-	 * @param visit the visit to add, must not be {@literal null}.
-	 */
 	public void addVisit(Integer petId, Visit visit) {
-
 		Assert.notNull(petId, "Pet identifier must not be null!");
 		Assert.notNull(visit, "Visit must not be null!");
 
 		Pet pet = getPet(petId);
-
 		Assert.notNull(pet, "Invalid Pet identifier!");
-
 		pet.addVisit(visit);
 	}
 
+	public boolean isNew() {
+		return this.id == null;
+	}
 }
