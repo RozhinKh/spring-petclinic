@@ -1,0 +1,12 @@
+Metric,Unit,Category,Data Source,Java 17,Java 17 StdDev,Java 21 Trad,Java 21 Trad StdDev,Java 21 Virtual,Java 21 Virtual StdDev,Delta Java 17→Java 21 Trad (%),Delta Java 17→Java 21 Virtual (%),Delta Java 21 Trad→Java 21 Virtual (%),Notes
+Startup Time,ms,startup,jmh,2450.50,18.50,2380.25,20.30,2320.75,22.15,-2.87,-5.30,-2.50,Virtual threads show best startup performance
+P50 Latency,ms,latency,load_test,45.20,2.30,43.80,2.10,42.15,1.95,-3.09,-6.76,-3.75,Improved latency with Java 21 Virtual
+P95 Latency,ms,latency,load_test,78.50,3.15,75.20,2.85,72.40,2.65,-4.20,-7.76,-3.73,P95 latency improves progressively
+P99 Latency,ms,latency,load_test,125.80,4.90,119.30,4.50,114.50,4.20,-5.16,-8.98,-4.02,P99 tail latency shows significant improvement
+Throughput,ops/sec,throughput,load_test,8540.50,165.30,8920.75,185.40,9280.25,198.50,4.44,8.64,4.03,Virtual threads increase throughput by 8.6%
+Heap Memory,MB,memory,jfr,512.50,22.40,505.80,20.50,495.20,18.75,-1.31,-3.37,-2.11,Lower memory footprint with virtual threads
+GC Pause Time,ms,gc,jfr,85.30,5.40,78.90,4.85,72.40,4.30,-7.48,-15.15,-8.27,Significant GC improvement with virtual threads
+Thread Count,count,threading,jfr,145.50,10.80,142.30,10.20,85.20,8.50,-2.20,-41.51,-40.14,Virtual threads dramatically reduce thread count
+Blocking Events,count,blocking,blocking,250.40,20.30,245.80,19.50,125.60,13.20,-1.83,-49.80,-48.90,Virtual threads greatly reduce blocking
+Test Count,count,test_suite,test_suite,520.00,0.00,520.00,0.00,520.00,0.00,0.00,0.00,0.00,Test count unchanged across variants
+Code Coverage %,%,test_suite,test_suite,87.50,0.60,87.50,0.60,87.50,0.60,0.00,0.00,0.00,Code coverage consistent across variants

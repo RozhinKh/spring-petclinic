@@ -1,0 +1,550 @@
+{
+  "metadata": {
+    "timestamp": "2024-01-15T10:30:00Z",
+    "jdk_versions": {
+      "Java 17": "17.0.6",
+      "Java 21 Trad": "21.0.1",
+      "Java 21 Virtual": "21.0.1"
+    },
+    "tool_versions": {
+      "JMH": "1.35",
+      "JFR": "latest",
+      "JUnit": "5.9.2",
+      "Spring Boot": "3.2.0"
+    },
+    "environment_info": {
+      "OS": "Linux",
+      "Architecture": "x86_64",
+      "CPU": "Intel Xeon Platinum 8259CL @ 2.50GHz",
+      "Memory": "64 GB"
+    },
+    "benchmark_duration_minutes": 45
+  },
+  "metrics": {
+    "startup": [
+      {
+        "metric_name": "Startup Time",
+        "unit": "ms",
+        "data_source": "jmh",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 2450.50,
+            "min": 2420.00,
+            "max": 2480.00,
+            "std_dev": 18.50,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0076
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 2380.25,
+            "min": 2350.00,
+            "max": 2410.00,
+            "std_dev": 20.30,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0085
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 2320.75,
+            "min": 2290.00,
+            "max": 2350.00,
+            "std_dev": 22.15,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0095
+          }
+        ],
+        "statistics": {
+          "average": 2383.83,
+          "minimum": 2290.00,
+          "maximum": 2480.00,
+          "std_dev": 59.02,
+          "sample_count": 30
+        }
+      }
+    ],
+    "latency": [
+      {
+        "metric_name": "P50 Latency",
+        "unit": "ms",
+        "data_source": "load_test",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 45.20,
+            "min": 42.50,
+            "max": 48.75,
+            "std_dev": 2.30,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0509
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 43.80,
+            "min": 41.25,
+            "max": 46.50,
+            "std_dev": 2.10,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0479
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 42.15,
+            "min": 39.80,
+            "max": 44.90,
+            "std_dev": 1.95,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0463
+          }
+        ],
+        "statistics": {
+          "average": 43.72,
+          "minimum": 39.80,
+          "maximum": 48.75,
+          "std_dev": 2.35,
+          "sample_count": 30
+        }
+      },
+      {
+        "metric_name": "P95 Latency",
+        "unit": "ms",
+        "data_source": "load_test",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 78.50,
+            "min": 74.20,
+            "max": 82.30,
+            "std_dev": 3.15,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0401
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 75.20,
+            "min": 71.80,
+            "max": 78.90,
+            "std_dev": 2.85,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0379
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 72.40,
+            "min": 69.50,
+            "max": 75.80,
+            "std_dev": 2.65,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0366
+          }
+        ],
+        "statistics": {
+          "average": 75.37,
+          "minimum": 69.50,
+          "maximum": 82.30,
+          "std_dev": 3.33,
+          "sample_count": 30
+        }
+      },
+      {
+        "metric_name": "P99 Latency",
+        "unit": "ms",
+        "data_source": "load_test",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 125.80,
+            "min": 118.50,
+            "max": 132.40,
+            "std_dev": 4.90,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0389
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 119.30,
+            "min": 112.80,
+            "max": 125.70,
+            "std_dev": 4.50,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0377
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 114.50,
+            "min": 108.20,
+            "max": 120.90,
+            "std_dev": 4.20,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0367
+          }
+        ],
+        "statistics": {
+          "average": 119.87,
+          "minimum": 108.20,
+          "maximum": 132.40,
+          "std_dev": 5.40,
+          "sample_count": 30
+        }
+      }
+    ],
+    "throughput": [
+      {
+        "metric_name": "Throughput",
+        "unit": "ops/sec",
+        "data_source": "load_test",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 8540.50,
+            "min": 8320.00,
+            "max": 8750.00,
+            "std_dev": 165.30,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0194
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 8920.75,
+            "min": 8680.00,
+            "max": 9160.00,
+            "std_dev": 185.40,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0208
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 9280.25,
+            "min": 9020.00,
+            "max": 9520.00,
+            "std_dev": 198.50,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0214
+          }
+        ],
+        "statistics": {
+          "average": 8913.83,
+          "minimum": 8320.00,
+          "maximum": 9520.00,
+          "std_dev": 326.67,
+          "sample_count": 30
+        }
+      }
+    ],
+    "memory": [
+      {
+        "metric_name": "Heap Memory",
+        "unit": "MB",
+        "data_source": "jfr",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 512.50,
+            "min": 480.00,
+            "max": 545.00,
+            "std_dev": 22.40,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0437
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 505.80,
+            "min": 475.00,
+            "max": 535.00,
+            "std_dev": 20.50,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0405
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 495.20,
+            "min": 465.00,
+            "max": 525.00,
+            "std_dev": 18.75,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0379
+          }
+        ],
+        "statistics": {
+          "average": 504.50,
+          "minimum": 465.00,
+          "maximum": 545.00,
+          "std_dev": 20.88,
+          "sample_count": 30
+        }
+      }
+    ],
+    "gc": [
+      {
+        "metric_name": "GC Pause Time",
+        "unit": "ms",
+        "data_source": "jfr",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 85.30,
+            "min": 78.50,
+            "max": 92.10,
+            "std_dev": 5.40,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0633
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 78.90,
+            "min": 72.30,
+            "max": 85.60,
+            "std_dev": 4.85,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0614
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 72.40,
+            "min": 66.80,
+            "max": 78.90,
+            "std_dev": 4.30,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0594
+          }
+        ],
+        "statistics": {
+          "average": 78.87,
+          "minimum": 66.80,
+          "maximum": 92.10,
+          "std_dev": 5.18,
+          "sample_count": 30
+        }
+      }
+    ],
+    "threading": [
+      {
+        "metric_name": "Thread Count",
+        "unit": "count",
+        "data_source": "jfr",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 145.50,
+            "min": 130.00,
+            "max": 160.00,
+            "std_dev": 10.80,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0742
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 142.30,
+            "min": 128.00,
+            "max": 156.00,
+            "std_dev": 10.20,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0717
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 85.20,
+            "min": 72.00,
+            "max": 98.00,
+            "std_dev": 8.50,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0998
+          }
+        ],
+        "statistics": {
+          "average": 124.33,
+          "minimum": 72.00,
+          "maximum": 160.00,
+          "std_dev": 28.35,
+          "sample_count": 30
+        }
+      }
+    ],
+    "blocking": [
+      {
+        "metric_name": "Blocking Events",
+        "unit": "count",
+        "data_source": "blocking",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 250.40,
+            "min": 220.00,
+            "max": 280.00,
+            "std_dev": 20.30,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0810
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 245.80,
+            "min": 215.00,
+            "max": 275.00,
+            "std_dev": 19.50,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0794
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 125.60,
+            "min": 105.00,
+            "max": 145.00,
+            "std_dev": 13.20,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.1051
+          }
+        ],
+        "statistics": {
+          "average": 207.27,
+          "minimum": 105.00,
+          "maximum": 280.00,
+          "std_dev": 57.18,
+          "sample_count": 30
+        }
+      }
+    ],
+    "test_suite": [
+      {
+        "metric_name": "Test Count",
+        "unit": "count",
+        "data_source": "test_suite",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 520.00,
+            "min": 520.00,
+            "max": 520.00,
+            "std_dev": 0.00,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0000
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 520.00,
+            "min": 520.00,
+            "max": 520.00,
+            "std_dev": 0.00,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0000
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 520.00,
+            "min": 520.00,
+            "max": 520.00,
+            "std_dev": 0.00,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0000
+          }
+        ],
+        "statistics": {
+          "average": 520.00,
+          "minimum": 520.00,
+          "maximum": 520.00,
+          "std_dev": 0.00,
+          "sample_count": 30
+        }
+      },
+      {
+        "metric_name": "Code Coverage %",
+        "unit": "%",
+        "data_source": "test_suite",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 87.50,
+            "min": 86.80,
+            "max": 88.20,
+            "std_dev": 0.60,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0069
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 87.50,
+            "min": 86.80,
+            "max": 88.20,
+            "std_dev": 0.60,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0069
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 87.50,
+            "min": 86.80,
+            "max": 88.20,
+            "std_dev": 0.60,
+            "sample_count": 10,
+            "coefficient_of_variation": 0.0069
+          }
+        ],
+        "statistics": {
+          "average": 87.50,
+          "minimum": 86.80,
+          "maximum": 88.20,
+          "std_dev": 0.60,
+          "sample_count": 30
+        }
+      }
+    ],
+    "modernization": [
+      {
+        "metric_name": "Lines of Code",
+        "unit": "count",
+        "data_source": "modernization",
+        "variants": [
+          {
+            "name": "Java 17",
+            "average": 125000.00,
+            "min": 125000.00,
+            "max": 125000.00,
+            "std_dev": 0.00,
+            "sample_count": 1,
+            "coefficient_of_variation": 0.0000
+          },
+          {
+            "name": "Java 21 Trad",
+            "average": 125000.00,
+            "min": 125000.00,
+            "max": 125000.00,
+            "std_dev": 0.00,
+            "sample_count": 1,
+            "coefficient_of_variation": 0.0000
+          },
+          {
+            "name": "Java 21 Virtual",
+            "average": 124500.00,
+            "min": 124500.00,
+            "max": 124500.00,
+            "std_dev": 0.00,
+            "sample_count": 1,
+            "coefficient_of_variation": 0.0000
+          }
+        ],
+        "statistics": {
+          "average": 124833.33,
+          "minimum": 124500.00,
+          "maximum": 125000.00,
+          "std_dev": 288.68,
+          "sample_count": 3
+        }
+      }
+    ]
+  },
+  "statistics": {
+    "total_metrics": 11,
+    "variants": 3,
+    "categories": 9,
+    "data_sources": 7
+  },
+  "data_sources": {
+    "jmh": 1,
+    "jfr": 4,
+    "test_suite": 2,
+    "load_test": 3,
+    "actuator": 0,
+    "blocking": 1,
+    "modernization": 1
+  }
+}

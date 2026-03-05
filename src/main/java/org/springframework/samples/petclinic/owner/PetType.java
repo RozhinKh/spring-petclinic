@@ -15,16 +15,30 @@
  */
 package org.springframework.samples.petclinic.owner;
 
-import org.springframework.samples.petclinic.model.NamedEntity;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * @author Juergen Hoeller Can be Cat, Dog, Hamster...
  */
 @Entity
 @Table(name = "types")
-public class PetType extends NamedEntity {
+public record PetType(
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
+	@Column @NotBlank String name
+) {
 
+	@Override
+	public String toString() {
+		return (name != null) ? name : "<null>";
+	}
+
+	public boolean isNew() {
+		return this.id == null;
+	}
 }

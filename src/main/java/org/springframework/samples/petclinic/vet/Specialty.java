@@ -15,10 +15,13 @@
  */
 package org.springframework.samples.petclinic.vet;
 
-import org.springframework.samples.petclinic.model.NamedEntity;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * Models a {@link Vet Vet's} specialty (for example, dentistry).
@@ -27,6 +30,17 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "specialties")
-public class Specialty extends NamedEntity {
+public record Specialty(
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
+	@Column @NotBlank String name
+) {
 
+	@Override
+	public String toString() {
+		return (name != null) ? name : "<null>";
+	}
+
+	public boolean isNew() {
+		return this.id == null;
+	}
 }

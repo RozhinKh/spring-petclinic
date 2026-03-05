@@ -1,0 +1,171 @@
+{
+  "timestamp": "2024-01-15T10:35:00Z",
+  "version": "1.0",
+  "format_description": "Consolidated metrics from JMH, JFR, and test suite",
+  "variant_count": 3,
+  "variants": [
+    {
+      "variant": "java17-baseline",
+      "timestamp": "2024-01-15T10:35:00Z",
+      "jmh_metrics": {
+        "startup_cold_ms": "2450.50 (±18.50)",
+        "startup_warm_ms": "1567.89 (±22.30)",
+        "latency_p50_ms": "45.23 (±2.30)",
+        "latency_p95_ms": "78.50 (±3.15)",
+        "latency_p99_ms": "125.80 (±4.90)",
+        "latency_avg_ms": "83.18 (±3.45)",
+        "throughput_ops_sec": "8540.50 (±165.30)",
+        "memory_idle_heap_mb": "512.50 (±22.40)",
+        "memory_load_heap_mb": "620.80 (±35.20)",
+        "memory_peak_heap_mb": "768.90 (±45.30)"
+      },
+      "jfr_metrics": {
+        "gc_pause_avg_ms": "25.50",
+        "gc_pause_max_ms": "85.30",
+        "gc_pause_count": 42,
+        "memory_allocation_rate_mb_sec": "125.50",
+        "thread_count": 145,
+        "thread_count_peak": 160
+      },
+      "test_suite_metrics": {
+        "pass_count": 42,
+        "fail_count": 0,
+        "execution_time_ms": 15234,
+        "coverage_line_percent": "87.50",
+        "coverage_branch_percent": "82.30",
+        "coverage_method_percent": "91.20"
+      },
+      "correlation": {
+        "gc_impact_on_latency": "LOW",
+        "gc_frequency_per_second": "0.84",
+        "memory_pressure_indicator": "MODERATE",
+        "blocking_frequency_per_second": "5.00"
+      }
+    },
+    {
+      "variant": "java21-traditional",
+      "timestamp": "2024-01-15T10:45:00Z",
+      "jmh_metrics": {
+        "startup_cold_ms": "2380.25 (±20.30)",
+        "startup_warm_ms": "1456.78 (±18.90)",
+        "latency_p50_ms": "43.80 (±2.10)",
+        "latency_p95_ms": "75.20 (±2.85)",
+        "latency_p99_ms": "119.30 (±4.50)",
+        "latency_avg_ms": "79.43 (±3.15)",
+        "throughput_ops_sec": "8920.75 (±185.40)",
+        "memory_idle_heap_mb": "498.75 (±20.10)",
+        "memory_load_heap_mb": "605.30 (±32.50)",
+        "memory_peak_heap_mb": "745.60 (±42.80)"
+      },
+      "jfr_metrics": {
+        "gc_pause_avg_ms": "23.80",
+        "gc_pause_max_ms": "78.90",
+        "gc_pause_count": 38,
+        "memory_allocation_rate_mb_sec": "118.20",
+        "thread_count": 142,
+        "thread_count_peak": 156
+      },
+      "test_suite_metrics": {
+        "pass_count": 41,
+        "fail_count": 1,
+        "execution_time_ms": 14892,
+        "coverage_line_percent": "87.40",
+        "coverage_branch_percent": "82.10",
+        "coverage_method_percent": "91.00"
+      },
+      "correlation": {
+        "gc_impact_on_latency": "LOW",
+        "gc_frequency_per_second": "0.76",
+        "memory_pressure_indicator": "LOW",
+        "blocking_frequency_per_second": "4.80"
+      }
+    },
+    {
+      "variant": "java21-virtual",
+      "timestamp": "2024-01-15T11:00:00Z",
+      "jmh_metrics": {
+        "startup_cold_ms": "2320.75 (±22.15)",
+        "startup_warm_ms": "1342.56 (±20.45)",
+        "latency_p50_ms": "42.15 (±1.95)",
+        "latency_p95_ms": "72.40 (±2.65)",
+        "latency_p99_ms": "114.50 (±4.20)",
+        "latency_avg_ms": "76.35 (±2.93)",
+        "throughput_ops_sec": "9280.25 (±198.50)",
+        "memory_idle_heap_mb": "485.20 (±18.75)",
+        "memory_load_heap_mb": "588.90 (±30.20)",
+        "memory_peak_heap_mb": "725.40 (±40.50)"
+      },
+      "jfr_metrics": {
+        "gc_pause_avg_ms": "21.30",
+        "gc_pause_max_ms": "72.40",
+        "gc_pause_count": 35,
+        "memory_allocation_rate_mb_sec": "112.80",
+        "thread_count": 85,
+        "thread_count_peak": 98
+      },
+      "test_suite_metrics": {
+        "pass_count": 42,
+        "fail_count": 0,
+        "execution_time_ms": 14567,
+        "coverage_line_percent": "87.60",
+        "coverage_branch_percent": "82.40",
+        "coverage_method_percent": "91.30"
+      },
+      "correlation": {
+        "gc_impact_on_latency": "NONE",
+        "gc_frequency_per_second": "0.70",
+        "memory_pressure_indicator": "LOW",
+        "blocking_frequency_per_second": "2.50"
+      }
+    }
+  ],
+  "schema": {
+    "version": "1.0",
+    "description": "Consolidated metrics schema",
+    "properties": {
+      "jmh_metrics": {
+        "description": "JMH benchmark metrics from startup, latency, throughput, memory",
+        "properties": {
+          "startup_cold_ms": "string: cold startup time with variance",
+          "startup_warm_ms": "string: warm startup time with variance",
+          "latency_p50_ms": "string: P50 latency with variance",
+          "latency_p95_ms": "string: P95 latency with variance",
+          "latency_p99_ms": "string: P99 latency with variance",
+          "latency_avg_ms": "string: average latency with variance",
+          "throughput_ops_sec": "string: throughput in ops/sec with variance",
+          "memory_heap_mb": "string: heap memory in MB with variance"
+        }
+      },
+      "jfr_metrics": {
+        "description": "JFR runtime metrics for GC, memory allocation, and threading",
+        "properties": {
+          "gc_pause_avg_ms": "number: average GC pause duration in ms",
+          "gc_pause_max_ms": "number: maximum GC pause duration in ms",
+          "gc_pause_count": "number: total GC pause count",
+          "memory_allocation_rate_mb_sec": "number: memory allocation rate in MB/sec",
+          "thread_count": "number: thread count"
+        }
+      },
+      "test_suite_metrics": {
+        "description": "Test suite execution metrics and code coverage",
+        "properties": {
+          "pass_count": "number: number of passing tests",
+          "fail_count": "number: number of failing tests",
+          "execution_time_ms": "number: total test execution time in ms",
+          "coverage_line_percent": "string: line coverage percentage",
+          "coverage_branch_percent": "string: branch coverage percentage",
+          "coverage_method_percent": "string: method coverage percentage"
+        }
+      },
+      "correlation": {
+        "description": "Correlation analysis between JMH latency and JFR GC events",
+        "properties": {
+          "gc_impact_on_latency": "string: GC impact level (NONE, LOW, MODERATE, HIGH)",
+          "gc_frequency_per_second": "string: GC frequency",
+          "memory_pressure_indicator": "string: memory pressure level",
+          "blocking_frequency_per_second": "string: blocking event frequency"
+        }
+      }
+    }
+  }
+}

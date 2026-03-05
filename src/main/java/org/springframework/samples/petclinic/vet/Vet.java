@@ -21,15 +21,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.samples.petclinic.model.NamedEntity;
-import org.springframework.samples.petclinic.model.Person;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.xml.bind.annotation.XmlElement;
 
 /**
@@ -42,24 +44,33 @@ import jakarta.xml.bind.annotation.XmlElement;
  */
 @Entity
 @Table(name = "vets")
-public class Vet extends Person {
+public record Vet(
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
+	@Column @NotBlank String firstName,
+	@Column @NotBlank String lastName,
+	@ManyToMany(fetch = FetchType.EAGER) @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"), inverseJoinColumns = @JoinColumn(name = "specialty_id")) Set<Specialty> specialties
+) {
 
-	@ManyToMany(fetch = FetchType.EAGER)
-	@JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"),
-			inverseJoinColumns = @JoinColumn(name = "specialty_id"))
-	private Set<Specialty> specialties;
+	public Vet(Integer id, String firstName, String lastName) {
+		this(id, firstName, lastName, new HashSet<>());
+	}
+
+	public Vet(String firstName, String lastName) {
+		this(null, firstName, lastName, new HashSet<>());
+	}
+
+	public Vet() {
+		this(null, null, null, new HashSet<>());
+	}
 
 	protected Set<Specialty> getSpecialtiesInternal() {
-		if (this.specialties == null) {
-			this.specialties = new HashSet<>();
-		}
-		return this.specialties;
+		return (specialties != null) ? specialties : new HashSet<>();
 	}
 
 	@XmlElement
 	public List<Specialty> getSpecialties() {
 		return getSpecialtiesInternal().stream()
-			.sorted(Comparator.comparing(NamedEntity::getName))
+			.sorted(Comparator.comparing(Specialty::name))
 			.collect(Collectors.toList());
 	}
 
@@ -71,4 +82,7 @@ public class Vet extends Person {
 		getSpecialtiesInternal().add(specialty);
 	}
 
+	public boolean isNew() {
+		return this.id == null;
+	}
 }

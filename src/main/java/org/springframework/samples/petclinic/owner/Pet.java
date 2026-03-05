@@ -21,17 +21,20 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.model.NamedEntity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 /**
  * Simple business object representing a pet.
@@ -43,43 +46,37 @@ import jakarta.persistence.Table;
  */
 @Entity
 @Table(name = "pets")
-public class Pet extends NamedEntity {
+public record Pet(
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
+	@Column @NotBlank String name,
+	@Column @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDate,
+	@ManyToOne @JoinColumn(name = "type_id") PetType type,
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) @JoinColumn(name = "pet_id") @OrderBy("date ASC") Set<Visit> visits
+) {
 
-	@Column
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private LocalDate birthDate;
-
-	@ManyToOne
-	@JoinColumn(name = "type_id")
-	private PetType type;
-
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	@JoinColumn(name = "pet_id")
-	@OrderBy("date ASC")
-	private final Set<Visit> visits = new LinkedHashSet<>();
-
-	public void setBirthDate(LocalDate birthDate) {
-		this.birthDate = birthDate;
+	public Pet(Integer id, String name, LocalDate birthDate, PetType type) {
+		this(id, name, birthDate, type, new LinkedHashSet<>());
 	}
 
-	public LocalDate getBirthDate() {
-		return this.birthDate;
+	public Pet(String name, LocalDate birthDate, PetType type) {
+		this(null, name, birthDate, type, new LinkedHashSet<>());
 	}
 
-	public PetType getType() {
-		return this.type;
+	public Pet(String name) {
+		this(null, name, null, null, new LinkedHashSet<>());
 	}
 
-	public void setType(PetType type) {
-		this.type = type;
-	}
-
-	public Collection<Visit> getVisits() {
-		return this.visits;
+	public Pet() {
+		this(null, null, null, null, new LinkedHashSet<>());
 	}
 
 	public void addVisit(Visit visit) {
-		getVisits().add(visit);
+		if (visits != null) {
+			visits.add(visit);
+		}
 	}
 
+	public boolean isNew() {
+		return this.id == null;
+	}
 }

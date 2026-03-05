@@ -46,8 +46,17 @@ class VetController {
 		// Here we are returning an object of type 'Vets' rather than a collection of Vet
 		// objects so it is simpler for Object-Xml mapping
 		Vets vets = new Vets();
+		// VIRTUALIZATION POINT (13/21): I/O-bound JPA operation - findAll paginated
+		// File: VetController.java, Line: 49 (via findPaginated)
+		// Type: Database query (list fetch with pagination and lazy loading)
+		// Involves: SQL SELECT with LIMIT/OFFSET, loading vet specialties collection
+		// Virtual thread benefit: Lightweight pagination and collection loading
 		Page<Vet> paginated = findPaginated(page);
-		vets.getVetList().addAll(paginated.toList());
+		
+		// Pattern matching: if paginated has content, add it to the list
+		if (!paginated.isEmpty()) {
+			vets.getVetList().addAll(paginated.toList());
+		}
 		return addPaginationModel(page, paginated, model);
 	}
 
@@ -63,6 +72,11 @@ class VetController {
 	private Page<Vet> findPaginated(int page) {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
+		// VIRTUALIZATION POINT (14/21): I/O-bound JPA operation - findAll(Pageable)
+		// File: VetController.java, Line: 70
+		// Type: Database query (paginated list with lazy-loaded specialties)
+		// Involves: SQL SELECT with LIMIT/OFFSET, N+1 query risk for specialties
+		// Virtual thread benefit: Handles pagination and eager/lazy loading efficiently
 		return vetRepository.findAll(pageable);
 	}
 
@@ -71,6 +85,12 @@ class VetController {
 		// Here we are returning an object of type 'Vets' rather than a collection of Vet
 		// objects so it is simpler for JSon/Object mapping
 		Vets vets = new Vets();
+		// VIRTUALIZATION POINT (15/21): I/O-bound JPA operation - findAll (full list)
+		// File: VetController.java, Line: 78
+		// Type: Database query (complete table scan with @Cacheable annotation)
+		// Involves: SQL SELECT all vets, loading specialties via lazy loading, caching overhead
+		// Virtual thread benefit: Handles initial query execution and result set iteration
+		// Note: @Cacheable("vets") caches results, so actual DB access is infrequent
 		vets.getVetList().addAll(this.vetRepository.findAll());
 		return vets;
 	}
