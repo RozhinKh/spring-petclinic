@@ -64,14 +64,9 @@ class OwnerController {
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable(name = "ownerId", required = false) Integer ownerId) {
 		return ownerId == null ? new Owner()
-				: // VIRTUALIZATION POINT (1/21): I/O-bound JPA operation - findById
-					// File: OwnerController.java, Line: 67
-					// Type: Database query (single entity fetch)
-					// Can be executed via virtual thread executor for better concurrency
-					// When java21-virtual profile is active, this is virtualized
-				this.owners.findById(ownerId)
-					.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
-							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
+				: this.owners.findById(ownerId)
+					.orElseThrow(() -> new IllegalArgumentException(
+							String.format("Owner not found with id: %d. Please ensure the ID is correct and the owner exists in the database.", ownerId)));
 	}
 
 	@GetMapping("/owners/new")
@@ -86,14 +81,9 @@ class OwnerController {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
-		// VIRTUALIZATION POINT (2/21): I/O-bound JPA operation - save (insert)
-		// File: OwnerController.java, Line: 84
-		// Type: Database mutation (entity persist + transaction commit)
-		// Involves: SQL INSERT, constraint validation, transaction overhead
-		// Virtual thread benefit: Allows other requests to use platform threads while this I/O completes
 		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "New Owner Created");
-		return "redirect:/owners/" + owner.id();
+		return "redirect:/owners/" + owner.getId();
 	}
 
 	@GetMapping("/owners/find")
@@ -105,28 +95,27 @@ class OwnerController {
 	public String processFindForm(@RequestParam(defaultValue = "1") int page, Owner owner, BindingResult result,
 			Model model) {
 		// allow parameterless GET request for /owners to return all records
-		String lastName = owner.lastName() != null ? owner.lastName() : "";
+		String lastName = owner.getLastName();
+		if (lastName == null) {
+			lastName = ""; // empty string signifies broadest possible search
+		}
 
 		// find owners by last name
 		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, lastName);
-		
-		// Pattern matching switch expression to handle different page result states
-		return switch (ownersResults.getTotalElements()) {
-			case 0 -> {
-				// no owners found
-				result.rejectValue("lastName", "notFound", "not found");
-				yield "owners/findOwners";
-			}
-			case 1 -> {
-				// 1 owner found - redirect to details
-				Owner foundOwner = ownersResults.iterator().next();
-				yield "redirect:/owners/" + foundOwner.id();
-			}
-			default -> {
-				// multiple owners found
-				yield addPaginationModel(page, model, ownersResults);
-			}
-		};
+		if (ownersResults.isEmpty()) {
+			// no owners found
+			result.rejectValue("lastName", "notFound", "not found");
+			return "owners/findOwners";
+		}
+
+		if (ownersResults.getTotalElements() == 1) {
+			// 1 owner found
+			owner = ownersResults.iterator().next();
+			return "redirect:/owners/" + owner.getId();
+		}
+
+		// multiple owners found
+		return addPaginationModel(page, model, ownersResults);
 	}
 
 	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
@@ -141,11 +130,6 @@ class OwnerController {
 	private Page<Owner> findPaginatedForOwnersLastName(int page, String lastname) {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		// VIRTUALIZATION POINT (3/21): I/O-bound JPA operation - findByLastNameStartingWith
-		// File: OwnerController.java, Line: 134
-		// Type: Database query (list fetch with pagination)
-		// Involves: SQL LIKE query, result set mapping, pagination overhead
-		// Virtual thread benefit: Lightweight concurrency for result set iteration
 		return owners.findByLastNameStartingWith(lastname, pageable);
 	}
 
@@ -162,20 +146,14 @@ class OwnerController {
 			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
 		}
 
-		// Pattern matching with instanceof check on the ID validation
-		if (!Objects.equals(owner.id(), ownerId)) {
+		if (!Objects.equals(owner.getId(), ownerId)) {
 			result.rejectValue("id", "mismatch", "The owner ID in the form does not match the URL.");
 			redirectAttributes.addFlashAttribute("error", "Owner ID mismatch. Please try again.");
 			return "redirect:/owners/{ownerId}/edit";
 		}
 
-		Owner updatedOwner = new Owner(ownerId, owner.firstName(), owner.lastName(), owner.address(), owner.city(), owner.telephone(), owner.pets());
-		// VIRTUALIZATION POINT (4/21): I/O-bound JPA operation - save (update)
-		// File: OwnerController.java, Line: 158
-		// Type: Database mutation (entity merge + transaction commit)
-		// Involves: SQL UPDATE, dirty checking, transaction overhead
-		// Virtual thread benefit: Allows high concurrency for concurrent update requests
-		this.owners.save(updatedOwner);
+		owner.setId(ownerId);
+		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
 		return "redirect:/owners/{ownerId}";
 	}
@@ -188,20 +166,10 @@ class OwnerController {
 	@GetMapping("/owners/{ownerId}")
 	public ModelAndView showOwner(@PathVariable("ownerId") int ownerId) {
 		ModelAndView mav = new ModelAndView("owners/ownerDetails");
-		// VIRTUALIZATION POINT (5/21): I/O-bound JPA operation - findById
-		// File: OwnerController.java, Line: 171
-		// Type: Database query (single entity fetch with relationships)
-		// Involves: SQL SELECT, lazy loading of pets and visits collections
-		// Virtual thread benefit: Lightweight handling of potential N+1 query overhead
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		
-		// Pattern matching with Optional using switch expression
-		optionalOwner.ifPresentOrElse(
-			owner -> mav.addObject(owner),
-			() -> {
-				throw new IllegalArgumentException("Owner not found with id: " + ownerId + ". Please ensure the ID is correct ");
-			}
-		);
+		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
+				String.format("Owner not found with id: %d. Please ensure the ID is correct ", ownerId)));
+		mav.addObject(owner);
 		return mav;
 	}
 
