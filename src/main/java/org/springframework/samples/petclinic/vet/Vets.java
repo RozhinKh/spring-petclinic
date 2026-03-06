@@ -28,15 +28,32 @@ import jakarta.xml.bind.annotation.XmlRootElement;
  * @author Arjen Poutsma
  */
 @XmlRootElement
-public class Vets {
+public record Vets(List<Vet> vets) {
 
-	private List<Vet> vets;
-
-	@XmlElement
-	public List<Vet> getVetList() {
+	/**
+	 * Compact constructor to ensure vets list is never null.
+	 */
+	public Vets {
 		if (vets == null) {
 			vets = new ArrayList<>();
 		}
+	}
+
+	/**
+	 * No-arg constructor for backward compatibility and ease of use with mutable list operations.
+	 * Initializes with an empty ArrayList.
+	 */
+	public Vets() {
+		this(new ArrayList<>());
+	}
+
+	/**
+	 * Backward compatible getter method for accessing the vet list.
+	 * 
+	 * @return the list of vets
+	 */
+	@XmlElement
+	public List<Vet> getVetList() {
 		return vets;
 	}
 

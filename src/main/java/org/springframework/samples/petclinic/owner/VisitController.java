@@ -62,30 +62,21 @@ class VisitController {
 	@ModelAttribute("visit")
 	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
 			Map<String, Object> model) {
-		// VIRTUALIZATION POINT (11/21): I/O-bound JPA operation - findById (owner for
-		// visit)
-		// File: VisitController.java, Line: 65
-		// Type: Database query (entity fetch for visit context)
-		// Involves: SQL SELECT owner with pets collection
-		// Virtual thread benefit: Handles query blocking during visit creation workflow
 		Optional<Owner> optionalOwner = owners.findById(ownerId);
 		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
-				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
+				String.format("Owner not found with id: %d. Please ensure the ID is correct ", ownerId)));
 
 		Pet pet = owner.getPet(petId);
-
-		// Null check (Java 17 compatible)
-		if (pet != null) {
-			model.put("pet", pet);
-			model.put("owner", owner);
-			Visit visit = new Visit();
-			pet.addVisit(visit);
-			return visit;
-		}
-		else {
+		if (pet == null) {
 			throw new IllegalArgumentException(
-					"Pet with id " + petId + " not found for owner with id " + ownerId + ".");
+					String.format("Pet with id %d not found for owner with id %d.", petId, ownerId));
 		}
+		model.put("pet", pet);
+		model.put("owner", owner);
+
+		Visit visit = new Visit();
+		pet.addVisit(visit);
+		return visit;
 	}
 
 	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
@@ -100,19 +91,11 @@ class VisitController {
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
 			BindingResult result, RedirectAttributes redirectAttributes) {
-		// Handle validation errors and success (Java 17 compatible)
 		if (result.hasErrors()) {
-			// Validation errors found
 			return "pets/createOrUpdateVisitForm";
 		}
-		// No errors, proceed with visit creation
+
 		owner.addVisit(petId, visit);
-		// VIRTUALIZATION POINT (12/21): I/O-bound JPA operation - save (visit
-		// persistence)
-		// File: VisitController.java, Line: 105
-		// Type: Database mutation (nested visit entity persist)
-		// Involves: SQL INSERT for visit, cascading FK updates, transaction overhead
-		// Virtual thread benefit: Efficient handling of nested entity persistence
 		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
 		return "redirect:/owners/{ownerId}";
