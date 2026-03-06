@@ -8,11 +8,11 @@ import java.util.List;
 public class StatisticalUtils {
 
 	/**
-	 * Determines if a difference is statistically significant based on variance.
-	 * Uses the rule: difference > threshold based on metric type and variance.
+	 * Determines if a difference is statistically significant based on variance. Uses the
+	 * rule: difference > threshold based on metric type and variance.
 	 */
-	public static boolean isSignificantDifference(Double baseline, Double current,
-			String metricCategory, Double baselineStdDev) {
+	public static boolean isSignificantDifference(Double baseline, Double current, String metricCategory,
+			Double baselineStdDev) {
 		if (baseline == null || baseline == 0.0 || current == null) {
 			return false;
 		}
@@ -60,14 +60,14 @@ public class StatisticalUtils {
 	}
 
 	/**
-	 * Determines improvement direction based on metric category
-	 * Some metrics: lower is better (latency), others: higher is better (throughput)
+	 * Determines improvement direction based on metric category Some metrics: lower is
+	 * better (latency), others: higher is better (throughput)
 	 */
 	public static String getImprovementDirection(String metricName) {
 		String lower = metricName.toLowerCase();
 
-		if (lower.contains("latency") || lower.contains("time") || lower.contains("pause")
-				|| lower.contains("duration") || lower.contains("error")) {
+		if (lower.contains("latency") || lower.contains("time") || lower.contains("pause") || lower.contains("duration")
+				|| lower.contains("error")) {
 			return "lower_is_better";
 		}
 
@@ -87,11 +87,10 @@ public class StatisticalUtils {
 	}
 
 	/**
-	 * Calculates percent change from baseline to current
-	 * Respects improvement direction (some metrics lower is better)
+	 * Calculates percent change from baseline to current Respects improvement direction
+	 * (some metrics lower is better)
 	 */
-	public static Double calculatePercentChange(Double baseline, Double current,
-			String improvementDirection) {
+	public static Double calculatePercentChange(Double baseline, Double current, String improvementDirection) {
 		if (baseline == null || baseline == 0.0 || current == null) {
 			return 0.0;
 		}

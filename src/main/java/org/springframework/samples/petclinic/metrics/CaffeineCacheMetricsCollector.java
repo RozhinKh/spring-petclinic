@@ -24,8 +24,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * Collects cache metrics for Caffeine caches used in the application.
- * Tracks hit/miss rates, evictions, and other cache statistics for performance analysis.
+ * Collects cache metrics for Caffeine caches used in the application. Tracks hit/miss
+ * rates, evictions, and other cache statistics for performance analysis.
  */
 @Component
 public class CaffeineCacheMetricsCollector {

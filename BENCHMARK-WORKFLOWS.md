@@ -552,7 +552,7 @@ Create custom event configuration file `src/main/resources/jfr-custom.jfc`:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration version="2.0" 
-    xmlns="http://java.sun.com/javafx/jmx/jfr">
+    xmlns="https://java.sun.com/javafx/jmx/jfr">
     
     <!-- Profiling configuration -->
     <event name="jdk.ExecutionSample">

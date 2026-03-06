@@ -47,7 +47,8 @@ public class ThroughputBenchmark {
 			if (code != 200) {
 				throw new RuntimeException("Application health check failed: " + code);
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException("Cannot connect to application at " + BASE_URL + ": " + e.getMessage());
 		}
 	}
@@ -116,8 +117,7 @@ public class ThroughputBenchmark {
 	}
 
 	/**
-	 * Mixed workload throughput benchmark: alternates between GET /owners and GET
-	 * /vets.
+	 * Mixed workload throughput benchmark: alternates between GET /owners and GET /vets.
 	 */
 	@State(Scope.Benchmark)
 	public static class MixedWorkloadState {

@@ -31,8 +31,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Processes JMeter load test results and exports to structured JSON format.
- * Parses CSV results, calculates percentiles and throughput metrics.
+ * Processes JMeter load test results and exports to structured JSON format. Parses CSV
+ * results, calculates percentiles and throughput metrics.
  */
 public class LoadTestResultsProcessor {
 
@@ -40,7 +40,6 @@ public class LoadTestResultsProcessor {
 
 	/**
 	 * Process JMeter CSV results file and generate JSON output.
-	 *
 	 * @param csvResultsPath Path to JMeter results CSV file
 	 * @param variant Variant identifier
 	 * @param profile Load profile name
@@ -69,8 +68,8 @@ public class LoadTestResultsProcessor {
 	}
 
 	/**
-	 * Parse JMeter CSV results file.
-	 * Format: timeStamp,elapsed,label,responseCode,responseMessage,success,...
+	 * Parse JMeter CSV results file. Format:
+	 * timeStamp,elapsed,label,responseCode,responseMessage,success,...
 	 */
 	private List<RequestResult> parseJMeterCsv(String csvPath) throws IOException {
 		List<RequestResult> results = new ArrayList<>();
@@ -98,7 +97,8 @@ public class LoadTestResultsProcessor {
 				boolean success = Boolean.parseBoolean(fields[5]);
 
 				results.add(new RequestResult(timestamp, elapsed, label, responseCode, success));
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				System.err.println("Failed to parse line: " + line + ", error: " + e.getMessage());
 			}
 		}
@@ -180,13 +180,17 @@ public class LoadTestResultsProcessor {
 		for (RequestResult result : results) {
 			if (result.elapsed <= 100) {
 				distribution.put("0-100ms", distribution.get("0-100ms") + 1);
-			} else if (result.elapsed <= 250) {
+			}
+			else if (result.elapsed <= 250) {
 				distribution.put("100-250ms", distribution.get("100-250ms") + 1);
-			} else if (result.elapsed <= 500) {
+			}
+			else if (result.elapsed <= 500) {
 				distribution.put("250-500ms", distribution.get("250-500ms") + 1);
-			} else if (result.elapsed <= 1000) {
+			}
+			else if (result.elapsed <= 1000) {
 				distribution.put("500-1000ms", distribution.get("500-1000ms") + 1);
-			} else {
+			}
+			else {
 				distribution.put(">1000ms", distribution.get(">1000ms") + 1);
 			}
 		}
@@ -276,8 +280,11 @@ public class LoadTestResultsProcessor {
 		Files.createDirectories(Paths.get(outputDir));
 
 		// Generate filename with timestamp
-		String timestamp = Instant.now().atZone(ZoneId.of("UTC")).format(DateTimeFormatter.ISO_INSTANT)
-				.replace(":", "-").replace("Z", "");
+		String timestamp = Instant.now()
+			.atZone(ZoneId.of("UTC"))
+			.format(DateTimeFormatter.ISO_INSTANT)
+			.replace(":", "-")
+			.replace("Z", "");
 		String filename = String.format("load-test-results-%s-%s-%s.json", variant, profile, timestamp);
 		String filepath = outputDir + "/" + filename;
 
@@ -293,15 +300,18 @@ public class LoadTestResultsProcessor {
 		metrics.forEach((key, value) -> {
 			if (value instanceof Integer || value instanceof Long) {
 				metricsNode.put(key, ((Number) value).longValue());
-			} else if (value instanceof Double || value instanceof Float) {
+			}
+			else if (value instanceof Double || value instanceof Float) {
 				metricsNode.put(key, ((Number) value).doubleValue());
-			} else if (value instanceof Map) {
+			}
+			else if (value instanceof Map) {
 				// Distribution map
 				ObjectNode distNode = metricsNode.putObject(key);
 				@SuppressWarnings("unchecked")
 				Map<String, Long> distMap = (Map<String, Long>) value;
 				distMap.forEach(distNode::put);
-			} else {
+			}
+			else {
 				metricsNode.put(key, String.valueOf(value));
 			}
 		});
@@ -315,9 +325,11 @@ public class LoadTestResultsProcessor {
 			epMetrics.forEach((key, value) -> {
 				if (value instanceof Integer || value instanceof Long) {
 					epNode.put(key, ((Number) value).longValue());
-				} else if (value instanceof Double || value instanceof Float) {
+				}
+				else if (value instanceof Double || value instanceof Float) {
 					epNode.put(key, ((Number) value).doubleValue());
-				} else {
+				}
+				else {
 					epNode.put(key, String.valueOf(value));
 				}
 			});
@@ -336,9 +348,13 @@ public class LoadTestResultsProcessor {
 	private static class RequestResult {
 
 		long timestamp;
+
 		long elapsed;
+
 		String label;
+
 		String responseCode;
+
 		boolean success;
 
 		RequestResult(long timestamp, long elapsed, String label, String responseCode, boolean success) {

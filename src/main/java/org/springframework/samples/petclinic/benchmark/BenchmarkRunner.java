@@ -42,22 +42,23 @@ import java.util.concurrent.TimeUnit;
  * Multi-variant benchmark orchestrator. Builds each variant, runs JMH benchmarks,
  * collects results, and generates unified JSON output.
  *
- * Execution flow: 1. Read configuration 2. For each variant: - Build variant with
- * Maven - Execute JMH benchmarks - Start application for acceptance - Run
- * benchmarks - Collect results 3. Aggregate results to JSON 4. Generate summary
- * report
+ * Execution flow: 1. Read configuration 2. For each variant: - Build variant with Maven -
+ * Execute JMH benchmarks - Start application for acceptance - Run benchmarks - Collect
+ * results 3. Aggregate results to JSON 4. Generate summary report
  */
 public class BenchmarkRunner {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter
-		.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+	private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
 		.withZone(ZoneId.of("UTC"));
 
 	private static final String JAR_PATH = "target/spring-petclinic-4.0.0-SNAPSHOT.jar";
+
 	private static final String BENCHMARKS_JAR_PATH = "target/benchmarks.jar";
 
 	private final List<BenchmarkResult> allResults = new ArrayList<>();
+
 	private final String outputDirectory;
 
 	public BenchmarkRunner(String outputDirectory) {
@@ -65,8 +66,8 @@ public class BenchmarkRunner {
 	}
 
 	/**
-	 * Get the ObjectMapper instance for JSON operations.
-	 * This is used by JFREventParser and JFRCorrelator.
+	 * Get the ObjectMapper instance for JSON operations. This is used by JFREventParser
+	 * and JFRCorrelator.
 	 */
 	public static ObjectMapper getObjectMapper() {
 		return mapper;
@@ -102,12 +103,11 @@ public class BenchmarkRunner {
 
 			try {
 				ConsolidatedMetricsBuilder builder = new ConsolidatedMetricsBuilder(
-					Paths.get(outputDir, "benchmark-results.json").toString(),
-					Paths.get(outputDir, "test-results.json").toString(),
-					outputDir
-				);
+						Paths.get(outputDir, "benchmark-results.json").toString(),
+						Paths.get(outputDir, "test-results.json").toString(), outputDir);
 				builder.buildConsolidatedMetrics();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				System.err.println("WARNING: Failed to build consolidated metrics: " + e.getMessage());
 				e.printStackTrace();
 			}
@@ -135,9 +135,10 @@ public class BenchmarkRunner {
 				System.out.println("=".repeat(50));
 
 				executeVariantBenchmarks(variant);
-			} catch (Exception e) {
-				System.err.println("ERROR: Failed to execute benchmarks for variant " + variant + ": "
-					+ e.getMessage());
+			}
+			catch (Exception e) {
+				System.err
+					.println("ERROR: Failed to execute benchmarks for variant " + variant + ": " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -167,7 +168,8 @@ public class BenchmarkRunner {
 		if (!variant.equals("java17-baseline")) {
 			if (variant.equals("java21-virtual")) {
 				command.add("-Pjava21-virtual");
-			} else if (variant.equals("java21-traditional")) {
+			}
+			else if (variant.equals("java21-traditional")) {
 				command.add("-Pjava21-traditional");
 			}
 		}
@@ -199,7 +201,7 @@ public class BenchmarkRunner {
 		// First, start the application for warm-up
 		System.out.println(">>> Starting application for warm-up...");
 		ApplicationStarter starter = new ApplicationStarter(variant, "8080", getProfileForVariant(variant),
-			getJvmOptionsForVariant(variant), 30, 60, 10, 20);
+				getJvmOptionsForVariant(variant), 30, 60, 10, 20);
 
 		JFRHarness jfrHarness = new JFRHarness();
 
@@ -228,14 +230,9 @@ public class BenchmarkRunner {
 
 			// Correlate JFR with JMH results
 			System.out.println(">>> Correlating JFR and JMH results...");
-			JFRCorrelator correlator = new JFRCorrelator(
-				jfrMetrics,
-				mapper.convertValue(benchmarkResults, ObjectNode.class),
-				benchmarkStartTimeMs,
-				benchmarkDurationMs,
-				jfrHarness.getRecordingStartTimeMs(),
-				jfrHarness.getRecordingEndTimeMs()
-			);
+			JFRCorrelator correlator = new JFRCorrelator(jfrMetrics,
+					mapper.convertValue(benchmarkResults, ObjectNode.class), benchmarkStartTimeMs, benchmarkDurationMs,
+					jfrHarness.getRecordingStartTimeMs(), jfrHarness.getRecordingEndTimeMs());
 			ObjectNode correlationAnalysis = correlator.correlate();
 
 			// Process and store results with JFR data
@@ -243,7 +240,8 @@ public class BenchmarkRunner {
 			allResults.add(result);
 
 			System.out.println("✓ Benchmarks and JFR analysis completed for variant: " + variant);
-		} finally {
+		}
+		finally {
 			starter.shutdown();
 		}
 	}
@@ -340,7 +338,8 @@ public class BenchmarkRunner {
 				}
 			}
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Could not parse JMH JSON output: " + e.getMessage());
 			// Fall back to empty results
 		}
@@ -407,8 +406,7 @@ public class BenchmarkRunner {
 
 		// Write to JSON file
 		String outputPath = "benchmark-results.json";
-		mapper.writerWithDefaultPrettyPrinter()
-			.writeValue(new File(outputPath), root);
+		mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputPath), root);
 
 		System.out.println("✓ Results exported to " + outputPath);
 
@@ -438,11 +436,14 @@ public class BenchmarkRunner {
 
 		if (benchmarkName.contains("Startup")) {
 			return "startup";
-		} else if (benchmarkName.contains("Latency")) {
+		}
+		else if (benchmarkName.contains("Latency")) {
 			return "latency";
-		} else if (benchmarkName.contains("Throughput")) {
+		}
+		else if (benchmarkName.contains("Throughput")) {
 			return "throughput";
-		} else if (benchmarkName.contains("Memory") || benchmarkName.contains("Heap")) {
+		}
+		else if (benchmarkName.contains("Memory") || benchmarkName.contains("Heap")) {
 			return "memory";
 		}
 
@@ -463,14 +464,21 @@ public class BenchmarkRunner {
 				Object score = benchmark.get("score");
 				String unit = (String) benchmark.getOrDefault("unit", "ops/s");
 
-				csv.append(variant).append(",").append(name != null ? name : "").append(",")
-					.append(score != null ? score : "").append(",").append(unit).append(",")
-					.append(result.timestamp).append("\n");
+				csv.append(variant)
+					.append(",")
+					.append(name != null ? name : "")
+					.append(",")
+					.append(score != null ? score : "")
+					.append(",")
+					.append(unit)
+					.append(",")
+					.append(result.timestamp)
+					.append("\n");
 			}
 		}
 
-		Files.write(Paths.get("benchmark-results.csv"), csv.toString().getBytes(),
-			StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
+		Files.write(Paths.get("benchmark-results.csv"), csv.toString().getBytes(), StandardOpenOption.CREATE,
+				StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING);
 
 		System.out.println("✓ CSV summary exported to benchmark-results.csv");
 	}
@@ -498,9 +506,13 @@ public class BenchmarkRunner {
 	private static class BenchmarkResult {
 
 		String variant;
+
 		String timestamp;
+
 		List<Map<String, Object>> benchmarks;
+
 		ObjectNode jfrMetrics;
+
 		ObjectNode correlationAnalysis;
 
 		BenchmarkResult(String variant, Map<String, Object> results) {
@@ -514,7 +526,8 @@ public class BenchmarkRunner {
 			this.correlationAnalysis = null;
 		}
 
-		BenchmarkResult(String variant, Map<String, Object> results, ObjectNode jfrMetrics, ObjectNode correlationAnalysis) {
+		BenchmarkResult(String variant, Map<String, Object> results, ObjectNode jfrMetrics,
+				ObjectNode correlationAnalysis) {
 			this.variant = variant;
 			this.timestamp = ISO_FORMATTER.format(Instant.now());
 

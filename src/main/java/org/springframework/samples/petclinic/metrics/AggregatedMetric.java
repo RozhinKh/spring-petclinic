@@ -4,28 +4,35 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Represents aggregated statistics for a metric across multiple runs.
- * Contains average, min, max, and standard deviation.
+ * Represents aggregated statistics for a metric across multiple runs. Contains average,
+ * min, max, and standard deviation.
  */
 public class AggregatedMetric implements Serializable, Comparable<AggregatedMetric> {
 
 	private String metricName;
+
 	private String unit;
+
 	private String category;
+
 	private String variant;
+
 	private String dataSource;
 
 	private Double average;
+
 	private Double minimum;
+
 	private Double maximum;
+
 	private Double stdDev;
+
 	private Integer sampleCount;
 
 	public AggregatedMetric() {
 	}
 
-	public AggregatedMetric(String metricName, String unit, String category, String variant,
-			String dataSource) {
+	public AggregatedMetric(String metricName, String unit, String category, String variant, String dataSource) {
 		this.metricName = metricName;
 		this.unit = unit;
 		this.category = category;
@@ -132,9 +139,8 @@ public class AggregatedMetric implements Serializable, Comparable<AggregatedMetr
 		if (o == null || getClass() != o.getClass())
 			return false;
 		AggregatedMetric that = (AggregatedMetric) o;
-		return Objects.equals(metricName, that.metricName)
-				&& Objects.equals(unit, that.unit) && Objects.equals(category, that.category)
-				&& Objects.equals(variant, that.variant)
+		return Objects.equals(metricName, that.metricName) && Objects.equals(unit, that.unit)
+				&& Objects.equals(category, that.category) && Objects.equals(variant, that.variant)
 				&& Objects.equals(dataSource, that.dataSource);
 	}
 
@@ -145,10 +151,9 @@ public class AggregatedMetric implements Serializable, Comparable<AggregatedMetr
 
 	@Override
 	public String toString() {
-		return "AggregatedMetric{" + "metricName='" + metricName + '\'' + ", unit='" + unit
-				+ '\'' + ", category='" + category + '\'' + ", variant='" + variant + '\''
-				+ ", dataSource='" + dataSource + '\'' + ", average=" + average + ", minimum="
-				+ minimum + ", maximum=" + maximum + ", stdDev=" + stdDev + ", sampleCount="
+		return "AggregatedMetric{" + "metricName='" + metricName + '\'' + ", unit='" + unit + '\'' + ", category='"
+				+ category + '\'' + ", variant='" + variant + '\'' + ", dataSource='" + dataSource + '\'' + ", average="
+				+ average + ", minimum=" + minimum + ", maximum=" + maximum + ", stdDev=" + stdDev + ", sampleCount="
 				+ sampleCount + '}';
 	}
 

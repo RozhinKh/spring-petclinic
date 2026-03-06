@@ -1,0 +1,18 @@
+-------------------------------------------------------------------------------
+Test set: org.springframework.samples.petclinic.metrics.BlockingDetectionTests
+-------------------------------------------------------------------------------
+Tests run: 13, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 1.025 s <<< FAILURE! -- in org.springframework.samples.petclinic.metrics.BlockingDetectionTests
+org.springframework.samples.petclinic.metrics.BlockingDetectionTests.testBlockingDetectionHarnessMultipleVariants -- Time elapsed: 0.487 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: 
+
+Expecting actual:
+  ["java21-traditional", "java21-virtual", "java17"]
+to contain exactly (and in same order):
+  ["java17", "java21-traditional", "java21-virtual"]
+but there were differences at these indexes:
+  - element at index 0: expected "java17" but was "java21-traditional"
+  - element at index 1: expected "java21-traditional" but was "java21-virtual"
+  - element at index 2: expected "java21-virtual" but was "java17"
+
+	at org.springframework.samples.petclinic.metrics.BlockingDetectionTests.testBlockingDetectionHarnessMultipleVariants(BlockingDetectionTests.java:162)
+

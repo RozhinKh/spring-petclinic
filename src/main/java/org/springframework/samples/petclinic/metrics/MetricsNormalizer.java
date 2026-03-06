@@ -15,8 +15,9 @@ public class MetricsNormalizer {
 	private static final Double MISSING_MARKER = Double.NaN;
 
 	public List<NormalizedMetric> normalizeMissingData(List<NormalizedMetric> metrics) {
-		return metrics.stream().filter(metric -> metric.getValue() != null && !Double.isNaN(metric.getValue()))
-				.collect(Collectors.toList());
+		return metrics.stream()
+			.filter(metric -> metric.getValue() != null && !Double.isNaN(metric.getValue()))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -34,9 +35,8 @@ public class MetricsNormalizer {
 
 		Double convertedValue = convertValue(metric.getValue(), currentUnit, targetUnit);
 
-		NormalizedMetric converted = new NormalizedMetric(metric.getMetricName(), convertedValue,
-				targetUnit, metric.getVariant(), metric.getRunNumber(), metric.getCategory(),
-				metric.getDataSource());
+		NormalizedMetric converted = new NormalizedMetric(metric.getMetricName(), convertedValue, targetUnit,
+				metric.getVariant(), metric.getRunNumber(), metric.getCategory(), metric.getDataSource());
 		converted.setTimestamp(metric.getTimestamp());
 		return converted;
 	}
@@ -74,8 +74,7 @@ public class MetricsNormalizer {
 	/**
 	 * Handles missing data gracefully by marking or skipping incomplete metrics
 	 */
-	public List<NormalizedMetric> handleMissingData(List<NormalizedMetric> metrics,
-			boolean skipMissing) {
+	public List<NormalizedMetric> handleMissingData(List<NormalizedMetric> metrics, boolean skipMissing) {
 		if (skipMissing) {
 			return normalizeMissingData(metrics);
 		}
@@ -94,9 +93,8 @@ public class MetricsNormalizer {
 	 * Validates metric schema completeness
 	 */
 	public boolean isValidMetric(NormalizedMetric metric) {
-		return metric.getMetricName() != null && !metric.getMetricName().isEmpty()
-				&& metric.getUnit() != null && !metric.getUnit().isEmpty()
-				&& metric.getVariant() != null && !metric.getVariant().isEmpty()
+		return metric.getMetricName() != null && !metric.getMetricName().isEmpty() && metric.getUnit() != null
+				&& !metric.getUnit().isEmpty() && metric.getVariant() != null && !metric.getVariant().isEmpty()
 				&& metric.getRunNumber() != null && metric.getRunNumber() > 0;
 	}
 

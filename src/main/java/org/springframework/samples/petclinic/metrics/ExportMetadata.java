@@ -6,15 +6,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Container for metadata about the benchmark export.
- * Includes timestamp, JDK versions, tool versions, and environment information.
+ * Container for metadata about the benchmark export. Includes timestamp, JDK versions,
+ * tool versions, and environment information.
  */
 public class ExportMetadata implements Serializable {
 
 	private String timestamp;
+
 	private Map<String, String> jdkVersions;
+
 	private Map<String, String> toolVersions;
+
 	private Map<String, String> environmentInfo;
+
 	private Long benchmarkDurationMinutes;
 
 	public ExportMetadata() {
@@ -83,4 +87,5 @@ public class ExportMetadata implements Serializable {
 	public void setBenchmarkDurationMinutes(Long benchmarkDurationMinutes) {
 		this.benchmarkDurationMinutes = benchmarkDurationMinutes;
 	}
+
 }

@@ -25,8 +25,8 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JMH benchmarks for application startup time measurement. Measures cold start
- * (fresh JVM) and warm start (with JIT compilation cache) performance.
+ * JMH benchmarks for application startup time measurement. Measures cold start (fresh
+ * JVM) and warm start (with JIT compilation cache) performance.
  */
 @Fork(value = 5, warmups = 1)
 @Warmup(iterations = 0)
@@ -37,7 +37,9 @@ import java.util.concurrent.TimeUnit;
 public class StartupBenchmark {
 
 	private static final String BASE_URL = "http://localhost:8080";
+
 	private static final String HEALTH_URL = BASE_URL + "/actuator/health";
+
 	private static final long HEALTH_TIMEOUT_MS = 60_000;
 
 	/**
@@ -69,7 +71,8 @@ public class StartupBenchmark {
 
 			// Consume result to prevent dead code elimination
 			bh.consume(startupTime);
-		} finally {
+		}
+		finally {
 			// Shutdown application
 			if (process.isAlive()) {
 				process.destroyForcibly();
@@ -98,7 +101,8 @@ public class StartupBenchmark {
 				conn.setReadTimeout(5000);
 				conn.getResponseCode();
 				conn.disconnect();
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				// Ignore
 			}
 		}
@@ -127,7 +131,8 @@ public class StartupBenchmark {
 
 			// Consume result to prevent dead code elimination
 			bh.consume(startupTime);
-		} finally {
+		}
+		finally {
 			// Shutdown application
 			if (process.isAlive()) {
 				process.destroyForcibly();
@@ -152,7 +157,8 @@ public class StartupBenchmark {
 				if (responseCode == 200) {
 					return true;
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				// Ignore - application not ready yet
 			}
 
@@ -180,7 +186,8 @@ public class StartupBenchmark {
 				if (responseCode == 200) {
 					return true;
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				// Ignore - application not ready yet
 			}
 

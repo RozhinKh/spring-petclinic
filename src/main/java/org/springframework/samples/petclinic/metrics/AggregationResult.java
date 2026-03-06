@@ -10,15 +10,17 @@ import java.util.Map;
 public class AggregationResult implements Serializable {
 
 	private List<NormalizedMetric> normalizedMetrics;
+
 	private List<AggregatedMetric> aggregatedMetrics;
+
 	private Map<String, List<AggregatedMetric>> aggregatedByCategory;
+
 	private Long processingTimeMillis;
 
 	public AggregationResult() {
 	}
 
-	public AggregationResult(List<NormalizedMetric> normalizedMetrics,
-			List<AggregatedMetric> aggregatedMetrics,
+	public AggregationResult(List<NormalizedMetric> normalizedMetrics, List<AggregatedMetric> aggregatedMetrics,
 			Map<String, List<AggregatedMetric>> aggregatedByCategory) {
 		this.normalizedMetrics = normalizedMetrics;
 		this.aggregatedMetrics = aggregatedMetrics;

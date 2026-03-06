@@ -44,7 +44,7 @@ public class PetTypeFormatter implements Formatter<PetType> {
 
 	@Override
 	public String print(PetType petType, Locale locale) {
-		String name = petType.getName();
+		String name = petType.name();
 		return (name != null) ? name : "<null>";
 	}
 
@@ -52,7 +52,7 @@ public class PetTypeFormatter implements Formatter<PetType> {
 	public PetType parse(String text, Locale locale) throws ParseException {
 		Collection<PetType> findPetTypes = this.types.findPetTypes();
 		for (PetType type : findPetTypes) {
-			if (Objects.equals(type.getName(), text)) {
+			if (Objects.equals(type.name(), text)) {
 				return type;
 			}
 		}

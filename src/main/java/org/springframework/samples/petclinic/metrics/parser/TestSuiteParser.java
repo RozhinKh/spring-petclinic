@@ -19,8 +19,7 @@ public class TestSuiteParser {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
 
-	public List<NormalizedMetric> parseJunitXml(File junitXmlFile, String variant,
-			Integer runNumber) throws Exception {
+	public List<NormalizedMetric> parseJunitXml(File junitXmlFile, String variant, Integer runNumber) throws Exception {
 		List<NormalizedMetric> metrics = new ArrayList<>();
 
 		if (!junitXmlFile.exists()) {
@@ -43,27 +42,27 @@ public class TestSuiteParser {
 			int skipped = Integer.parseInt(testsuite.getAttribute("skipped"));
 			double time = Double.parseDouble(testsuite.getAttribute("time"));
 
-			metrics.add(new NormalizedMetric("test_count", (double) tests, "count", variant,
-					runNumber, "test_suite", "test_suite"));
-			metrics.add(new NormalizedMetric("test_failures", (double) failures, "count",
-					variant, runNumber, "test_suite", "test_suite"));
-			metrics.add(new NormalizedMetric("test_skipped", (double) skipped, "count",
-					variant, runNumber, "test_suite", "test_suite"));
-			metrics.add(new NormalizedMetric("test_execution_time", time, "seconds", variant,
-					runNumber, "test_suite", "test_suite"));
+			metrics.add(new NormalizedMetric("test_count", (double) tests, "count", variant, runNumber, "test_suite",
+					"test_suite"));
+			metrics.add(new NormalizedMetric("test_failures", (double) failures, "count", variant, runNumber,
+					"test_suite", "test_suite"));
+			metrics.add(new NormalizedMetric("test_skipped", (double) skipped, "count", variant, runNumber,
+					"test_suite", "test_suite"));
+			metrics.add(new NormalizedMetric("test_execution_time", time, "seconds", variant, runNumber, "test_suite",
+					"test_suite"));
 
 			// Calculate pass rate
 			int passed = tests - failures - skipped;
 			double passRate = tests > 0 ? (passed * 100.0 / tests) : 100.0;
-			metrics.add(new NormalizedMetric("test_pass_rate", passRate, "%", variant, runNumber,
-					"test_suite", "test_suite"));
+			metrics.add(new NormalizedMetric("test_pass_rate", passRate, "%", variant, runNumber, "test_suite",
+					"test_suite"));
 		}
 
 		return metrics;
 	}
 
-	public List<NormalizedMetric> parseJacocoXml(File jacocoXmlFile, String variant,
-			Integer runNumber) throws Exception {
+	public List<NormalizedMetric> parseJacocoXml(File jacocoXmlFile, String variant, Integer runNumber)
+			throws Exception {
 		List<NormalizedMetric> metrics = new ArrayList<>();
 
 		if (!jacocoXmlFile.exists()) {
@@ -89,14 +88,14 @@ public class TestSuiteParser {
 				if ("LINE".equals(type)) {
 					double total = missed + covered;
 					double coveragePercent = total > 0 ? (covered * 100.0 / total) : 0.0;
-					metrics.add(new NormalizedMetric("code_coverage_lines", coveragePercent,
-							"%", variant, runNumber, "test_suite", "test_suite"));
-				} else if ("BRANCH".equals(type)) {
+					metrics.add(new NormalizedMetric("code_coverage_lines", coveragePercent, "%", variant, runNumber,
+							"test_suite", "test_suite"));
+				}
+				else if ("BRANCH".equals(type)) {
 					double total = missed + covered;
 					double coveragePercent = total > 0 ? (covered * 100.0 / total) : 0.0;
-					metrics.add(new NormalizedMetric("code_coverage_branches",
-							coveragePercent, "%", variant, runNumber, "test_suite",
-							"test_suite"));
+					metrics.add(new NormalizedMetric("code_coverage_branches", coveragePercent, "%", variant, runNumber,
+							"test_suite", "test_suite"));
 				}
 			}
 		}

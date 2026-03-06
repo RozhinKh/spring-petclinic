@@ -19,22 +19,18 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.springframework.boot.actuate.metrics.web.servlet.WebMvcTagsContributor;
 import org.springframework.stereotype.Component;
-import org.springframework.web.servlet.HandlerMapping;
+import org.springframework.web.servlet.HandlerInterceptor;
 
-import io.micrometer.common.KeyValues;
-import io.micrometer.common.tags.Tag;
-import io.micrometer.common.tags.Tags;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Custom HTTP metrics listener for tracking request/response metrics.
- * Captures request count, response times, and error counts by status code.
+ * Custom HTTP metrics listener for tracking request/response metrics. Captures request
+ * count, response times, and error counts by status code.
  */
 @Component
-public class HttpMetricsListener implements WebMvcTagsContributor {
+public class HttpMetricsListener implements HandlerInterceptor {
 
 	// Metrics storage
 	private final AtomicLong totalRequests = new AtomicLong(0);
@@ -43,48 +39,15 @@ public class HttpMetricsListener implements WebMvcTagsContributor {
 
 	private final AtomicLong totalErrors = new AtomicLong(0);
 
-	/**
-	 * Get all contributed tags for a request/response
-	 */
 	@Override
-	public KeyValues getTags(HttpServletRequest request, HttpServletResponse response,
-			Object handler, Throwable ex) {
-		// Increment request counter
+	public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler,
+			Exception ex) {
 		totalRequests.incrementAndGet();
-
-		// Track errors by status code
 		int status = response.getStatus();
 		if (status >= 400) {
 			totalErrors.incrementAndGet();
-			errorCountByStatus.computeIfAbsent(status, k -> new AtomicLong(0))
-					.incrementAndGet();
+			errorCountByStatus.computeIfAbsent(status, k -> new AtomicLong(0)).incrementAndGet();
 		}
-
-		// Return custom tags
-		return KeyValues.of(
-				Tag.of("handler.type", getHandlerType(handler)),
-				Tag.of("handler.simple_name", getHandlerSimpleName(handler))
-		);
-	}
-
-	/**
-	 * Get handler type name
-	 */
-	private String getHandlerType(Object handler) {
-		if (handler == null) {
-			return "unknown";
-		}
-		return handler.getClass().getSimpleName();
-	}
-
-	/**
-	 * Get handler simple name
-	 */
-	private String getHandlerSimpleName(Object handler) {
-		if (handler == null) {
-			return "unknown";
-		}
-		return handler.getClass().getName();
 	}
 
 	/**

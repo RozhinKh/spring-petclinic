@@ -6,22 +6,18 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Generates side-by-side comparison tables for metrics across variants.
- * Format: Metric | Unit | Java 17 | Java 21 Trad | Java 21 Virtual |
- * Delta 17→21T (%) | Delta 17→21V (%)
+ * Generates side-by-side comparison tables for metrics across variants. Format: Metric |
+ * Unit | Java 17 | Java 21 Trad | Java 21 Virtual | Delta 17→21T (%) | Delta 17→21V (%)
  */
 public class ComparisonTableGenerator {
 
 	/**
 	 * Generates comparison tables for all metrics organized by category
 	 */
-	public Map<String, List<MetricComparison>> generateComparisonsByCategory(
-			List<AggregatedMetric> aggregatedMetrics) {
+	public Map<String, List<MetricComparison>> generateComparisonsByCategory(List<AggregatedMetric> aggregatedMetrics) {
 		return aggregatedMetrics.stream()
-				.collect(Collectors.groupingBy(AggregatedMetric::getCategory,
-						Collectors.collectingAndThen(
-								Collectors.toList(),
-								metrics -> buildComparisonList(metrics))));
+			.collect(Collectors.groupingBy(AggregatedMetric::getCategory,
+					Collectors.collectingAndThen(Collectors.toList(), metrics -> buildComparisonList(metrics))));
 	}
 
 	/**
@@ -32,7 +28,7 @@ public class ComparisonTableGenerator {
 
 		// Group by metric name
 		Map<String, List<AggregatedMetric>> byMetricName = metrics.stream()
-				.collect(Collectors.groupingBy(AggregatedMetric::getMetricName));
+			.collect(Collectors.groupingBy(AggregatedMetric::getMetricName));
 
 		for (Map.Entry<String, List<AggregatedMetric>> entry : byMetricName.entrySet()) {
 			MetricComparison comparison = buildSingleComparison(entry.getValue());
@@ -53,12 +49,11 @@ public class ComparisonTableGenerator {
 		}
 
 		AggregatedMetric first = variantMetrics.get(0);
-		MetricComparison comparison = new MetricComparison(first.getMetricName(),
-				first.getUnit(), first.getCategory());
+		MetricComparison comparison = new MetricComparison(first.getMetricName(), first.getUnit(), first.getCategory());
 
 		// Extract metrics by variant
 		Map<String, AggregatedMetric> byVariant = variantMetrics.stream()
-				.collect(Collectors.toMap(AggregatedMetric::getVariant, m -> m));
+			.collect(Collectors.toMap(AggregatedMetric::getVariant, m -> m));
 
 		// Build values with variance in parentheses
 		AggregatedMetric java17 = byVariant.get("Java 17");
@@ -66,7 +61,8 @@ public class ComparisonTableGenerator {
 			comparison.setJava17Value(formatMetricValue(java17));
 			comparison.setJava17Numeric(java17.getAverage());
 			comparison.setJava17StdDev(java17.getStdDev());
-		} else {
+		}
+		else {
 			comparison.setJava17Value("Not Captured");
 			comparison.setJava17Numeric(null);
 		}
@@ -76,7 +72,8 @@ public class ComparisonTableGenerator {
 			comparison.setJava21TradValue(formatMetricValue(java21Trad));
 			comparison.setJava21TradNumeric(java21Trad.getAverage());
 			comparison.setJava21TradStdDev(java21Trad.getStdDev());
-		} else {
+		}
+		else {
 			comparison.setJava21TradValue("Not Captured");
 			comparison.setJava21TradNumeric(null);
 		}
@@ -86,28 +83,29 @@ public class ComparisonTableGenerator {
 			comparison.setJava21VirtualValue(formatMetricValue(java21Virtual));
 			comparison.setJava21VirtualNumeric(java21Virtual.getAverage());
 			comparison.setJava21VirtualStdDev(java21Virtual.getStdDev());
-		} else {
+		}
+		else {
 			comparison.setJava21VirtualValue("Not Captured");
 			comparison.setJava21VirtualNumeric(null);
 		}
 
 		// Calculate deltas
 		if (comparison.getJava17Numeric() != null && comparison.getJava21TradNumeric() != null) {
-			comparison.setDelta17To21Trad(calculateDeltaPercentage(
-					comparison.getJava17Numeric(), comparison.getJava21TradNumeric()));
+			comparison.setDelta17To21Trad(
+					calculateDeltaPercentage(comparison.getJava17Numeric(), comparison.getJava21TradNumeric()));
 		}
 
 		if (comparison.getJava17Numeric() != null && comparison.getJava21VirtualNumeric() != null) {
-			comparison.setDelta17To21Virtual(calculateDeltaPercentage(
-					comparison.getJava17Numeric(), comparison.getJava21VirtualNumeric()));
+			comparison.setDelta17To21Virtual(
+					calculateDeltaPercentage(comparison.getJava17Numeric(), comparison.getJava21VirtualNumeric()));
 		}
 
 		return comparison;
 	}
 
 	/**
-	 * Formats a metric value with variance in parentheses
-	 * Format: "12.5 (±0.3)" or "Not Captured"
+	 * Formats a metric value with variance in parentheses Format: "12.5 (±0.3)" or "Not
+	 * Captured"
 	 */
 	private String formatMetricValue(AggregatedMetric metric) {
 		if (metric.getAverage() == null || Double.isNaN(metric.getAverage())) {
@@ -125,10 +123,9 @@ public class ComparisonTableGenerator {
 	}
 
 	/**
-	 * Calculates percentage delta between two values
-	 * Formula: ((new - old) / old) * 100
-	 * Negative values indicate improvement (for latency, lower is better)
-	 * Positive values indicate improvement (for throughput, higher is better)
+	 * Calculates percentage delta between two values Formula: ((new - old) / old) * 100
+	 * Negative values indicate improvement (for latency, lower is better) Positive values
+	 * indicate improvement (for throughput, higher is better)
 	 */
 	private Double calculateDeltaPercentage(Double baseline, Double current) {
 		if (baseline == null || baseline == 0.0) {
@@ -162,21 +159,20 @@ public class ComparisonTableGenerator {
 
 		for (Map.Entry<String, List<MetricComparison>> categoryEntry : comparisons.entrySet()) {
 			sb.append("\n=== ").append(categoryEntry.getKey().toUpperCase()).append(" ===\n");
-			sb.append(String.format("%-40s | %-10s | %-20s | %-20s | %-20s | %-15s | %-15s\n",
-					"Metric", "Unit", "Java 17", "Java 21 Trad", "Java 21 Virtual",
-					"Delta 17→21T", "Delta 17→21V"));
-			sb.append(String.join("", java.util.Collections.nCopies(
-					40 + 10 + 20 + 20 + 20 + 15 + 15 + 30, "-"))).append("\n");
+			sb.append(String.format("%-40s | %-10s | %-20s | %-20s | %-20s | %-15s | %-15s\n", "Metric", "Unit",
+					"Java 17", "Java 21 Trad", "Java 21 Virtual", "Delta 17→21T", "Delta 17→21V"));
+			sb.append(String.join("", java.util.Collections.nCopies(40 + 10 + 20 + 20 + 20 + 15 + 15 + 30, "-")))
+				.append("\n");
 
 			for (MetricComparison comparison : categoryEntry.getValue()) {
 				sb.append(String.format("%-40s | %-10s | %-20s | %-20s | %-20s | %-15s | %-15s\n",
-						comparison.getMetricName(),
-						comparison.getUnit(),
+						comparison.getMetricName(), comparison.getUnit(),
 						comparison.getJava17Value() != null ? comparison.getJava17Value() : "N/A",
 						comparison.getJava21TradValue() != null ? comparison.getJava21TradValue() : "N/A",
 						comparison.getJava21VirtualValue() != null ? comparison.getJava21VirtualValue() : "N/A",
 						comparison.getDelta17To21Trad() != null ? formatDelta(comparison.getDelta17To21Trad()) : "N/A",
-						comparison.getDelta17To21Virtual() != null ? formatDelta(comparison.getDelta17To21Virtual()) : "N/A"));
+						comparison.getDelta17To21Virtual() != null ? formatDelta(comparison.getDelta17To21Virtual())
+								: "N/A"));
 			}
 		}
 

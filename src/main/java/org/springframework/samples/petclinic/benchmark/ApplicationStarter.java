@@ -34,17 +34,27 @@ import java.util.concurrent.TimeUnit;
 public class ApplicationStarter {
 
 	private final String variant;
+
 	private final String port;
+
 	private final String profile;
+
 	private final String jvmOptions;
+
 	private final long healthCheckTimeoutSeconds;
+
 	private final long startupTimeoutSeconds;
+
 	private final long warmupSeconds;
+
 	private final int warmupRequests;
+
 	private final String baseUrl;
 
 	private Process applicationProcess;
+
 	private long startupTime;
+
 	private long startupTimestamp;
 
 	public ApplicationStarter(String variant, String port, String profile, String jvmOptions,
@@ -161,15 +171,16 @@ public class ApplicationStarter {
 					System.out.println("✓ Health check passed");
 					return;
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				// Ignore - application not ready yet
 			}
 
 			Thread.sleep(500);
 		}
 
-		throw new RuntimeException(
-				"Application failed to start within " + healthCheckTimeoutSeconds + " seconds (variant: " + variant + ")");
+		throw new RuntimeException("Application failed to start within " + healthCheckTimeoutSeconds
+				+ " seconds (variant: " + variant + ")");
 	}
 
 	/**
@@ -204,7 +215,8 @@ public class ApplicationStarter {
 						break;
 					}
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				System.err.println("Warm-up request failed: " + e.getMessage());
 			}
 
@@ -223,8 +235,7 @@ public class ApplicationStarter {
 
 			try {
 				// Try graceful shutdown first
-				HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "/actuator/shutdown")
-						.openConnection();
+				HttpURLConnection conn = (HttpURLConnection) new URL(baseUrl + "/actuator/shutdown").openConnection();
 				conn.setConnectTimeout(5000);
 				conn.setRequestMethod("POST");
 				conn.getResponseCode();
@@ -235,7 +246,8 @@ public class ApplicationStarter {
 					System.out.println("✓ Application shutdown cleanly");
 					return;
 				}
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				// Graceful shutdown failed, force kill
 			}
 
@@ -255,7 +267,8 @@ public class ApplicationStarter {
 			conn.setReadTimeout(2000);
 			conn.setRequestMethod("GET");
 			return conn.getResponseCode() == 200;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			return false;
 		}
 	}

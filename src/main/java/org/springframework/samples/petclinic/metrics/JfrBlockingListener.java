@@ -27,9 +27,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JFR event listener for capturing blocking events during benchmark execution.
- * Captures MONITOR_ENTER, MONITOR_WAIT, and THREAD_PARK events.
- * Correlates events with benchmark timestamps for analysis.
+ * JFR event listener for capturing blocking events during benchmark execution. Captures
+ * MONITOR_ENTER, MONITOR_WAIT, and THREAD_PARK events. Correlates events with benchmark
+ * timestamps for analysis.
  */
 public class JfrBlockingListener {
 
@@ -69,8 +69,7 @@ public class JfrBlockingListener {
 	public void stop() {
 		isCollecting = false;
 		benchmarkEndTime = System.currentTimeMillis();
-		logger.info("Stopped JFR blocking event listener. Captured {} blocking events",
-				blockingEvents.size());
+		logger.info("Stopped JFR blocking event listener. Captured {} blocking events", blockingEvents.size());
 	}
 
 	/**
@@ -126,8 +125,8 @@ public class JfrBlockingListener {
 			}
 
 			blockingEvents.add(blockingEvent);
-			logger.debug("Captured MONITOR_ENTER event: class={}, duration={}ms",
-					blockingEvent.getLockClass(), blockingEvent.getDuration());
+			logger.debug("Captured MONITOR_ENTER event: class={}, duration={}ms", blockingEvent.getLockClass(),
+					blockingEvent.getDuration());
 		}
 		catch (Exception e) {
 			logger.warn("Error processing monitor event: {}", e.getMessage());
@@ -164,8 +163,8 @@ public class JfrBlockingListener {
 			}
 
 			blockingEvents.add(blockingEvent);
-			logger.debug("Captured MONITOR_WAIT event: class={}, duration={}ms",
-					blockingEvent.getLockClass(), blockingEvent.getDuration());
+			logger.debug("Captured MONITOR_WAIT event: class={}, duration={}ms", blockingEvent.getLockClass(),
+					blockingEvent.getDuration());
 		}
 		catch (Exception e) {
 			logger.warn("Error processing monitor wait event: {}", e.getMessage());
@@ -259,8 +258,7 @@ public class JfrBlockingListener {
 		Map<String, Integer> classCounts = new HashMap<>();
 		for (BlockingEvent event : blockingEvents) {
 			if (event.getClassName() != null) {
-				classCounts.put(event.getClassName(),
-						classCounts.getOrDefault(event.getClassName(), 0) + 1);
+				classCounts.put(event.getClassName(), classCounts.getOrDefault(event.getClassName(), 0) + 1);
 			}
 		}
 		summary.put("affected_classes", classCounts);
@@ -276,6 +274,10 @@ public class JfrBlockingListener {
 		isCollecting = false;
 		benchmarkStartTime = System.currentTimeMillis();
 		benchmarkEndTime = -1;
+	}
+
+	public boolean isCollecting() {
+		return isCollecting;
 	}
 
 	/**

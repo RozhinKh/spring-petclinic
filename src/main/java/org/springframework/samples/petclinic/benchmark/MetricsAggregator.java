@@ -28,14 +28,15 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Aggregates metrics from multiple sources (JMH, Test Suite, JaCoCo, JFR)
- * into a unified JSON report for comparison and analysis.
+ * Aggregates metrics from multiple sources (JMH, Test Suite, JaCoCo, JFR) into a unified
+ * JSON report for comparison and analysis.
  */
 public class MetricsAggregator {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
+
 	private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-			.withZone(ZoneId.of("UTC"));
+		.withZone(ZoneId.of("UTC"));
 
 	/**
 	 * Main entry point to aggregate all available metrics.
@@ -64,7 +65,8 @@ public class MetricsAggregator {
 		try {
 			ConsolidatedMetricsBuilder builder = new ConsolidatedMetricsBuilder(benchmarkPath, testPath, outputDir);
 			builder.buildConsolidatedMetrics();
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("ERROR: Failed to build consolidated metrics: " + e.getMessage());
 			e.printStackTrace();
 
@@ -86,7 +88,8 @@ public class MetricsAggregator {
 		if (benchmarkResults != null) {
 			consolidated.set("benchmark_results", benchmarkResults);
 			System.out.println("✓ Loaded benchmark results");
-		} else {
+		}
+		else {
 			System.out.println("! Benchmark results not found");
 		}
 
@@ -95,7 +98,8 @@ public class MetricsAggregator {
 		if (testResults != null) {
 			consolidated.set("test_results", testResults);
 			System.out.println("✓ Loaded test results");
-		} else {
+		}
+		else {
 			System.out.println("! Test results not found");
 		}
 
@@ -117,7 +121,8 @@ public class MetricsAggregator {
 		try {
 			String content = new String(Files.readAllBytes(Paths.get(filePath)));
 			return (ObjectNode) mapper.readTree(content);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Failed to load " + filePath + ": " + e.getMessage());
 			return null;
 		}

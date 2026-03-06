@@ -18,12 +18,12 @@ package org.springframework.samples.petclinic.owner;
 import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.model.BaseEntity;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -35,28 +35,60 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Entity
 @Table(name = "visits")
-public record Visit(
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
-	@Column(name = "visit_date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-	@NotBlank String description
-) {
+@Access(AccessType.FIELD)
+public class Visit extends BaseEntity {
 
-	/**
-	 * Creates a new instance of Visit for the current date
-	 */
+	@Column(name = "visit_date")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate date;
+
+	@NotBlank
+	private String description;
+
+	public Visit() {
+		this.date = LocalDate.now();
+	}
+
 	public Visit(Integer id, String description) {
-		this(id, LocalDate.now(), description);
+		setId(id);
+		this.date = LocalDate.now();
+		this.description = description;
 	}
 
 	public Visit(String description) {
-		this(null, LocalDate.now(), description);
+		this.date = LocalDate.now();
+		this.description = description;
 	}
 
-	public Visit() {
-		this(null, LocalDate.now(), null);
+	/** Record-style accessor. */
+	public Integer id() {
+		return getId();
 	}
 
-	public boolean isNew() {
-		return this.id == null;
+	/** Record-style accessor. */
+	public LocalDate date() {
+		return date;
 	}
+
+	/** Record-style accessor. */
+	public String description() {
+		return description;
+	}
+
+	public LocalDate getDate() {
+		return date;
+	}
+
+	public void setDate(LocalDate date) {
+		this.date = date;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 }

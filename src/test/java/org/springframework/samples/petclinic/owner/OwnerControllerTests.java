@@ -69,21 +69,10 @@ class OwnerControllerTests {
 	private OwnerRepository owners;
 
 	private Owner george() {
-		Owner george = new Owner();
-		george.setId(TEST_OWNER_ID);
-		george.setFirstName("George");
-		george.setLastName("Franklin");
-		george.setAddress("110 W. Liberty St.");
-		george.setCity("Madison");
-		george.setTelephone("6085551023");
-		Pet max = new Pet();
-		PetType dog = new PetType();
-		dog.setName("dog");
-		max.setType(dog);
-		max.setName("Max");
-		max.setBirthDate(LocalDate.now());
+		PetType dog = new PetType(null, "dog");
+		Pet max = new Pet("Max", LocalDate.now(), dog);
+		Owner george = new Owner(TEST_OWNER_ID, "George", "Franklin", "110 W. Liberty St.", "Madison", "6085551023");
 		george.addPet(max);
-		max.setId(1);
 		return george;
 	}
 
@@ -96,8 +85,7 @@ class OwnerControllerTests {
 
 		given(this.owners.findById(TEST_OWNER_ID)).willReturn(Optional.of(george));
 		Visit visit = new Visit();
-		visit.setDate(LocalDate.now());
-		george.getPet("Max").getVisits().add(visit);
+		george.getPet("Max").visits().add(visit);
 
 	}
 
@@ -232,13 +220,7 @@ class OwnerControllerTests {
 	public void testProcessUpdateOwnerFormWithIdMismatch() throws Exception {
 		int pathOwnerId = 1;
 
-		Owner owner = new Owner();
-		owner.setId(2);
-		owner.setFirstName("John");
-		owner.setLastName("Doe");
-		owner.setAddress("Center Street");
-		owner.setCity("New York");
-		owner.setTelephone("0123456789");
+		Owner owner = new Owner(2, "John", "Doe", "Center Street", "New York", "0123456789");
 
 		when(owners.findById(pathOwnerId)).thenReturn(Optional.of(owner));
 

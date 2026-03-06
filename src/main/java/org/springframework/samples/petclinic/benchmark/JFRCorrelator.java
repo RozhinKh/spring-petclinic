@@ -29,30 +29,34 @@ import static org.springframework.samples.petclinic.benchmark.BenchmarkRunner.ge
 
 /**
  * Correlates Java Flight Recorder (JFR) events with JMH benchmark execution windows.
- * Identifies and analyzes relationships between low-level runtime events (GC, threads, blocking)
- * and high-level performance measurements (latency, throughput).
+ * Identifies and analyzes relationships between low-level runtime events (GC, threads,
+ * blocking) and high-level performance measurements (latency, throughput).
  */
 public class JFRCorrelator {
 
 	private final JsonNode jfrMetrics;
+
 	private final JsonNode jmhMetrics;
+
 	private final long benchmarkStartTimeMs;
+
 	private final long benchmarkDurationMs;
+
 	private final long jfrRecordingStartTimeMs;
+
 	private final long jfrRecordingEndTimeMs;
 
 	/**
 	 * Create a correlator for analyzing relationship between JFR and JMH results.
-	 *
-	 * @param jfrMetrics           Parsed JFR metrics from JFREventParser
-	 * @param jmhMetrics           JMH benchmark results
+	 * @param jfrMetrics Parsed JFR metrics from JFREventParser
+	 * @param jmhMetrics JMH benchmark results
 	 * @param benchmarkStartTimeMs Start time of benchmark execution
-	 * @param benchmarkDurationMs  Duration of benchmark execution
-	 * @param jfrStartTimeMs       Start time of JFR recording
-	 * @param jfrEndTimeMs         End time of JFR recording
+	 * @param benchmarkDurationMs Duration of benchmark execution
+	 * @param jfrStartTimeMs Start time of JFR recording
+	 * @param jfrEndTimeMs End time of JFR recording
 	 */
-	public JFRCorrelator(JsonNode jfrMetrics, JsonNode jmhMetrics, long benchmarkStartTimeMs,
-						long benchmarkDurationMs, long jfrStartTimeMs, long jfrEndTimeMs) {
+	public JFRCorrelator(JsonNode jfrMetrics, JsonNode jmhMetrics, long benchmarkStartTimeMs, long benchmarkDurationMs,
+			long jfrStartTimeMs, long jfrEndTimeMs) {
 		this.jfrMetrics = jfrMetrics;
 		this.jmhMetrics = jmhMetrics;
 		this.benchmarkStartTimeMs = benchmarkStartTimeMs;
@@ -63,7 +67,6 @@ public class JFRCorrelator {
 
 	/**
 	 * Perform correlation analysis between JFR events and JMH benchmarks.
-	 *
 	 * @return ObjectNode containing correlation analysis results
 	 */
 	public ObjectNode correlate() {
@@ -147,7 +150,8 @@ public class JFRCorrelator {
 				long pauseTimeMs = pauseTimeNanos / 1_000_000;
 
 				// Check if pause occurred during benchmark window
-				if (pauseTimeMs >= benchmarkStartTimeMs && pauseTimeMs <= (benchmarkStartTimeMs + benchmarkDurationMs)) {
+				if (pauseTimeMs >= benchmarkStartTimeMs
+						&& pauseTimeMs <= (benchmarkStartTimeMs + benchmarkDurationMs)) {
 					gcCountDuringBenchmark++;
 					totalGcDuringBenchmark += pauseNode.get("duration_ms").asLong();
 
@@ -163,7 +167,7 @@ public class JFRCorrelator {
 			gcCorrelation.put("gc_pauses_during_benchmark", gcCountDuringBenchmark);
 			gcCorrelation.put("total_gc_time_during_benchmark_ms", totalGcDuringBenchmark);
 			gcCorrelation.put("avg_gc_pause_during_benchmark_ms",
-				gcCountDuringBenchmark > 0 ? totalGcDuringBenchmark / (double) gcCountDuringBenchmark : 0);
+					gcCountDuringBenchmark > 0 ? totalGcDuringBenchmark / (double) gcCountDuringBenchmark : 0);
 
 			// Calculate GC frequency (pauses per second during benchmark)
 			double gcFrequencyPerSec = (gcCountDuringBenchmark * 1000.0) / benchmarkDurationMs;
@@ -181,15 +185,18 @@ public class JFRCorrelator {
 			if (gcCountDuringBenchmark > 0) {
 				if (gcFrequencyPerSec > 5) {
 					gcImpactLevel = "high";
-				} else if (gcFrequencyPerSec > 2) {
+				}
+				else if (gcFrequencyPerSec > 2) {
 					gcImpactLevel = "moderate";
-				} else {
+				}
+				else {
 					gcImpactLevel = "low";
 				}
 			}
 			gcCorrelation.put("estimated_gc_impact_level", gcImpactLevel);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Error analyzing GC-latency correlation: " + e.getMessage());
 		}
 
@@ -222,12 +229,14 @@ public class JFRCorrelator {
 			String threadSaturation = "low";
 			if (netThreadCreation > 100) {
 				threadSaturation = "high";
-			} else if (netThreadCreation > 50) {
+			}
+			else if (netThreadCreation > 50) {
 				threadSaturation = "moderate";
 			}
 			threadCorrelation.put("estimated_thread_pool_saturation", threadSaturation);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Error analyzing thread correlation: " + e.getMessage());
 		}
 
@@ -270,12 +279,14 @@ public class JFRCorrelator {
 			String memoryPressure = "low";
 			if (outsideTlabRatio > 0.3) {
 				memoryPressure = "high";
-			} else if (outsideTlabRatio > 0.1) {
+			}
+			else if (outsideTlabRatio > 0.1) {
 				memoryPressure = "moderate";
 			}
 			memoryCorrelation.put("estimated_memory_pressure", memoryPressure);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Error analyzing memory pressure: " + e.getMessage());
 		}
 
@@ -310,14 +321,17 @@ public class JFRCorrelator {
 			String contentionLevel = "none";
 			if (blockingFrequencyPerSec > 100) {
 				contentionLevel = "high";
-			} else if (blockingFrequencyPerSec > 10) {
+			}
+			else if (blockingFrequencyPerSec > 10) {
 				contentionLevel = "moderate";
-			} else if (monitorWaitCount > 0) {
+			}
+			else if (monitorWaitCount > 0) {
 				contentionLevel = "low";
 			}
 			blockingCorrelation.put("estimated_contention_level", contentionLevel);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Error analyzing blocking impact: " + e.getMessage());
 		}
 
@@ -368,14 +382,17 @@ public class JFRCorrelator {
 			String overallAssessment;
 			if (bottlenecks.isEmpty()) {
 				overallAssessment = "No significant bottlenecks detected";
-			} else if (bottlenecks.size() == 1) {
+			}
+			else if (bottlenecks.size() == 1) {
 				overallAssessment = "One potential bottleneck: " + bottlenecks.get(0);
-			} else {
+			}
+			else {
 				overallAssessment = "Multiple bottlenecks detected (" + bottlenecks.size() + ")";
 			}
 			summary.put("overall_assessment", overallAssessment);
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Error generating correlation summary: " + e.getMessage());
 		}
 

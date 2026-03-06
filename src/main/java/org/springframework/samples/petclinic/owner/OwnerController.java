@@ -63,12 +63,15 @@ class OwnerController {
 
 	@ModelAttribute("owner")
 	public Owner findOwner(@PathVariable(name = "ownerId", required = false) Integer ownerId) {
-		return ownerId == null ? new Owner()
-				: // VIRTUALIZATION POINT (1/21): I/O-bound JPA operation - findById
-					// File: OwnerController.java, Line: 67
-					// Type: Database query (single entity fetch)
-					// Can be executed via virtual thread executor for better concurrency
-					// When java21-virtual profile is active, this is virtualized
+		return ownerId == null ? new Owner() : // VIRTUALIZATION POINT (1/21): I/O-bound
+												// JPA operation - findById
+												// File: OwnerController.java, Line: 67
+												// Type: Database query (single entity
+												// fetch)
+												// Can be executed via virtual thread
+												// executor for better concurrency
+												// When java21-virtual profile is active,
+												// this is virtualized
 				this.owners.findById(ownerId)
 					.orElseThrow(() -> new IllegalArgumentException("Owner not found with id: " + ownerId
 							+ ". Please ensure the ID is correct " + "and the owner exists in the database."));
@@ -90,7 +93,8 @@ class OwnerController {
 		// File: OwnerController.java, Line: 84
 		// Type: Database mutation (entity persist + transaction commit)
 		// Involves: SQL INSERT, constraint validation, transaction overhead
-		// Virtual thread benefit: Allows other requests to use platform threads while this I/O completes
+		// Virtual thread benefit: Allows other requests to use platform threads while
+		// this I/O completes
 		this.owners.save(owner);
 		redirectAttributes.addFlashAttribute("message", "New Owner Created");
 		return "redirect:/owners/" + owner.id();
@@ -109,24 +113,23 @@ class OwnerController {
 
 		// find owners by last name
 		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, lastName);
-		
-		// Pattern matching switch expression to handle different page result states
-		return switch (ownersResults.getTotalElements()) {
-			case 0 -> {
-				// no owners found
-				result.rejectValue("lastName", "notFound", "not found");
-				yield "owners/findOwners";
-			}
-			case 1 -> {
-				// 1 owner found - redirect to details
-				Owner foundOwner = ownersResults.iterator().next();
-				yield "redirect:/owners/" + foundOwner.id();
-			}
-			default -> {
-				// multiple owners found
-				yield addPaginationModel(page, model, ownersResults);
-			}
-		};
+
+		// Handle different page result states (Java 17 compatible)
+		long totalElements = ownersResults.getTotalElements();
+		if (totalElements == 0) {
+			// no owners found
+			result.rejectValue("lastName", "notFound", "not found");
+			return "owners/findOwners";
+		}
+		else if (totalElements == 1) {
+			// 1 owner found - redirect to details
+			Owner foundOwner = ownersResults.iterator().next();
+			return "redirect:/owners/" + foundOwner.id();
+		}
+		else {
+			// multiple owners found
+			return addPaginationModel(page, model, ownersResults);
+		}
 	}
 
 	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
@@ -141,7 +144,8 @@ class OwnerController {
 	private Page<Owner> findPaginatedForOwnersLastName(int page, String lastname) {
 		int pageSize = 5;
 		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		// VIRTUALIZATION POINT (3/21): I/O-bound JPA operation - findByLastNameStartingWith
+		// VIRTUALIZATION POINT (3/21): I/O-bound JPA operation -
+		// findByLastNameStartingWith
 		// File: OwnerController.java, Line: 134
 		// Type: Database query (list fetch with pagination)
 		// Involves: SQL LIKE query, result set mapping, pagination overhead
@@ -169,7 +173,8 @@ class OwnerController {
 			return "redirect:/owners/{ownerId}/edit";
 		}
 
-		Owner updatedOwner = new Owner(ownerId, owner.firstName(), owner.lastName(), owner.address(), owner.city(), owner.telephone(), owner.pets());
+		Owner updatedOwner = new Owner(ownerId, owner.firstName(), owner.lastName(), owner.address(), owner.city(),
+				owner.telephone(), owner.pets());
 		// VIRTUALIZATION POINT (4/21): I/O-bound JPA operation - save (update)
 		// File: OwnerController.java, Line: 158
 		// Type: Database mutation (entity merge + transaction commit)
@@ -194,14 +199,12 @@ class OwnerController {
 		// Involves: SQL SELECT, lazy loading of pets and visits collections
 		// Virtual thread benefit: Lightweight handling of potential N+1 query overhead
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
-		
+
 		// Pattern matching with Optional using switch expression
-		optionalOwner.ifPresentOrElse(
-			owner -> mav.addObject(owner),
-			() -> {
-				throw new IllegalArgumentException("Owner not found with id: " + ownerId + ". Please ensure the ID is correct ");
-			}
-		);
+		optionalOwner.ifPresentOrElse(owner -> mav.addObject(owner), () -> {
+			throw new IllegalArgumentException(
+					"Owner not found with id: " + ownerId + ". Please ensure the ID is correct ");
+		});
 		return mav;
 	}
 

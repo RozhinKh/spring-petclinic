@@ -1,0 +1,53 @@
+
+
+              |\      _,,,--,,_
+             /,`.-'`'   ._  \-;;,_
+  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+ |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+ |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+ |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+ |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+ |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+ |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+ ==================================================================/_/_/_/
+
+:: Built with Spring Boot :: 4.0.1
+
+
+2026-03-06T11:58:08.394+03:30  INFO 17808 --- [           main] o.s.s.petclinic.PetClinicApplication     : Starting PetClinicApplication v4.0.0-SNAPSHOT using Java 17.0.18 with PID 17808 (C:\Users\BiaDigi\Desktop\Spring Pet Clinic\target\spring-petclinic-4.0.0-SNAPSHOT.jar started by BiaDigi in C:\Users\BiaDigi\Desktop\Spring Pet Clinic)
+2026-03-06T11:58:08.403+03:30  INFO 17808 --- [           main] o.s.s.petclinic.PetClinicApplication     : No active profile set, falling back to 1 default profile: "default"
+2026-03-06T11:58:10.138+03:30  INFO 17808 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-03-06T11:58:10.203+03:30  INFO 17808 --- [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 57 ms. Found 3 JPA repository interfaces.
+2026-03-06T11:58:11.937+03:30  INFO 17808 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8080 (http)
+2026-03-06T11:58:11.991+03:30  INFO 17808 --- [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-03-06T11:58:11.992+03:30  INFO 17808 --- [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.15]
+2026-03-06T11:58:12.058+03:30  INFO 17808 --- [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3558 ms
+2026-03-06T11:58:12.540+03:30  INFO 17808 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-03-06T11:58:12.941+03:30  INFO 17808 --- [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:2a6fc48a-44c9-4499-bfc0-385e10ea739d user=SA
+2026-03-06T11:58:12.944+03:30  INFO 17808 --- [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-03-06T11:58:13.268+03:30  INFO 17808 --- [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-03-06T11:58:13.561+03:30  INFO 17808 --- [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.0.Final
+2026-03-06T11:58:14.048+03:30  INFO 17808 --- [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-03-06T11:58:14.096+03:30  INFO 17808 --- [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:2a6fc48a-44c9-4499-bfc0-385e10ea739d]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.4.240
+	Default catalog/schema: 2A6FC48A-44C9-4499-BFC0-385E10EA739D/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-03-06T11:58:14.678+03:30  INFO 17808 --- [           main] org.hibernate.orm.core                   : HHH000182: No default (no-argument) constructor for class [org.springframework.samples.petclinic.owner.PetType] (class must be instantiated by Interceptor)
+2026-03-06T11:58:14.680+03:30  INFO 17808 --- [           main] org.hibernate.orm.core                   : HHH000182: No default (no-argument) constructor for class [org.springframework.samples.petclinic.vet.Specialty] (class must be instantiated by Interceptor)
+2026-03-06T11:58:14.855+03:30  INFO 17808 --- [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-03-06T11:58:14.865+03:30  INFO 17808 --- [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-03-06T11:58:15.094+03:30  INFO 17808 --- [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-03-06T11:58:17.265+03:30  INFO 17808 --- [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 13 endpoints beneath base path '/actuator'
+2026-03-06T11:58:17.494+03:30  INFO 17808 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8080 (http) with context path '/'
+2026-03-06T11:58:17.508+03:30  INFO 17808 --- [           main] o.s.s.petclinic.PetClinicApplication     : Started PetClinicApplication in 9.813 seconds (process running for 10.768)
+2026-03-06T11:58:17.670+03:30  INFO 17808 --- [nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-03-06T11:58:17.670+03:30  INFO 17808 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-03-06T11:58:17.672+03:30  INFO 17808 --- [nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms

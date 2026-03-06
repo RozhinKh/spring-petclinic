@@ -34,26 +34,23 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Orchestrates test suite execution across code variants.
- * Runs Maven/Gradle tests, captures JUnit and JaCoCo reports, aggregates metrics.
+ * Orchestrates test suite execution across code variants. Runs Maven/Gradle tests,
+ * captures JUnit and JaCoCo reports, aggregates metrics.
  *
- * Execution flow:
- * 1. For each variant:
- *    - Build variant
- *    - Run `mvn clean verify` with JaCoCo
- *    - Parse test results (JUnit XML)
- *    - Parse coverage results (JaCoCo XML)
- *    - Detect regressions (test failures)
- * 2. Aggregate results into JSON
- * 3. Export for comparison and dashboards
+ * Execution flow: 1. For each variant: - Build variant - Run `mvn clean verify` with
+ * JaCoCo - Parse test results (JUnit XML) - Parse coverage results (JaCoCo XML) - Detect
+ * regressions (test failures) 2. Aggregate results into JSON 3. Export for comparison and
+ * dashboards
  */
 public class TestSuiteRunner {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
+
 	private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
-			.withZone(ZoneId.of("UTC"));
+		.withZone(ZoneId.of("UTC"));
 
 	private final String outputDirectory;
+
 	private final List<TestResult> allResults = new ArrayList<>();
 
 	public TestSuiteRunner(String outputDirectory) {
@@ -84,7 +81,8 @@ public class TestSuiteRunner {
 		for (String variant : variants) {
 			try {
 				buildVariant(variant);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				System.err.println("ERROR: Failed to build variant " + variant + ": " + e.getMessage());
 			}
 		}
@@ -97,7 +95,8 @@ public class TestSuiteRunner {
 				System.out.println("=".repeat(60));
 
 				executeVariantTests(variant);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				System.err.println("ERROR: Failed to execute tests for variant " + variant + ": " + e.getMessage());
 				e.printStackTrace();
 			}
@@ -126,7 +125,8 @@ public class TestSuiteRunner {
 		// Add profile for Java 21 variants
 		if (variant.equals("java21-traditional")) {
 			command.add("-Pjava21-traditional");
-		} else if (variant.equals("java21-virtual")) {
+		}
+		else if (variant.equals("java21-virtual")) {
 			command.add("-Pjava21-virtual");
 		}
 
@@ -169,7 +169,8 @@ public class TestSuiteRunner {
 		// Add profile for Java 21 variants
 		if (variant.equals("java21-traditional")) {
 			command.add("-Pjava21-traditional");
-		} else if (variant.equals("java21-virtual")) {
+		}
+		else if (variant.equals("java21-virtual")) {
 			command.add("-Pjava21-virtual");
 		}
 
@@ -206,7 +207,8 @@ public class TestSuiteRunner {
 
 		try {
 			coverageMetrics = jacocoParser.parseJaCoCoReport(jacocoReportFile);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Failed to parse JaCoCo report: " + e.getMessage());
 			coverageMetrics = mapper.createObjectNode();
 			coverageMetrics.put("line_coverage_percent", 0.0);
@@ -229,8 +231,8 @@ public class TestSuiteRunner {
 		}
 
 		// Store results
-		TestResult result = new TestResult(variant, testStartTimestamp, testMetrics, coverageMetrics,
-				hasRegressions, regressionDetails, testDuration);
+		TestResult result = new TestResult(variant, testStartTimestamp, testMetrics, coverageMetrics, hasRegressions,
+				regressionDetails, testDuration);
 		allResults.add(result);
 
 		System.out.println("✓ Test results parsed for variant: " + variant);
@@ -334,7 +336,8 @@ public class TestSuiteRunner {
 	 */
 	private void exportAsCSV() throws Exception {
 		StringBuilder csv = new StringBuilder();
-		csv.append("Variant,Total Tests,Passed,Failed,Skipped,Pass Rate,Line Coverage,Branch Coverage,Method Coverage,Duration (ms),Has Regressions\n");
+		csv.append(
+				"Variant,Total Tests,Passed,Failed,Skipped,Pass Rate,Line Coverage,Branch Coverage,Method Coverage,Duration (ms),Has Regressions\n");
 
 		for (TestResult result : allResults) {
 			csv.append(result.variant).append(",");
@@ -344,11 +347,11 @@ public class TestSuiteRunner {
 			csv.append(result.testMetrics.get("skipped").asInt()).append(",");
 			csv.append(String.format("%.2f%%", result.testMetrics.get("pass_rate").asDouble())).append(",");
 			csv.append(String.format("%.2f%%", result.coverageMetrics.get("line_coverage_percent").asDouble()))
-					.append(",");
+				.append(",");
 			csv.append(String.format("%.2f%%", result.coverageMetrics.get("branch_coverage_percent").asDouble()))
-					.append(",");
+				.append(",");
 			csv.append(String.format("%.2f%%", result.coverageMetrics.get("method_coverage_percent").asDouble()))
-					.append(",");
+				.append(",");
 			csv.append(result.testDuration).append(",");
 			csv.append(result.hasRegressions ? "YES" : "NO").append("\n");
 		}
@@ -363,12 +366,19 @@ public class TestSuiteRunner {
 	 * Helper class to store test results for a variant.
 	 */
 	private static class TestResult {
+
 		String variant;
+
 		long timestamp;
+
 		ObjectNode testMetrics;
+
 		ObjectNode coverageMetrics;
+
 		boolean hasRegressions;
+
 		List<String> regressionDetails;
+
 		long testDuration;
 
 		TestResult(String variant, long timestamp, ObjectNode testMetrics, ObjectNode coverageMetrics,
@@ -381,6 +391,7 @@ public class TestSuiteRunner {
 			this.regressionDetails = regressionDetails;
 			this.testDuration = testDuration;
 		}
+
 	}
 
 }

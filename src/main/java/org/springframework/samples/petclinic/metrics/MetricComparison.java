@@ -4,33 +4,41 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * Represents a side-by-side comparison of a metric across variants.
- * Format: Metric | Unit | Java 17 | Java 21 Trad | Java 21 Virtual |
- * Delta 17→21T (%) | Delta 17→21V (%)
+ * Represents a side-by-side comparison of a metric across variants. Format: Metric | Unit
+ * | Java 17 | Java 21 Trad | Java 21 Virtual | Delta 17→21T (%) | Delta 17→21V (%)
  */
 public class MetricComparison implements Serializable {
 
 	private String metricName;
+
 	private String unit;
+
 	private String category;
 
 	// Variant values with variance (e.g., "12.5 (±0.3)")
 	private String java17Value; // includes variance
+
 	private String java21TradValue; // includes variance
+
 	private String java21VirtualValue; // includes variance
 
 	// Deltas
 	private Double delta17To21Trad; // percentage change
+
 	private Double delta17To21Virtual; // percentage change
 
 	// Raw numeric values for calculation purposes
 	private Double java17Numeric;
+
 	private Double java21TradNumeric;
+
 	private Double java21VirtualNumeric;
 
 	// Standard deviations
 	private Double java17StdDev;
+
 	private Double java21TradStdDev;
+
 	private Double java21VirtualStdDev;
 
 	public MetricComparison() {
@@ -162,8 +170,8 @@ public class MetricComparison implements Serializable {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		MetricComparison that = (MetricComparison) o;
-		return Objects.equals(metricName, that.metricName)
-				&& Objects.equals(unit, that.unit) && Objects.equals(category, that.category);
+		return Objects.equals(metricName, that.metricName) && Objects.equals(unit, that.unit)
+				&& Objects.equals(category, that.category);
 	}
 
 	@Override
@@ -173,11 +181,10 @@ public class MetricComparison implements Serializable {
 
 	@Override
 	public String toString() {
-		return "MetricComparison{" + "metricName='" + metricName + '\'' + ", unit='" + unit
-				+ '\'' + ", category='" + category + '\'' + ", java17Value='" + java17Value
-				+ '\'' + ", java21TradValue='" + java21TradValue + '\''
-				+ ", java21VirtualValue='" + java21VirtualValue + '\'' + ", delta17To21Trad="
-				+ delta17To21Trad + ", delta17To21Virtual=" + delta17To21Virtual + '}';
+		return "MetricComparison{" + "metricName='" + metricName + '\'' + ", unit='" + unit + '\'' + ", category='"
+				+ category + '\'' + ", java17Value='" + java17Value + '\'' + ", java21TradValue='" + java21TradValue
+				+ '\'' + ", java21VirtualValue='" + java21VirtualValue + '\'' + ", delta17To21Trad=" + delta17To21Trad
+				+ ", delta17To21Virtual=" + delta17To21Virtual + '}';
 	}
 
 }

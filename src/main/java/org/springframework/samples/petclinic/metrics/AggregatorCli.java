@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Command-line interface for metrics aggregation.
- * Example usage:
- * java AggregatorCli /path/to/results java17,java21-trad,java21-virtual run1,run2,run3
+ * Command-line interface for metrics aggregation. Example usage: java AggregatorCli
+ * /path/to/results java17,java21-trad,java21-virtual run1,run2,run3
  */
 public class AggregatorCli {
 
@@ -27,7 +26,8 @@ public class AggregatorCli {
 		for (String r : runStr) {
 			try {
 				runNumbers.add(Integer.parseInt(r.trim()));
-			} catch (NumberFormatException e) {
+			}
+			catch (NumberFormatException e) {
 				System.err.println("Invalid run number: " + r);
 			}
 		}
@@ -57,8 +57,8 @@ public class AggregatorCli {
 				System.out.println("Processing variant: " + variant);
 
 				try {
-					Map<String, List<AggregatedMetric>> variantResults = aggregator
-							.aggregateMultipleRuns(resultsDir, variant, runNumbers);
+					Map<String, List<AggregatedMetric>> variantResults = aggregator.aggregateMultipleRuns(resultsDir,
+							variant, runNumbers);
 
 					// For now, just accumulate the aggregated metrics
 					AggregationResult agg = new AggregationResult();
@@ -70,9 +70,9 @@ public class AggregatorCli {
 					results.add(agg);
 					allAggregatedMetrics.addAll(allMetrics);
 
-					System.out
-							.println("  ✓ Aggregated " + allMetrics.size() + " metrics");
-				} catch (Exception e) {
+					System.out.println("  ✓ Aggregated " + allMetrics.size() + " metrics");
+				}
+				catch (Exception e) {
 					System.err.println("  ✗ Error processing variant: " + e.getMessage());
 				}
 			}
@@ -82,8 +82,7 @@ public class AggregatorCli {
 				System.out.println("Generating comparison tables...");
 
 				// Generate comparisons
-				Map<String, List<MetricComparison>> comparisons = aggregator
-						.generateComparisons(results);
+				Map<String, List<MetricComparison>> comparisons = aggregator.generateComparisons(results);
 
 				// Print formatted output
 				String output = aggregator.generateFormattedComparisons(comparisons);
@@ -106,7 +105,8 @@ public class AggregatorCli {
 			System.out.println();
 			System.out.println("Aggregation completed in " + (endTime - startTime) + "ms");
 
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Error during aggregation: " + e.getMessage());
 			e.printStackTrace();
 			System.exit(1);
@@ -126,8 +126,7 @@ public class AggregatorCli {
 		System.err.println("               Default: <results_dir>/exports");
 		System.err.println();
 		System.err.println("Example:");
-		System.err
-				.println("  AggregatorCli /benchmark/results 'Java 17,Java 21 Trad' 1,2,3 /output/path");
+		System.err.println("  AggregatorCli /benchmark/results 'Java 17,Java 21 Trad' 1,2,3 /output/path");
 	}
 
 }

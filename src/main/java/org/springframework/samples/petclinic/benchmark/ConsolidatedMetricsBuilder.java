@@ -30,26 +30,27 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
- * Consolidates benchmark metrics from three distinct sources (JMH, JFR, test suite)
- * into a unified JSON structure suitable for downstream aggregation and analysis.
- * 
- * Input sources:
- * - benchmark-results.json (JMH with startup, latency, throughput, memory + JFR metrics)
- * - test-results.json (test counts, execution times, JaCoCo coverage)
- * - Correlation analysis between JMH latency and JFR GC events
- * 
- * Output format: Single JSON with variant identifier and separate metric categories
- * with variance/std_dev calculations across multiple runs.
+ * Consolidates benchmark metrics from three distinct sources (JMH, JFR, test suite) into
+ * a unified JSON structure suitable for downstream aggregation and analysis.
+ *
+ * Input sources: - benchmark-results.json (JMH with startup, latency, throughput, memory
+ * + JFR metrics) - test-results.json (test counts, execution times, JaCoCo coverage) -
+ * Correlation analysis between JMH latency and JFR GC events
+ *
+ * Output format: Single JSON with variant identifier and separate metric categories with
+ * variance/std_dev calculations across multiple runs.
  */
 public class ConsolidatedMetricsBuilder {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
-	private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter
-		.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
+
+	private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
 		.withZone(ZoneId.of("UTC"));
 
 	private final String benchmarkResultsPath;
+
 	private final String testResultsPath;
+
 	private final String outputDirectory;
 
 	public ConsolidatedMetricsBuilder(String benchmarkResultsPath, String testResultsPath, String outputDirectory) {
@@ -92,7 +93,8 @@ public class ConsolidatedMetricsBuilder {
 		ObjectNode testResults = loadJsonFile(testResultsPath);
 		if (testResults == null) {
 			System.err.println("WARNING: Test results not found, proceeding with benchmark metrics only");
-		} else {
+		}
+		else {
 			System.out.println("✓ Loaded test suite results");
 		}
 
@@ -129,7 +131,8 @@ public class ConsolidatedMetricsBuilder {
 		ArrayNode consolidatedVariants = mapper.createArrayNode();
 		for (String variantName : variantNames) {
 			ObjectNode benchmarkVariant = findVariantInArray(benchmarkVariants, variantName);
-			ObjectNode testVariant = testResults != null ? findVariantInArray((ArrayNode) testResults.get("variants"), variantName) : null;
+			ObjectNode testVariant = testResults != null
+					? findVariantInArray((ArrayNode) testResults.get("variants"), variantName) : null;
 
 			ObjectNode consolidatedVariant = buildConsolidatedVariant(variantName, benchmarkVariant, testVariant);
 			consolidatedVariants.add(consolidatedVariant);
@@ -147,7 +150,8 @@ public class ConsolidatedMetricsBuilder {
 	/**
 	 * Build consolidated metrics for a single variant.
 	 */
-	private ObjectNode buildConsolidatedVariant(String variantName, ObjectNode benchmarkVariant, ObjectNode testVariant) {
+	private ObjectNode buildConsolidatedVariant(String variantName, ObjectNode benchmarkVariant,
+			ObjectNode testVariant) {
 		ObjectNode variant = mapper.createObjectNode();
 		variant.put("variant", variantName);
 		variant.put("timestamp", ISO_FORMATTER.format(Instant.now()));
@@ -179,13 +183,13 @@ public class ConsolidatedMetricsBuilder {
 
 		if (benchmarkVariant == null) {
 			return populateNotMeasured(jmhMetrics, "startup_cold_ms", "startup_warm_ms", "latency_p50_ms",
-				"latency_p95_ms", "latency_p99_ms", "throughput_ops_sec", "memory_heap_mb");
+					"latency_p95_ms", "latency_p99_ms", "throughput_ops_sec", "memory_heap_mb");
 		}
 
 		ArrayNode benchmarks = (ArrayNode) benchmarkVariant.get("benchmarks");
 		if (benchmarks == null) {
 			return populateNotMeasured(jmhMetrics, "startup_cold_ms", "startup_warm_ms", "latency_p50_ms",
-				"latency_p95_ms", "latency_p99_ms", "throughput_ops_sec", "memory_heap_mb");
+					"latency_p95_ms", "latency_p99_ms", "throughput_ops_sec", "memory_heap_mb");
 		}
 
 		// Extract startup metrics
@@ -214,7 +218,8 @@ public class ConsolidatedMetricsBuilder {
 				double score = benchmark.get("score").asDouble(0);
 				double stdDev = benchmark.has("std_dev") ? benchmark.get("std_dev").asDouble(0) : 0;
 				jmhMetrics.put("startup_cold_ms", formatMetricWithVariance(score, stdDev));
-			} else if (name.contains("warmStartup")) {
+			}
+			else if (name.contains("warmStartup")) {
 				double score = benchmark.get("score").asDouble(0);
 				double stdDev = benchmark.has("std_dev") ? benchmark.get("std_dev").asDouble(0) : 0;
 				jmhMetrics.put("startup_warm_ms", formatMetricWithVariance(score, stdDev));
@@ -239,9 +244,11 @@ public class ConsolidatedMetricsBuilder {
 
 				if (name.contains("P50") || name.contains("getOwners")) {
 					jmhMetrics.put("latency_p50_ms", formatMetricWithVariance(score, stdDev));
-				} else if (name.contains("P95")) {
+				}
+				else if (name.contains("P95")) {
 					jmhMetrics.put("latency_p95_ms", formatMetricWithVariance(score, stdDev));
-				} else if (name.contains("P99")) {
+				}
+				else if (name.contains("P99")) {
 					jmhMetrics.put("latency_p99_ms", formatMetricWithVariance(score, stdDev));
 				}
 
@@ -292,11 +299,14 @@ public class ConsolidatedMetricsBuilder {
 
 				if (name.contains("Idle")) {
 					jmhMetrics.put("memory_idle_heap_mb", formatMetricWithVariance(score, stdDev));
-				} else if (name.contains("AfterLoad")) {
+				}
+				else if (name.contains("AfterLoad")) {
 					jmhMetrics.put("memory_load_heap_mb", formatMetricWithVariance(score, stdDev));
-				} else if (name.contains("Peak")) {
+				}
+				else if (name.contains("Peak")) {
 					jmhMetrics.put("memory_peak_heap_mb", formatMetricWithVariance(score, stdDev));
-				} else {
+				}
+				else {
 					jmhMetrics.put("memory_heap_mb", formatMetricWithVariance(score, stdDev));
 				}
 			}
@@ -310,8 +320,8 @@ public class ConsolidatedMetricsBuilder {
 		ObjectNode jfrMetrics = mapper.createObjectNode();
 
 		if (benchmarkVariant == null || !benchmarkVariant.has("jfr_metrics")) {
-			return populateNotMeasured(jfrMetrics, "gc_pause_avg_ms", "gc_pause_max_ms", 
-				"gc_pause_count", "memory_allocation_rate_mb_sec", "thread_count", "thread_count_peak");
+			return populateNotMeasured(jfrMetrics, "gc_pause_avg_ms", "gc_pause_max_ms", "gc_pause_count",
+					"memory_allocation_rate_mb_sec", "thread_count", "thread_count_peak");
 		}
 
 		ObjectNode jfrData = (ObjectNode) benchmarkVariant.get("jfr_metrics");
@@ -331,14 +341,16 @@ public class ConsolidatedMetricsBuilder {
 		// Extract memory allocation metrics
 		if (jfrData.has("memory_metrics")) {
 			ObjectNode memData = (ObjectNode) jfrData.get("memory_metrics");
-			double totalAllocMb = memData.has("total_allocation_mb") ? memData.get("total_allocation_mb").asDouble(0) : 0;
+			double totalAllocMb = memData.has("total_allocation_mb") ? memData.get("total_allocation_mb").asDouble(0)
+					: 0;
 			jfrMetrics.put("memory_allocation_rate_mb_sec", formatMetric(totalAllocMb));
 		}
 
 		// Extract thread metrics
 		if (jfrData.has("thread_metrics")) {
 			ObjectNode threadData = (ObjectNode) jfrData.get("thread_metrics");
-			long threadStart = threadData.has("thread_start_count") ? threadData.get("thread_start_count").asLong(0) : 0;
+			long threadStart = threadData.has("thread_start_count") ? threadData.get("thread_start_count").asLong(0)
+					: 0;
 			jfrMetrics.put("thread_count", threadStart);
 		}
 
@@ -352,8 +364,8 @@ public class ConsolidatedMetricsBuilder {
 		ObjectNode testMetrics = mapper.createObjectNode();
 
 		if (testVariant == null || !testVariant.has("test_suite_metrics")) {
-			return populateNotMeasured(testMetrics, "pass_count", "fail_count", "execution_time_ms", 
-				"coverage_line_percent", "coverage_branch_percent", "coverage_method_percent");
+			return populateNotMeasured(testMetrics, "pass_count", "fail_count", "execution_time_ms",
+					"coverage_line_percent", "coverage_branch_percent", "coverage_method_percent");
 		}
 
 		ObjectNode testData = (ObjectNode) testVariant.get("test_suite_metrics");
@@ -401,12 +413,10 @@ public class ConsolidatedMetricsBuilder {
 		// Extract GC latency correlation
 		if (correlationData.has("gc_latency_correlation")) {
 			ObjectNode gcLatency = (ObjectNode) correlationData.get("gc_latency_correlation");
-			String impactLevel = gcLatency.has("estimated_gc_impact_level") 
-				? gcLatency.get("estimated_gc_impact_level").asText("UNKNOWN")
-				: "UNKNOWN";
+			String impactLevel = gcLatency.has("estimated_gc_impact_level")
+					? gcLatency.get("estimated_gc_impact_level").asText("UNKNOWN") : "UNKNOWN";
 			double gcFreq = gcLatency.has("gc_frequency_per_second")
-				? gcLatency.get("gc_frequency_per_second").asDouble(0)
-				: 0;
+					? gcLatency.get("gc_frequency_per_second").asDouble(0) : 0;
 
 			correlation.put("gc_impact_on_latency", impactLevel);
 			correlation.put("gc_frequency_per_second", formatMetric(gcFreq));
@@ -416,8 +426,7 @@ public class ConsolidatedMetricsBuilder {
 		if (correlationData.has("memory_pressure_correlation")) {
 			ObjectNode memPressure = (ObjectNode) correlationData.get("memory_pressure_correlation");
 			String pressureLevel = memPressure.has("estimated_memory_pressure")
-				? memPressure.get("estimated_memory_pressure").asText("UNKNOWN")
-				: "UNKNOWN";
+					? memPressure.get("estimated_memory_pressure").asText("UNKNOWN") : "UNKNOWN";
 
 			correlation.put("memory_pressure_indicator", pressureLevel);
 		}
@@ -426,8 +435,7 @@ public class ConsolidatedMetricsBuilder {
 		if (correlationData.has("blocking_correlation")) {
 			ObjectNode blockingCorr = (ObjectNode) correlationData.get("blocking_correlation");
 			double blockingFreq = blockingCorr.has("blocking_frequency_per_second")
-				? blockingCorr.get("blocking_frequency_per_second").asDouble(0)
-				: 0;
+					? blockingCorr.get("blocking_frequency_per_second").asDouble(0) : 0;
 
 			correlation.put("blocking_frequency_per_second", formatMetric(blockingFreq));
 		}
@@ -591,7 +599,8 @@ public class ConsolidatedMetricsBuilder {
 		try {
 			String content = new String(Files.readAllBytes(Paths.get(filePath)));
 			return (ObjectNode) mapper.readTree(content);
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Failed to load " + filePath + ": " + e.getMessage());
 			return null;
 		}

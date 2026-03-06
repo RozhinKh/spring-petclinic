@@ -52,7 +52,7 @@ class VetController {
 		// Involves: SQL SELECT with LIMIT/OFFSET, loading vet specialties collection
 		// Virtual thread benefit: Lightweight pagination and collection loading
 		Page<Vet> paginated = findPaginated(page);
-		
+
 		// Pattern matching: if paginated has content, add it to the list
 		if (!paginated.isEmpty()) {
 			vets.getVetList().addAll(paginated.toList());
@@ -88,8 +88,10 @@ class VetController {
 		// VIRTUALIZATION POINT (15/21): I/O-bound JPA operation - findAll (full list)
 		// File: VetController.java, Line: 78
 		// Type: Database query (complete table scan with @Cacheable annotation)
-		// Involves: SQL SELECT all vets, loading specialties via lazy loading, caching overhead
-		// Virtual thread benefit: Handles initial query execution and result set iteration
+		// Involves: SQL SELECT all vets, loading specialties via lazy loading, caching
+		// overhead
+		// Virtual thread benefit: Handles initial query execution and result set
+		// iteration
 		// Note: @Cacheable("vets") caches results, so actual DB access is infrequent
 		vets.getVetList().addAll(this.vetRepository.findAll());
 		return vets;

@@ -26,17 +26,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Correlates static analysis findings with runtime JFR events.
- * Produces comparison table showing:
- * - Potential blockers identified statically
- * - Actual blocking observed at runtime
- * - False positives (static findings not triggered)
- * - False negatives (runtime blocking not caught statically)
+ * Correlates static analysis findings with runtime JFR events. Produces comparison table
+ * showing: - Potential blockers identified statically - Actual blocking observed at
+ * runtime - False positives (static findings not triggered) - False negatives (runtime
+ * blocking not caught statically)
  */
 public class BlockingComparisonReporter {
 
-	private static final Logger logger = LoggerFactory
-			.getLogger(BlockingComparisonReporter.class);
+	private static final Logger logger = LoggerFactory.getLogger(BlockingComparisonReporter.class);
 
 	private final StaticBlockingAnalyzer staticAnalyzer;
 
@@ -47,8 +44,7 @@ public class BlockingComparisonReporter {
 	/**
 	 * Create comparison reporter
 	 */
-	public BlockingComparisonReporter(StaticBlockingAnalyzer staticAnalyzer,
-			RuntimeBlockingTracker runtimeTracker) {
+	public BlockingComparisonReporter(StaticBlockingAnalyzer staticAnalyzer, RuntimeBlockingTracker runtimeTracker) {
 		this.staticAnalyzer = staticAnalyzer;
 		this.runtimeTracker = runtimeTracker;
 	}
@@ -62,8 +58,7 @@ public class BlockingComparisonReporter {
 		logger.info("Generating blocking comparison report...");
 
 		// Get static findings
-		List<StaticBlockingAnalyzer.BlockingFinding> staticFindings = staticAnalyzer
-				.getFindings();
+		List<StaticBlockingAnalyzer.BlockingFinding> staticFindings = staticAnalyzer.getFindings();
 		Set<String> staticClasses = new HashSet<>();
 		for (StaticBlockingAnalyzer.BlockingFinding finding : staticFindings) {
 			staticClasses.add(finding.getClassName());
@@ -71,9 +66,8 @@ public class BlockingComparisonReporter {
 
 		// Get runtime findings
 		Map<String, RuntimeBlockingTracker.MethodBlockingStats> runtimeMethods = runtimeTracker
-				.getMethodBlockingStats();
-		Map<String, RuntimeBlockingTracker.ClassBlockingStats> runtimeClasses = runtimeTracker
-				.getClassBlockingStats();
+			.getMethodBlockingStats();
+		Map<String, RuntimeBlockingTracker.ClassBlockingStats> runtimeClasses = runtimeTracker.getClassBlockingStats();
 
 		// Generate comparisons for each static finding
 		for (StaticBlockingAnalyzer.BlockingFinding staticFinding : staticFindings) {
@@ -85,16 +79,15 @@ public class BlockingComparisonReporter {
 			comparison.setStaticSeverity(staticFinding.getSeverity());
 
 			// Check if this class had runtime blocking
-			String runtimeKey = staticFinding.getClassName() + ":"
-					+ mapPatternToEventType(staticFinding.getPattern());
-			ClassBlockingStats runtimeStats = runtimeClasses.get(runtimeKey);
+			String runtimeKey = staticFinding.getClassName() + ":" + mapPatternToEventType(staticFinding.getPattern());
+			RuntimeBlockingTracker.ClassBlockingStats runtimeStats = runtimeClasses.get(runtimeKey);
 
 			if (runtimeStats != null) {
 				comparison.setRuntimeCount(runtimeStats.getCount());
 				comparison.setRuntimeDuration(runtimeStats.getTotalDuration());
 				comparison.setTriggered(true);
-				logger.debug("Static finding '{}' in {} was triggered at runtime",
-						staticFinding.getPattern(), staticFinding.getClassName());
+				logger.debug("Static finding '{}' in {} was triggered at runtime", staticFinding.getPattern(),
+						staticFinding.getClassName());
 			}
 			else {
 				comparison.setRuntimeCount(0);
@@ -108,8 +101,7 @@ public class BlockingComparisonReporter {
 		}
 
 		// Identify false negatives (runtime blocking not caught statically)
-		for (Map.Entry<String, RuntimeBlockingTracker.ClassBlockingStats> entry : runtimeClasses
-				.entrySet()) {
+		for (Map.Entry<String, RuntimeBlockingTracker.ClassBlockingStats> entry : runtimeClasses.entrySet()) {
 			RuntimeBlockingTracker.ClassBlockingStats stats = entry.getValue();
 			if (!staticClasses.contains(stats.getClassName())) {
 				BlockingComparison falseNegative = new BlockingComparison();
@@ -121,8 +113,7 @@ public class BlockingComparisonReporter {
 				falseNegative.setTriggered(true);
 				falseNegative.setFalseNegative(true);
 
-				logger.debug("False negative: runtime blocking in {} not caught statically",
-						stats.getClassName());
+				logger.debug("False negative: runtime blocking in {} not caught statically", stats.getClassName());
 				comparisons.add(falseNegative);
 			}
 		}
@@ -155,16 +146,11 @@ public class BlockingComparisonReporter {
 	public Map<String, Object> getSummary() {
 		Map<String, Object> summary = new HashMap<>();
 
-		int totalStatic = (int) comparisons.stream()
-				.filter(c -> c.getStaticCount() > 0).count();
-		int totalRuntime = (int) comparisons.stream()
-				.filter(c -> c.getRuntimeCount() > 0).count();
-		int triggered = (int) comparisons.stream()
-				.filter(BlockingComparison::isTriggered).count();
-		int falsePositives = (int) comparisons.stream()
-				.filter(c -> c.getStaticCount() > 0 && !c.isTriggered()).count();
-		int falseNegatives = (int) comparisons.stream()
-				.filter(BlockingComparison::isFalseNegative).count();
+		int totalStatic = (int) comparisons.stream().filter(c -> c.getStaticCount() > 0).count();
+		int totalRuntime = (int) comparisons.stream().filter(c -> c.getRuntimeCount() > 0).count();
+		int triggered = (int) comparisons.stream().filter(BlockingComparison::isTriggered).count();
+		int falsePositives = (int) comparisons.stream().filter(c -> c.getStaticCount() > 0 && !c.isTriggered()).count();
+		int falseNegatives = (int) comparisons.stream().filter(BlockingComparison::isFalseNegative).count();
 
 		summary.put("total_static_findings", totalStatic);
 		summary.put("total_runtime_findings", totalRuntime);
@@ -181,20 +167,21 @@ public class BlockingComparisonReporter {
 		for (BlockingComparison comp : comparisons) {
 			if (comp.getRuntimeCount() > 0) {
 				runtimeCounts.put(comp.getBlockingPattern(),
-						runtimeCounts.getOrDefault(comp.getBlockingPattern(), 0)
-								+ comp.getRuntimeCount());
+						runtimeCounts.getOrDefault(comp.getBlockingPattern(), 0) + comp.getRuntimeCount());
 			}
 		}
 
 		List<Map<String, Object>> topPatterns = new ArrayList<>();
-		runtimeCounts.entrySet().stream()
-				.sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
-				.limit(10).forEach(entry -> {
-					Map<String, Object> patternMap = new HashMap<>();
-					patternMap.put("pattern", entry.getKey());
-					patternMap.put("runtime_count", entry.getValue());
-					topPatterns.add(patternMap);
-				});
+		runtimeCounts.entrySet()
+			.stream()
+			.sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+			.limit(10)
+			.forEach(entry -> {
+				Map<String, Object> patternMap = new HashMap<>();
+				patternMap.put("pattern", entry.getKey());
+				patternMap.put("runtime_count", entry.getValue());
+				topPatterns.add(patternMap);
+			});
 		summary.put("top_blocking_patterns", topPatterns);
 
 		return summary;

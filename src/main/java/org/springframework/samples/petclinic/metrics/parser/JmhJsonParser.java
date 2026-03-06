@@ -9,15 +9,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parser for JMH JSON output files.
- * Extracts: startup (cold/warm), latency, throughput, memory metrics
+ * Parser for JMH JSON output files. Extracts: startup (cold/warm), latency, throughput,
+ * memory metrics
  */
 public class JmhJsonParser {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
 
-	public List<NormalizedMetric> parse(File jmhJsonFile, String variant, Integer runNumber)
-			throws IOException {
+	public List<NormalizedMetric> parse(File jmhJsonFile, String variant, Integer runNumber) throws IOException {
 		List<NormalizedMetric> metrics = new ArrayList<>();
 
 		if (!jmhJsonFile.exists()) {
@@ -35,8 +34,8 @@ public class JmhJsonParser {
 		return metrics;
 	}
 
-	private List<NormalizedMetric> extractMetricsFromBenchmark(JsonNode benchmarkNode,
-			String variant, Integer runNumber) {
+	private List<NormalizedMetric> extractMetricsFromBenchmark(JsonNode benchmarkNode, String variant,
+			Integer runNumber) {
 		List<NormalizedMetric> metrics = new ArrayList<>();
 
 		String benchmark = benchmarkNode.path("benchmark").asText("");
@@ -52,8 +51,7 @@ public class JmhJsonParser {
 		String metricName = extractMetricName(benchmark);
 		String category = determineCategory(benchmark, mode);
 
-		NormalizedMetric metric = new NormalizedMetric(metricName, score, unit, variant,
-				runNumber, category, "jmh");
+		NormalizedMetric metric = new NormalizedMetric(metricName, score, unit, variant, runNumber, category, "jmh");
 		metrics.add(metric);
 
 		// Extract secondary metrics (min, max, p50, p95, p99)
@@ -70,9 +68,8 @@ public class JmhJsonParser {
 
 					if (!Double.isNaN(value)) {
 						String secondaryMetricName = metricName + "_" + metricKey;
-						NormalizedMetric secondaryMetric = new NormalizedMetric(
-								secondaryMetricName, value, metricUnit, variant, runNumber,
-								category, "jmh");
+						NormalizedMetric secondaryMetric = new NormalizedMetric(secondaryMetricName, value, metricUnit,
+								variant, runNumber, category, "jmh");
 						metrics.add(secondaryMetric);
 					}
 				}
@@ -84,7 +81,8 @@ public class JmhJsonParser {
 
 	private String extractMetricName(String benchmark) {
 		// Extract the method name from benchmark string
-		// E.g., "org.springframework.samples.petclinic.bench.PetClinicStartupBench.applicationStartup"
+		// E.g.,
+		// "org.springframework.samples.petclinic.bench.PetClinicStartupBench.applicationStartup"
 		// -> "applicationStartup"
 		int lastDot = benchmark.lastIndexOf('.');
 		if (lastDot >= 0 && lastDot < benchmark.length() - 1) {

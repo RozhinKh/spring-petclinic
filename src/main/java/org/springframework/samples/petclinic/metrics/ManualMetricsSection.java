@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Container for manual metrics sections that are not automatically captured.
- * Includes test pass rate, cloud cost, instances required, and effort estimates.
+ * Container for manual metrics sections that are not automatically captured. Includes
+ * test pass rate, cloud cost, instances required, and effort estimates.
  */
 public class ManualMetricsSection implements Serializable {
 
@@ -14,9 +14,13 @@ public class ManualMetricsSection implements Serializable {
 	 * Test Suite Pass Rate metrics
 	 */
 	public static class TestPassRate implements Serializable {
+
 		private Integer totalTests;
+
 		private Integer passedTests;
+
 		private Integer failedTests;
+
 		private Double passPercentage;
 
 		public TestPassRate() {
@@ -26,8 +30,7 @@ public class ManualMetricsSection implements Serializable {
 			this.totalTests = totalTests;
 			this.passedTests = passedTests;
 			this.failedTests = failedTests;
-			this.passPercentage = totalTests > 0 ? (passedTests.doubleValue() / totalTests) * 100
-					: 0.0;
+			this.passPercentage = totalTests > 0 ? (passedTests.doubleValue() / totalTests) * 100 : 0.0;
 		}
 
 		// Getters and Setters
@@ -62,16 +65,23 @@ public class ManualMetricsSection implements Serializable {
 		public void setPassPercentage(Double passPercentage) {
 			this.passPercentage = passPercentage;
 		}
+
 	}
 
 	/**
 	 * Cloud Cost Analysis metrics
 	 */
 	public static class CloudCostAnalysis implements Serializable {
+
 		private Double computeHourlyCost; // $/hour for compute resources
+
 		private Double throughputOpsPerSec; // baseline throughput from metrics
+
 		private Double requestsPerHour;
-		private Double costPerRequest; // Calculated as (computeHourlyCost * 1) / requestsPerHour
+
+		private Double costPerRequest; // Calculated as (computeHourlyCost * 1) /
+										// requestsPerHour
+
 		private String formula; // Human-readable formula
 
 		public CloudCostAnalysis() {
@@ -88,8 +98,8 @@ public class ManualMetricsSection implements Serializable {
 					&& computeHourlyCost > 0) {
 				this.requestsPerHour = throughputOpsPerSec * 3600;
 				this.costPerRequest = computeHourlyCost / requestsPerHour;
-				this.formula = String.format("$%.4f/request = ($%.2f/hour) / (%.0f ops/sec × 3600)",
-						costPerRequest, computeHourlyCost, throughputOpsPerSec);
+				this.formula = String.format("$%.4f/request = ($%.2f/hour) / (%.0f ops/sec × 3600)", costPerRequest,
+						computeHourlyCost, throughputOpsPerSec);
 			}
 		}
 
@@ -127,15 +137,20 @@ public class ManualMetricsSection implements Serializable {
 		public String getFormula() {
 			return formula;
 		}
+
 	}
 
 	/**
 	 * Instances Required for Peak Load
 	 */
 	public static class InstancesRequired implements Serializable {
+
 		private Double peakLoadOpsPerSec; // From load test results
+
 		private Double perInstanceCapacity; // Configurable: ops/sec per instance
+
 		private Double instancesRequired; // Calculated: peak / capacity
+
 		private String formula; // Human-readable formula
 
 		public InstancesRequired() {
@@ -150,8 +165,8 @@ public class ManualMetricsSection implements Serializable {
 		private void calculateInstancesRequired() {
 			if (peakLoadOpsPerSec != null && perInstanceCapacity != null && perInstanceCapacity > 0) {
 				this.instancesRequired = Math.ceil(peakLoadOpsPerSec / perInstanceCapacity);
-				this.formula = String.format("%.0f instances = %.0f ops/sec ÷ %.0f ops/sec/instance",
-						instancesRequired, peakLoadOpsPerSec, perInstanceCapacity);
+				this.formula = String.format("%.0f instances = %.0f ops/sec ÷ %.0f ops/sec/instance", instancesRequired,
+						peakLoadOpsPerSec, perInstanceCapacity);
 			}
 		}
 
@@ -185,15 +200,20 @@ public class ManualMetricsSection implements Serializable {
 		public String getFormula() {
 			return formula;
 		}
+
 	}
 
 	/**
 	 * Effort Estimate for modernization
 	 */
 	public static class EffortEstimate implements Serializable {
+
 		private Integer locRefactored; // Lines of code refactored
+
 		private Double developerHoursSaved; // Estimated hours saved per month
+
 		private String assumptions; // What assumptions were made
+
 		private Map<String, Object> assumptions_map; // Structured assumptions
 
 		public EffortEstimate() {
@@ -245,12 +265,16 @@ public class ManualMetricsSection implements Serializable {
 			}
 			this.assumptions_map.put(key, value);
 		}
+
 	}
 
 	// Main container
 	private TestPassRate testPassRate;
+
 	private CloudCostAnalysis cloudCostAnalysis;
+
 	private InstancesRequired instancesRequired;
+
 	private EffortEstimate effortEstimate;
 
 	public ManualMetricsSection() {
@@ -288,4 +312,5 @@ public class ManualMetricsSection implements Serializable {
 	public void setEffortEstimate(EffortEstimate effortEstimate) {
 		this.effortEstimate = effortEstimate;
 	}
+
 }

@@ -23,16 +23,16 @@ import org.springframework.context.annotation.Configuration;
 import com.github.benmanes.caffeine.cache.Caffeine;
 
 /**
- * Configuration for cache metrics collection and monitoring.
- * Enables Caffeine cache metrics through Micrometer integration.
+ * Configuration for cache metrics collection and monitoring. Enables Caffeine cache
+ * metrics through Micrometer integration.
  */
 @Configuration
 @EnableCaching
 public class CacheMetricsConfiguration {
 
 	/**
-	 * Configure Caffeine cache with metrics recording
-	 * This ensures hit/miss rates are tracked for performance analysis
+	 * Configure Caffeine cache with metrics recording This ensures hit/miss rates are
+	 * tracked for performance analysis
 	 */
 	@Bean
 	@ConditionalOnClass(Caffeine.class)

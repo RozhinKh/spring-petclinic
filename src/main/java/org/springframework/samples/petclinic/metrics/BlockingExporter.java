@@ -29,8 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Exports blocking detection results to JSON and CSV formats.
- * Produces files in target/blocking/ directory for aggregation with other metrics.
+ * Exports blocking detection results to JSON and CSV formats. Produces files in
+ * target/blocking/ directory for aggregation with other metrics.
  */
 public class BlockingExporter {
 
@@ -63,8 +63,8 @@ public class BlockingExporter {
 	/**
 	 * Export blocking detection result for variant to JSON
 	 */
-	public String exportToJson(BlockingDetectionHarness.BlockingDetectionResult result,
-			String variant) throws IOException {
+	public String exportToJson(BlockingDetectionHarness.BlockingDetectionResult result, String variant)
+			throws IOException {
 		String filename = generateFilename("blocking", variant, "json");
 		String filePath = exportDirectory + File.separator + filename;
 
@@ -82,8 +82,8 @@ public class BlockingExporter {
 	/**
 	 * Export blocking detection result for variant to CSV
 	 */
-	public String exportToCsv(BlockingDetectionHarness.BlockingDetectionResult result,
-			String variant) throws IOException {
+	public String exportToCsv(BlockingDetectionHarness.BlockingDetectionResult result, String variant)
+			throws IOException {
 		String filename = generateFilename("blocking", variant, "csv");
 		String filePath = exportDirectory + File.separator + filename;
 
@@ -96,15 +96,24 @@ public class BlockingExporter {
 
 		// Data rows from comparisons
 		for (BlockingComparisonReporter.BlockingComparison comp : result.getComparisons()) {
-			csv.append(escapeForCsv(comp.getBlockingPattern())).append(",")
-					.append(escapeForCsv(comp.getClassName())).append(",")
-					.append(comp.getStaticCount()).append(",")
-					.append(escapeForCsv(comp.getStaticLocation())).append(",")
-					.append(escapeForCsv(comp.getStaticSeverity())).append(",")
-					.append(comp.getRuntimeCount()).append(",")
-					.append(comp.getRuntimeDuration()).append(",")
-					.append(comp.isTriggered()).append(",")
-					.append(comp.isFalseNegative()).append("\n");
+			csv.append(escapeForCsv(comp.getBlockingPattern()))
+				.append(",")
+				.append(escapeForCsv(comp.getClassName()))
+				.append(",")
+				.append(comp.getStaticCount())
+				.append(",")
+				.append(escapeForCsv(comp.getStaticLocation()))
+				.append(",")
+				.append(escapeForCsv(comp.getStaticSeverity()))
+				.append(",")
+				.append(comp.getRuntimeCount())
+				.append(",")
+				.append(comp.getRuntimeDuration())
+				.append(",")
+				.append(comp.isTriggered())
+				.append(",")
+				.append(comp.isFalseNegative())
+				.append("\n");
 		}
 
 		Files.writeString(Paths.get(filePath), csv.toString());
@@ -157,8 +166,7 @@ public class BlockingExporter {
 		csv.append("blocking_pattern,class");
 		List<String> variants = new ArrayList<>(results.keySet());
 		for (String variant : variants) {
-			csv.append(",").append(variant).append("_runtime_count")
-					.append(",").append(variant).append("_triggered");
+			csv.append(",").append(variant).append("_runtime_count").append(",").append(variant).append("_triggered");
 		}
 		csv.append("\n");
 
@@ -170,10 +178,8 @@ public class BlockingExporter {
 			String variant = entry.getKey();
 			for (BlockingComparisonReporter.BlockingComparison comp : entry.getValue().getComparisons()) {
 				String key = comp.getBlockingPattern() + ":" + comp.getClassName();
-				patternStats.computeIfAbsent(key, k -> new HashMap<>()).put(variant,
-						comp.getRuntimeCount());
-				patternTriggered.computeIfAbsent(key, k -> new HashMap<>()).put(variant,
-						comp.isTriggered());
+				patternStats.computeIfAbsent(key, k -> new HashMap<>()).put(variant, comp.getRuntimeCount());
+				patternTriggered.computeIfAbsent(key, k -> new HashMap<>()).put(variant, comp.isTriggered());
 			}
 		}
 
@@ -184,8 +190,7 @@ public class BlockingExporter {
 
 			for (String variant : variants) {
 				int count = entry.getValue().getOrDefault(variant, 0);
-				boolean triggered = patternTriggered.get(entry.getKey()).getOrDefault(variant,
-						false);
+				boolean triggered = patternTriggered.get(entry.getKey()).getOrDefault(variant, false);
 				csv.append(",").append(count).append(",").append(triggered);
 			}
 			csv.append("\n");
@@ -216,9 +221,8 @@ public class BlockingExporter {
 
 			// Compare Java 17 vs Java 21 variants
 			if (variantList.contains("java17") && variantList.stream().anyMatch(v -> v.contains("java21"))) {
-				Map<String, Object> j17_j21_comparison = compareVariants(
-						results.get("java17"),
-						variantList.stream().filter(v -> v.contains("java21")).findFirst().orElse(null),
+				String java21Key = variantList.stream().filter(v -> v.contains("java21")).findFirst().orElse(null);
+				Map<String, Object> j17_j21_comparison = compareVariants(results.get("java17"), results.get(java21Key),
 						results);
 				if (j17_j21_comparison != null) {
 					analysis.put("java17_vs_java21_comparison", j17_j21_comparison);
@@ -227,10 +231,8 @@ public class BlockingExporter {
 
 			// Compare traditional vs virtual thread variants
 			if (variantList.contains("java21-traditional") && variantList.contains("java21-virtual")) {
-				Map<String, Object> traditionalVsVirtual = compareVariants(
-						results.get("java21-traditional"),
-						results.get("java21-virtual"),
-						results);
+				Map<String, Object> traditionalVsVirtual = compareVariants(results.get("java21-traditional"),
+						results.get("java21-virtual"), results);
 				if (traditionalVsVirtual != null) {
 					analysis.put("traditional_vs_virtual_comparison", traditionalVsVirtual);
 				}
@@ -243,8 +245,7 @@ public class BlockingExporter {
 	/**
 	 * Compare two variants
 	 */
-	private Map<String, Object> compareVariants(
-			BlockingDetectionHarness.BlockingDetectionResult variant1,
+	private Map<String, Object> compareVariants(BlockingDetectionHarness.BlockingDetectionResult variant1,
 			BlockingDetectionHarness.BlockingDetectionResult variant2,
 			Map<String, BlockingDetectionHarness.BlockingDetectionResult> allResults) {
 
@@ -299,8 +300,7 @@ public class BlockingExporter {
 	 */
 	private String generateFilename(String prefix, String variant, String extension) {
 		long timestamp = System.currentTimeMillis();
-		return String.format("%s-%s-%d.%s", prefix, sanitizeVariant(variant), timestamp,
-				extension);
+		return String.format("%s-%s-%d.%s", prefix, sanitizeVariant(variant), timestamp, extension);
 	}
 
 	/**

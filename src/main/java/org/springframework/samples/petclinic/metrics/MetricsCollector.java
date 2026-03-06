@@ -27,8 +27,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -64,9 +62,8 @@ public class MetricsCollector {
 
 	private final ObjectMapper objectMapper;
 
-	@Autowired
-	public MetricsCollector(RestTemplateBuilder restTemplateBuilder) {
-		this.restTemplate = restTemplateBuilder.build();
+	public MetricsCollector() {
+		this.restTemplate = new RestTemplate();
 		this.exporter = new MetricsExporter();
 		this.scheduler = Executors.newScheduledThreadPool(1, r -> {
 			Thread t = new Thread(r, "MetricsCollectorThread");
@@ -82,7 +79,6 @@ public class MetricsCollector {
 
 	/**
 	 * Start metrics collection with default interval (5 seconds)
-	 *
 	 * @param variant variant name for labeling metrics
 	 */
 	public void start(String variant) {
@@ -91,7 +87,6 @@ public class MetricsCollector {
 
 	/**
 	 * Start metrics collection with custom interval
-	 *
 	 * @param variant variant name for labeling metrics
 	 * @param pollIntervalSeconds interval between polls in seconds
 	 */
@@ -105,8 +100,7 @@ public class MetricsCollector {
 		this.pollIntervalSeconds = pollIntervalSeconds;
 		this.collectedSnapshots.clear();
 
-		logger.info("Starting metrics collection for variant: {} with interval: {}s", variant,
-				pollIntervalSeconds);
+		logger.info("Starting metrics collection for variant: {} with interval: {}s", variant, pollIntervalSeconds);
 
 		// Schedule periodic polling
 		scheduler.scheduleAtFixedRate(this::pollMetrics, 0, pollIntervalSeconds, TimeUnit.SECONDS);
@@ -114,7 +108,6 @@ public class MetricsCollector {
 
 	/**
 	 * Stop metrics collection and export to JSON
-	 *
 	 * @return path to exported metrics file
 	 */
 	public String stop() {
@@ -165,8 +158,8 @@ public class MetricsCollector {
 			Map<String, Object> dbMetrics = extractDatabaseMetrics();
 
 			// Create snapshot
-			Map<String, Object> snapshot = MetricsExporter.createMetricsSnapshot(timestamp,
-					httpMetrics, jvmMetrics, threadMetrics, cacheMetrics, dbMetrics);
+			Map<String, Object> snapshot = MetricsExporter.createMetricsSnapshot(timestamp, httpMetrics, jvmMetrics,
+					threadMetrics, cacheMetrics, dbMetrics);
 
 			// Store snapshot
 			synchronized (collectedSnapshots) {
@@ -260,8 +253,7 @@ public class MetricsCollector {
 			String heapUrl = ACTUATOR_METRICS_URL + "/jvm.memory.used?tag=area:heap";
 			Map heapResponse = restTemplate.getForObject(heapUrl, Map.class);
 			if (heapResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) heapResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) heapResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					memoryMetrics.put("heap_memory_used_bytes", value);
@@ -273,7 +265,7 @@ public class MetricsCollector {
 			Map heapMaxResponse = restTemplate.getForObject(heapMaxUrl, Map.class);
 			if (heapMaxResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) heapMaxResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					memoryMetrics.put("heap_memory_max_bytes", value);
@@ -285,7 +277,7 @@ public class MetricsCollector {
 			Map nonHeapResponse = restTemplate.getForObject(nonHeapUrl, Map.class);
 			if (nonHeapResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) nonHeapResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					memoryMetrics.put("nonheap_memory_used_bytes", value);
@@ -311,8 +303,7 @@ public class MetricsCollector {
 			String pauseUrl = ACTUATOR_METRICS_URL + "/jvm.gc.pause";
 			Map pauseResponse = restTemplate.getForObject(pauseUrl, Map.class);
 			if (pauseResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) pauseResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) pauseResponse.get("measurements");
 				if (measurements != null) {
 					for (Map<String, Object> m : measurements) {
 						String statistic = (String) m.get("statistic");
@@ -336,7 +327,7 @@ public class MetricsCollector {
 			Map maxDataSizeResponse = restTemplate.getForObject(maxDataSizeUrl, Map.class);
 			if (maxDataSizeResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) maxDataSizeResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					gcMetrics.put("gc_max_data_size_bytes", value);
@@ -362,8 +353,7 @@ public class MetricsCollector {
 			String liveUrl = ACTUATOR_METRICS_URL + "/jvm.threads.live";
 			Map liveResponse = restTemplate.getForObject(liveUrl, Map.class);
 			if (liveResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) liveResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) liveResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("live_threads", value);
@@ -374,8 +364,7 @@ public class MetricsCollector {
 			String peakUrl = ACTUATOR_METRICS_URL + "/jvm.threads.peak";
 			Map peakResponse = restTemplate.getForObject(peakUrl, Map.class);
 			if (peakResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) peakResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) peakResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("peak_threads", value);
@@ -386,8 +375,7 @@ public class MetricsCollector {
 			String daemonUrl = ACTUATOR_METRICS_URL + "/jvm.threads.daemon";
 			Map daemonResponse = restTemplate.getForObject(daemonUrl, Map.class);
 			if (daemonResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) daemonResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) daemonResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("daemon_threads", value);
@@ -413,8 +401,7 @@ public class MetricsCollector {
 			String activeUrl = ACTUATOR_METRICS_URL + "/executor.active";
 			Map activeResponse = restTemplate.getForObject(activeUrl, Map.class);
 			if (activeResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) activeResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) activeResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("executor_active_threads", value);
@@ -425,8 +412,7 @@ public class MetricsCollector {
 			String queuedUrl = ACTUATOR_METRICS_URL + "/executor.queued";
 			Map queuedResponse = restTemplate.getForObject(queuedUrl, Map.class);
 			if (queuedResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) queuedResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) queuedResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("executor_queued_tasks", value);
@@ -438,7 +424,7 @@ public class MetricsCollector {
 			Map poolSizeResponse = restTemplate.getForObject(poolSizeUrl, Map.class);
 			if (poolSizeResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) poolSizeResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("executor_pool_size", value);
@@ -450,7 +436,7 @@ public class MetricsCollector {
 			Map poolMaxResponse = restTemplate.getForObject(poolMaxUrl, Map.class);
 			if (poolMaxResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) poolMaxResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					threadMetrics.put("executor_pool_max", value);
@@ -476,8 +462,7 @@ public class MetricsCollector {
 			String getsUrl = ACTUATOR_METRICS_URL + "/cache.gets?tag=cache:vets";
 			Map getsResponse = restTemplate.getForObject(getsUrl, Map.class);
 			if (getsResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) getsResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) getsResponse.get("measurements");
 				if (measurements != null) {
 					for (Map<String, Object> m : measurements) {
 						String statistic = (String) m.get("statistic");
@@ -500,8 +485,7 @@ public class MetricsCollector {
 			String putsUrl = ACTUATOR_METRICS_URL + "/cache.puts?tag=cache:vets";
 			Map putsResponse = restTemplate.getForObject(putsUrl, Map.class);
 			if (putsResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) putsResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) putsResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					cacheMetrics.put("cache_puts_count", value);
@@ -513,7 +497,7 @@ public class MetricsCollector {
 			Map evictionsResponse = restTemplate.getForObject(evictionsUrl, Map.class);
 			if (evictionsResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) evictionsResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					cacheMetrics.put("cache_evictions_count", value);
@@ -539,8 +523,7 @@ public class MetricsCollector {
 			String activeUrl = ACTUATOR_METRICS_URL + "/hikaricp.connections.active";
 			Map activeResponse = restTemplate.getForObject(activeUrl, Map.class);
 			if (activeResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) activeResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) activeResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					dbMetrics.put("hikari_active_connections", value);
@@ -551,8 +534,7 @@ public class MetricsCollector {
 			String idleUrl = ACTUATOR_METRICS_URL + "/hikaricp.connections.idle";
 			Map idleResponse = restTemplate.getForObject(idleUrl, Map.class);
 			if (idleResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) idleResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) idleResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					dbMetrics.put("hikari_idle_connections", value);
@@ -564,7 +546,7 @@ public class MetricsCollector {
 			Map pendingResponse = restTemplate.getForObject(pendingUrl, Map.class);
 			if (pendingResponse != null) {
 				List<Map<String, Object>> measurements = (List<Map<String, Object>>) pendingResponse
-						.get("measurements");
+					.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					dbMetrics.put("hikari_pending_connections", value);
@@ -575,8 +557,7 @@ public class MetricsCollector {
 			String maxUrl = ACTUATOR_METRICS_URL + "/hikaricp.connections.max";
 			Map maxResponse = restTemplate.getForObject(maxUrl, Map.class);
 			if (maxResponse != null) {
-				List<Map<String, Object>> measurements = (List<Map<String, Object>>) maxResponse
-						.get("measurements");
+				List<Map<String, Object>> measurements = (List<Map<String, Object>>) maxResponse.get("measurements");
 				if (measurements != null && !measurements.isEmpty()) {
 					Double value = ((Number) measurements.get(0).get("value")).doubleValue();
 					dbMetrics.put("hikari_max_connections", value);

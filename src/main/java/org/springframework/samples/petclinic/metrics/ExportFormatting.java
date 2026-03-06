@@ -5,8 +5,8 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 /**
- * Utility class for formatting numbers in exports with proper precision.
- * Ensures consistency across JSON, CSV, and other export formats.
+ * Utility class for formatting numbers in exports with proper precision. Ensures
+ * consistency across JSON, CSV, and other export formats.
  */
 public class ExportFormatting {
 
@@ -41,11 +41,8 @@ public class ExportFormatting {
 	}
 
 	/**
-	 * Formats a value based on its unit and magnitude
-	 * - Latency/Time: 2 decimals
-	 * - Percentage: 1 decimal
-	 * - Throughput/Count: 0 decimals
-	 * - Memory: 2 decimals
+	 * Formats a value based on its unit and magnitude - Latency/Time: 2 decimals -
+	 * Percentage: 1 decimal - Throughput/Count: 0 decimals - Memory: 2 decimals
 	 */
 	public static Double formatByUnit(Double value, String unit) {
 		if (value == null || Double.isNaN(value) || Double.isInfinite(value)) {
@@ -61,12 +58,15 @@ public class ExportFormatting {
 		if (lowerUnit.contains("ms") || lowerUnit.contains("sec") || lowerUnit.contains("us")
 				|| lowerUnit.contains("ns")) {
 			return formatLatency(value);
-		} else if (lowerUnit.contains("%")) {
+		}
+		else if (lowerUnit.contains("%")) {
 			return formatPercentage(value);
-		} else if (lowerUnit.contains("kb") || lowerUnit.contains("mb") || lowerUnit.contains("gb")
+		}
+		else if (lowerUnit.contains("kb") || lowerUnit.contains("mb") || lowerUnit.contains("gb")
 				|| lowerUnit.contains("byte")) {
 			return formatMemory(value);
-		} else if (lowerUnit.contains("ops") || lowerUnit.contains("request") || lowerUnit.contains("call")) {
+		}
+		else if (lowerUnit.contains("ops") || lowerUnit.contains("request") || lowerUnit.contains("call")) {
 			return formatThroughput(value);
 		}
 
@@ -90,7 +90,7 @@ public class ExportFormatting {
 		if (value == null || Double.isNaN(value) || Double.isInfinite(value)) {
 			return null;
 		}
-		return Math.round(value);
+		return (double) Math.round(value);
 	}
 
 	/**
@@ -114,9 +114,11 @@ public class ExportFormatting {
 
 		if (lowerUnit.contains("%")) {
 			df = new DecimalFormat("0.0", symbols);
-		} else if (lowerUnit.contains("ms") || lowerUnit.contains("sec") || lowerUnit.contains("us")) {
+		}
+		else if (lowerUnit.contains("ms") || lowerUnit.contains("sec") || lowerUnit.contains("us")) {
 			df = new DecimalFormat("0.00", symbols);
-		} else {
+		}
+		else {
 			df = new DecimalFormat("0.##", symbols);
 		}
 
@@ -147,4 +149,5 @@ public class ExportFormatting {
 		}
 		return toFormattedString(value, unit);
 	}
+
 }

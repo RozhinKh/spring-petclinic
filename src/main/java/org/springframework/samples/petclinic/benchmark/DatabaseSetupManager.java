@@ -26,16 +26,21 @@ import java.sql.Statement;
 import java.util.List;
 
 /**
- * Manages database setup, initialization, and reset for load testing.
- * Supports H2, MySQL, and PostgreSQL databases.
+ * Manages database setup, initialization, and reset for load testing. Supports H2, MySQL,
+ * and PostgreSQL databases.
  */
 public class DatabaseSetupManager {
 
 	private final String databaseType;
+
 	private final String dbDriver;
+
 	private final String dbUrl;
+
 	private final String dbUsername;
+
 	private final String dbPassword;
+
 	private final String resetScriptPath;
 
 	public DatabaseSetupManager(String databaseType, String dbDriver, String dbUrl, String dbUsername,
@@ -81,7 +86,8 @@ public class DatabaseSetupManager {
 		try (Connection connection = getConnection()) {
 			if (connection.isValid(5)) {
 				System.out.println("✓ Database connectivity verified: " + databaseType);
-			} else {
+			}
+			else {
 				throw new SQLException("Database connection validation failed");
 			}
 		}
@@ -189,10 +195,12 @@ public class DatabaseSetupManager {
 	 * Database type enum.
 	 */
 	public enum DatabaseType {
+
 		H2("h2", "org.h2.Driver"), MYSQL("mysql", "com.mysql.cj.jdbc.Driver"),
 		POSTGRES("postgres", "org.postgresql.Driver");
 
 		private final String name;
+
 		private final String driver;
 
 		DatabaseType(String name, String driver) {
@@ -216,6 +224,7 @@ public class DatabaseSetupManager {
 			}
 			throw new IllegalArgumentException("Unknown database type: " + name);
 		}
+
 	}
 
 }

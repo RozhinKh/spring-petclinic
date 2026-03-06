@@ -7,23 +7,22 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Aggregates normalized metrics across runs and calculates statistics.
- * Provides average, min, max, and standard deviation.
+ * Aggregates normalized metrics across runs and calculates statistics. Provides average,
+ * min, max, and standard deviation.
  */
 public class MetricsAggregator {
 
 	/**
-	 * Aggregates metrics by metric name, variant, and category.
-	 * Calculates: average, min, max, std_dev, sample_count
+	 * Aggregates metrics by metric name, variant, and category. Calculates: average, min,
+	 * max, std_dev, sample_count
 	 */
 	public List<AggregatedMetric> aggregate(List<NormalizedMetric> normalizedMetrics) {
 		List<AggregatedMetric> aggregated = new ArrayList<>();
 
 		// Group by metric name, variant, and unit
 		Map<String, List<NormalizedMetric>> grouped = normalizedMetrics.stream()
-				.filter(m -> m.getValue() != null && !Double.isNaN(m.getValue()))
-				.collect(Collectors.groupingBy(
-						m -> m.getMetricName() + "|" + m.getVariant() + "|" + m.getUnit()));
+			.filter(m -> m.getValue() != null && !Double.isNaN(m.getValue()))
+			.collect(Collectors.groupingBy(m -> m.getMetricName() + "|" + m.getVariant() + "|" + m.getUnit()));
 
 		// Process each group
 		for (Map.Entry<String, List<NormalizedMetric>> entry : grouped.entrySet()) {
@@ -37,15 +36,13 @@ public class MetricsAggregator {
 			NormalizedMetric first = group.get(0);
 
 			// Calculate statistics
-			DoubleSummaryStatistics stats = group.stream()
-					.mapToDouble(NormalizedMetric::getValue)
-					.summaryStatistics();
+			DoubleSummaryStatistics stats = group.stream().mapToDouble(NormalizedMetric::getValue).summaryStatistics();
 
 			double stdDev = calculateStandardDeviation(group, stats.getAverage());
 
 			// Create aggregated metric
-			AggregatedMetric agg = new AggregatedMetric(first.getMetricName(), first.getUnit(),
-					first.getCategory(), first.getVariant(), first.getDataSource());
+			AggregatedMetric agg = new AggregatedMetric(first.getMetricName(), first.getUnit(), first.getCategory(),
+					first.getVariant(), first.getDataSource());
 
 			agg.setAverage(stats.getAverage());
 			agg.setMinimum(stats.getMin());
@@ -67,9 +64,7 @@ public class MetricsAggregator {
 			return 0.0;
 		}
 
-		double sumOfSquaredDifferences = metrics.stream()
-				.mapToDouble(m -> Math.pow(m.getValue() - mean, 2))
-				.sum();
+		double sumOfSquaredDifferences = metrics.stream().mapToDouble(m -> Math.pow(m.getValue() - mean, 2)).sum();
 
 		return Math.sqrt(sumOfSquaredDifferences / (metrics.size() - 1));
 	}
@@ -77,15 +72,13 @@ public class MetricsAggregator {
 	/**
 	 * Aggregates metrics by category
 	 */
-	public Map<String, List<AggregatedMetric>> aggregateByCategory(
-			List<AggregatedMetric> aggregatedMetrics) {
-		return aggregatedMetrics.stream()
-				.collect(Collectors.groupingBy(AggregatedMetric::getCategory));
+	public Map<String, List<AggregatedMetric>> aggregateByCategory(List<AggregatedMetric> aggregatedMetrics) {
+		return aggregatedMetrics.stream().collect(Collectors.groupingBy(AggregatedMetric::getCategory));
 	}
 
 	/**
-	 * Calculates coefficient of variation (CV) = stdDev / mean
-	 * Useful for comparing variance across metrics with different scales
+	 * Calculates coefficient of variation (CV) = stdDev / mean Useful for comparing
+	 * variance across metrics with different scales
 	 */
 	public double calculateCoefficientOfVariation(AggregatedMetric metric) {
 		if (metric.getAverage() == null || metric.getAverage() == 0.0) {

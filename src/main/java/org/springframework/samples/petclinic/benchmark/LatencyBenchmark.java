@@ -23,8 +23,8 @@ import java.net.URL;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JMH benchmarks for single-request latency measurement. Measures P50, P75, P90,
- * P95 latency for key endpoints.
+ * JMH benchmarks for single-request latency measurement. Measures P50, P75, P90, P95
+ * latency for key endpoints.
  */
 @Fork(value = 5)
 @Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
@@ -47,7 +47,8 @@ public class LatencyBenchmark {
 			if (code != 200) {
 				throw new RuntimeException("Application health check failed: " + code);
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException("Cannot connect to application at " + BASE_URL + ": " + e.getMessage());
 		}
 	}

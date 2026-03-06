@@ -26,8 +26,8 @@ import org.springframework.samples.petclinic.owner.PetType;
 import org.springframework.samples.petclinic.owner.PetTypeRepository;
 
 /**
- * Generates test data for load testing PetClinic application.
- * Creates owners and pets programmatically to supplement SQL-based test data.
+ * Generates test data for load testing PetClinic application. Creates owners and pets
+ * programmatically to supplement SQL-based test data.
  *
  * @author Load Test Framework
  */
@@ -76,8 +76,8 @@ public class LoadTestDataGenerator {
 	}
 
 	/**
-	 * Generates additional test data for load testing.
-	 * Creates owners and their associated pets.
+	 * Generates additional test data for load testing. Creates owners and their
+	 * associated pets.
 	 * @param ownerCount target number of owners to generate
 	 * @param petsPerOwner average number of pets per owner
 	 */

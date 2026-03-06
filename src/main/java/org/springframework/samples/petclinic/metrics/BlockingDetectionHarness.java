@@ -25,15 +25,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Harness for orchestrating blocking detection across benchmark phases.
- * Coordinates:
- * - Static analysis via SpotBugs
- * - Runtime JFR event listening
- * - Comparison reporting
- * - Export in JSON and CSV formats
+ * Harness for orchestrating blocking detection across benchmark phases. Coordinates: -
+ * Static analysis via SpotBugs - Runtime JFR event listening - Comparison reporting -
+ * Export in JSON and CSV formats
  *
- * Designed for integration with JMH benchmarks and variant comparison (Java 17,
- * Java 21 traditional, Java 21 virtual).
+ * Designed for integration with JMH benchmarks and variant comparison (Java 17, Java 21
+ * traditional, Java 21 virtual).
  */
 public class BlockingDetectionHarness {
 
@@ -75,8 +72,7 @@ public class BlockingDetectionHarness {
 		// Run static analysis
 		try {
 			staticAnalyzer.analyze();
-			logger.info("Static analysis complete: {}",
-					staticAnalyzer.getFindings().size());
+			logger.info("Static analysis complete: {}", staticAnalyzer.getFindings().size());
 		}
 		catch (IOException e) {
 			logger.warn("Failed to run static analysis: {}", e.getMessage());
@@ -85,9 +81,8 @@ public class BlockingDetectionHarness {
 
 	/**
 	 * Start blocking detection for a benchmark variant
-	 *
 	 * @param variant variant name (e.g., "java17", "java21-traditional",
-	 *                "java21-virtual")
+	 * "java21-virtual")
 	 */
 	public void startBenchmark(String variant) {
 		logger.info("Starting blocking detection for variant: {}", variant);
@@ -105,7 +100,6 @@ public class BlockingDetectionHarness {
 
 	/**
 	 * Stop blocking detection and generate report for variant
-	 *
 	 * @param variant variant name
 	 * @return exported file paths
 	 */
@@ -156,7 +150,6 @@ public class BlockingDetectionHarness {
 
 	/**
 	 * Export blocking detection results to JSON and CSV
-	 *
 	 * @param variant variant name
 	 * @return export file paths (JSON and CSV)
 	 */
@@ -183,7 +176,6 @@ public class BlockingDetectionHarness {
 
 	/**
 	 * Export comparison across all variants
-	 *
 	 * @return export file paths
 	 */
 	public Map<String, String> exportComparison() throws IOException {
@@ -252,12 +244,10 @@ public class BlockingDetectionHarness {
 		}
 
 		public List<StaticBlockingAnalyzer.BlockingFinding> getStaticFindings() {
-			return staticFindings != null ? new ArrayList<>(staticFindings)
-					: new ArrayList<>();
+			return staticFindings != null ? new ArrayList<>(staticFindings) : new ArrayList<>();
 		}
 
-		public void setStaticFindings(
-				List<StaticBlockingAnalyzer.BlockingFinding> staticFindings) {
+		public void setStaticFindings(List<StaticBlockingAnalyzer.BlockingFinding> staticFindings) {
 			this.staticFindings = staticFindings;
 		}
 
@@ -273,8 +263,7 @@ public class BlockingDetectionHarness {
 			return comparisons != null ? new ArrayList<>(comparisons) : new ArrayList<>();
 		}
 
-		public void setComparisons(
-				List<BlockingComparisonReporter.BlockingComparison> comparisons) {
+		public void setComparisons(List<BlockingComparisonReporter.BlockingComparison> comparisons) {
 			this.comparisons = comparisons;
 		}
 
@@ -295,8 +284,7 @@ public class BlockingDetectionHarness {
 		}
 
 		public Map<String, Object> getComparisonSummary() {
-			return comparisonSummary != null ? new HashMap<>(comparisonSummary)
-					: new HashMap<>();
+			return comparisonSummary != null ? new HashMap<>(comparisonSummary) : new HashMap<>();
 		}
 
 		public void setComparisonSummary(Map<String, Object> comparisonSummary) {

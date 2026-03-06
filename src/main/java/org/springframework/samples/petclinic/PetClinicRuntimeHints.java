@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic;
 
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
+import org.springframework.aot.hint.TypeReference;
 import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.samples.petclinic.model.Person;
 import org.springframework.samples.petclinic.vet.Vet;
@@ -31,7 +32,7 @@ public class PetClinicRuntimeHints implements RuntimeHintsRegistrar {
 		hints.resources().registerPattern("mysql-default-conf");
 		hints.serialization().registerType(BaseEntity.class);
 		hints.serialization().registerType(Person.class);
-		hints.serialization().registerType(Vet.class);
+		hints.serialization().registerType(TypeReference.of(Vet.class));
 	}
 
 }

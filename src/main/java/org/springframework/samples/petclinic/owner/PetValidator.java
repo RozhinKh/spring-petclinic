@@ -36,19 +36,19 @@ public class PetValidator implements Validator {
 	@Override
 	public void validate(Object obj, Errors errors) {
 		Pet pet = (Pet) obj;
-		String name = pet.getName();
+		String name = pet.name();
 		// name validation
 		if (!StringUtils.hasText(name)) {
 			errors.rejectValue("name", REQUIRED, REQUIRED);
 		}
 
 		// type validation
-		if (pet.isNew() && pet.getType() == null) {
+		if (pet.isNew() && pet.type() == null) {
 			errors.rejectValue("type", REQUIRED, REQUIRED);
 		}
 
 		// birth date validation
-		if (pet.getBirthDate() == null) {
+		if (pet.birthDate() == null) {
 			errors.rejectValue("birthDate", REQUIRED, REQUIRED);
 		}
 	}

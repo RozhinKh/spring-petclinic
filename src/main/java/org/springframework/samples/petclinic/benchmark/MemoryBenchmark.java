@@ -28,8 +28,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * JMH benchmarks for memory footprint measurement. Measures heap usage at idle,
- * after serving 1000 sequential requests, and peak heap usage.
+ * JMH benchmarks for memory footprint measurement. Measures heap usage at idle, after
+ * serving 1000 sequential requests, and peak heap usage.
  */
 @Fork(value = 3)
 @Warmup(iterations = 1)
@@ -40,6 +40,7 @@ import java.util.concurrent.TimeUnit;
 public class MemoryBenchmark {
 
 	private static final String BASE_URL = "http://localhost:8080";
+
 	private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
 
 	@Setup
@@ -53,7 +54,8 @@ public class MemoryBenchmark {
 			if (code != 200) {
 				throw new RuntimeException("Application health check failed: " + code);
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException("Cannot connect to application at " + BASE_URL + ": " + e.getMessage());
 		}
 	}
@@ -108,11 +110,13 @@ public class MemoryBenchmark {
 					if (currentHeap > peakHeap) {
 						peakHeap = currentHeap;
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					// Continue with next request
 				}
 			}
-		} finally {
+		}
+		finally {
 			// Force garbage collection after load
 			System.gc();
 			Thread.sleep(500);
@@ -160,13 +164,15 @@ public class MemoryBenchmark {
 					if (currentHeap > peakHeap) {
 						peakHeap = currentHeap;
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					// Continue with next request
 				}
 
 				Thread.sleep(10);
 			}
-		} finally {
+		}
+		finally {
 			// Force garbage collection after measurement
 			System.gc();
 			Thread.sleep(500);
@@ -191,11 +197,11 @@ public class MemoryBenchmark {
 			// Execute diverse requests and measure heap after each
 			for (int i = 0; i < 100; i++) {
 				String endpoint = switch (i % 5) {
-				case 0 -> "/owners";
-				case 1 -> "/vets";
-				case 2 -> "/owners/1";
-				case 3 -> "/owners/find";
-				default -> "/owners";
+					case 0 -> "/owners";
+					case 1 -> "/vets";
+					case 2 -> "/owners/1";
+					case 3 -> "/owners/find";
+					default -> "/owners";
 				};
 
 				try {
@@ -209,14 +215,16 @@ public class MemoryBenchmark {
 					if (code != 200) {
 						throw new RuntimeException("Request failed with status: " + code);
 					}
-				} catch (Exception e) {
+				}
+				catch (Exception e) {
 					// Continue with next request
 				}
 
 				MemoryUsage heapUsage = memoryBean.getHeapMemoryUsage();
 				heapReadings[i] = heapUsage.getUsed();
 			}
-		} finally {
+		}
+		finally {
 			// Force garbage collection after measurement
 			System.gc();
 			Thread.sleep(500);

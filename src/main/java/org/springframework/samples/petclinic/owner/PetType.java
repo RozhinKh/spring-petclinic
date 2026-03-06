@@ -15,11 +15,12 @@
  */
 package org.springframework.samples.petclinic.owner;
 
+import org.springframework.samples.petclinic.model.BaseEntity;
+
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 
@@ -28,17 +29,42 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Entity
 @Table(name = "types")
-public record PetType(
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
-	@Column @NotBlank String name
-) {
+@Access(AccessType.FIELD)
+public class PetType extends BaseEntity {
+
+	@Column
+	@NotBlank
+	private String name;
+
+	public PetType() {
+	}
+
+	public PetType(Integer id, String name) {
+		setId(id);
+		this.name = name;
+	}
+
+	/** Record-style accessor. */
+	public Integer id() {
+		return getId();
+	}
+
+	/** Record-style accessor. */
+	public String name() {
+		return name;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	@Override
 	public String toString() {
 		return (name != null) ? name : "<null>";
 	}
 
-	public boolean isNew() {
-		return this.id == null;
-	}
 }

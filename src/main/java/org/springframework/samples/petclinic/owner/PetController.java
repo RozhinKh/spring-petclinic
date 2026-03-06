@@ -74,7 +74,8 @@ class PetController {
 		// File: PetController.java, Line: 68
 		// Type: Database query (parent entity fetch)
 		// Involves: SQL SELECT with potential lazy loading of pets collection
-		// Virtual thread benefit: Handles blocking query execution without platform thread exhaustion
+		// Virtual thread benefit: Handles blocking query execution without platform
+		// thread exhaustion
 		Optional<Owner> optionalOwner = this.owners.findById(ownerId);
 		Owner owner = optionalOwner.orElseThrow(() -> new IllegalArgumentException(
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
@@ -127,15 +128,10 @@ class PetController {
 		}
 
 		LocalDate currentDate = LocalDate.now();
-		// Use switch expression to validate birth date
-		boolean isValidBirthDate = switch (pet.birthDate()) {
-			case null -> true;
-			case LocalDate bd when bd.isAfter(currentDate) -> {
-				result.rejectValue("birthDate", "typeMismatch.birthDate");
-				yield false;
-			}
-			case LocalDate bd -> true;
-		};
+		// Validate birth date (Java 17 compatible)
+		if (pet.birthDate() != null && pet.birthDate().isAfter(currentDate)) {
+			result.rejectValue("birthDate", "typeMismatch.birthDate");
+		}
 
 		if (result.hasErrors()) {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
@@ -173,15 +169,10 @@ class PetController {
 		}
 
 		LocalDate currentDate = LocalDate.now();
-		// Switch expression for birth date validation
-		boolean isValidBirthDate = switch (pet.birthDate()) {
-			case null -> true;
-			case LocalDate bd when bd.isAfter(currentDate) -> {
-				result.rejectValue("birthDate", "typeMismatch.birthDate");
-				yield false;
-			}
-			case LocalDate bd -> true;
-		};
+		// Validate birth date (Java 17 compatible)
+		if (pet.birthDate() != null && pet.birthDate().isAfter(currentDate)) {
+			result.rejectValue("birthDate", "typeMismatch.birthDate");
+		}
 
 		if (result.hasErrors()) {
 			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
@@ -194,10 +185,9 @@ class PetController {
 
 	/**
 	 * VIRTUALIZATION POINTS (10/21 and 11/21): I/O-bound JPA operations in nested method
-	 * File: PetController.java, Lines: 180-197 (updatePetDetails method)
-	 * Contains two virtualization points:
-	 * 1. owner.getPet(petId) - Line 183: Memory lookup but preceded by DB query
-	 * 2. this.owners.save(owner) - Line 197: Database mutation
+	 * File: PetController.java, Lines: 180-197 (updatePetDetails method) Contains two
+	 * virtualization points: 1. owner.getPet(petId) - Line 183: Memory lookup but
+	 * preceded by DB query 2. this.owners.save(owner) - Line 197: Database mutation
 	 */
 
 	/**
@@ -209,18 +199,16 @@ class PetController {
 		Integer petId = pet.id();
 		Assert.state(petId != null, "'pet.id()' must not be null");
 		Pet existingPet = owner.getPet(petId);
-		
-		// Pattern matching with switch expression
-		switch (existingPet) {
-			case Pet ep when ep != null -> {
-				// Update existing pet's properties by creating new record with updated fields
-				Pet updatedPet = new Pet(ep.id(), pet.name(), pet.birthDate(), pet.type(), ep.visits());
-				owner.pets().set(owner.pets().indexOf(ep), updatedPet);
-			}
-			case null -> {
-				// Add new pet
-				owner.addPet(pet);
-			}
+
+		// Update or add pet (Java 17 compatible)
+		if (existingPet != null) {
+			// Update existing pet's properties by creating new record with updated fields
+			Pet updatedPet = new Pet(existingPet.id(), pet.name(), pet.birthDate(), pet.type(), existingPet.visits());
+			owner.pets().set(owner.pets().indexOf(existingPet), updatedPet);
+		}
+		else {
+			// Add new pet
+			owner.addPet(pet);
 		}
 		// VIRTUALIZATION POINT (10/21): I/O-bound JPA operation - save (pet update)
 		// File: PetController.java, Line: 197

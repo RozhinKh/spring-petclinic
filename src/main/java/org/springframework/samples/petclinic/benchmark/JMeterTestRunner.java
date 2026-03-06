@@ -24,13 +24,15 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Executes JMeter load test plan against running application instance.
- * Supports configurable concurrency profiles and result collection.
+ * Executes JMeter load test plan against running application instance. Supports
+ * configurable concurrency profiles and result collection.
  */
 public class JMeterTestRunner {
 
 	private final String testPlanPath;
+
 	private final String applicationBaseUrl;
+
 	private final String resultDirectory;
 
 	public JMeterTestRunner(String testPlanPath, String applicationBaseUrl, String resultDirectory) {
@@ -41,7 +43,6 @@ public class JMeterTestRunner {
 
 	/**
 	 * Run JMeter load test with specified profile.
-	 *
 	 * @param variant Variant identifier (e.g., java17-baseline)
 	 * @param profile Profile name (light, medium, peak)
 	 * @param threads Number of concurrent threads
@@ -89,7 +90,8 @@ public class JMeterTestRunner {
 		Process jmeterProcess = pb.start();
 
 		// Wait for JMeter to complete
-		long totalDuration = rampup + duration + 30; // Add buffer for startup and shutdown
+		long totalDuration = rampup + duration + 30; // Add buffer for startup and
+														// shutdown
 		if (!jmeterProcess.waitFor(totalDuration * 2, TimeUnit.SECONDS)) {
 			jmeterProcess.destroyForcibly();
 			throw new RuntimeException("JMeter test timeout for profile: " + profile);
@@ -139,7 +141,8 @@ public class JMeterTestRunner {
 			}
 
 			System.out.println("✓ JMeter installation verified");
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			throw new RuntimeException("Failed to verify JMeter installation: " + e.getMessage());
 		}
 	}
@@ -150,10 +153,15 @@ public class JMeterTestRunner {
 	public static class TestRunResult {
 
 		private final String variant;
+
 		private final String profile;
+
 		private final int threads;
+
 		private final long startTimestamp;
+
 		private final String resultFilePath;
+
 		private final long executionTimeMs;
 
 		public TestRunResult(String variant, String profile, int threads, long startTimestamp, String resultFilePath,

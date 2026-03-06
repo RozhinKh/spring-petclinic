@@ -1,0 +1,64 @@
+============================================================
+  BENCHMARK RESULTS — java17-baseline
+  Run: Fri Mar  6 11:26:14 IST 2026
+  Total duration: 203s (~3m)
+============================================================
+
+CONFIGURATION
+-------------
+  Java Version : openjdk version "17.0.18" 2026-01-20 LTS
+  Variant      : java17-baseline
+  Load test    : 20s per concurrency level
+
+STARTUP TIME
+------------
+  Cold Startup : ms
+  Warm Startup : ms
+
+LOAD TEST — LATENCY PERCENTILES & THROUGHPUT
+--------------------------------------------
+  Users  TPS        P50       P95       P99       P99.9     Err%  
+  ------ ---------- --------- --------- --------- --------- ------
+  100    48.66      2044.38ms 2059.42ms 2066.89ms 2083.6ms  0.0%  
+  250    120.04     2053.73ms 2084.46ms 2098.02ms 2110.74ms 0.0%  
+  500    240.7      2047.47ms 2102.24ms 2120.03ms 2135.84ms 0.0%  
+
+JVM MEMORY (Spring Actuator snapshots)
+--------------------------------------
+  Heap Used Avg    : N/A
+  Heap Used Peak   : N/A
+  Heap Configured  : N/A (-Xmx)
+  Threads (avg)    : N/A
+  CPU Usage (avg)  : N/A
+
+GC METRICS (Spring Actuator — jvm.gc.*)
+----------------------------------------
+  GC Total Pause     : N/A (cumulative)
+  Allocation Pressure: N/A allocated (cumulative)
+  Promotion Rate     : N/A promoted (cumulative)
+  DB Pool Peak Active: N/A connections
+
+JFR — RUNTIME BLOCKING EVENTS
+------------------------------
+  MonitorWait + ThreadPark events: N/A
+  (See recording.jfr for full event trace)
+
+CODE MODERNIZATION METRICS
+--------------------------
+  Java record files        : 6
+  Pattern matching usages  : 11
+  Virtual thread references: 22
+  Switch expression yields : 0
+  Total Java source files  : 87
+  Total Java LOC           : 14974
+  Benchmark+Metrics LOC    : 12612
+
+OUTPUT FILES
+------------
+  RESULTS.txt              — this report
+  load-test-results.json   — full JSON (all 3 concurrency levels)
+  metrics.jsonl            — actuator time-series (6 snapshots)
+  recording.jfr            — JFR binary recording
+  app.log                  — application stdout/stderr
+  cold-start.log / warm-start.log — startup logs
+  load-test.log            — load test output

@@ -62,7 +62,8 @@ class VisitController {
 	@ModelAttribute("visit")
 	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
 			Map<String, Object> model) {
-		// VIRTUALIZATION POINT (11/21): I/O-bound JPA operation - findById (owner for visit)
+		// VIRTUALIZATION POINT (11/21): I/O-bound JPA operation - findById (owner for
+		// visit)
 		// File: VisitController.java, Line: 65
 		// Type: Database query (entity fetch for visit context)
 		// Involves: SQL SELECT owner with pets collection
@@ -72,15 +73,16 @@ class VisitController {
 				"Owner not found with id: " + ownerId + ". Please ensure the ID is correct "));
 
 		Pet pet = owner.getPet(petId);
-		
-		// Pattern matching with instanceof and null check
-		if (pet instanceof Pet validPet) {
-			model.put("pet", validPet);
+
+		// Null check (Java 17 compatible)
+		if (pet != null) {
+			model.put("pet", pet);
 			model.put("owner", owner);
 			Visit visit = new Visit();
-			validPet.addVisit(visit);
+			pet.addVisit(visit);
 			return visit;
-		} else {
+		}
+		else {
 			throw new IllegalArgumentException(
 					"Pet with id " + petId + " not found for owner with id " + ownerId + ".");
 		}
@@ -98,25 +100,22 @@ class VisitController {
 	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
 	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
 			BindingResult result, RedirectAttributes redirectAttributes) {
-		// Switch expression to handle validation errors and success
-		return switch (result.hasErrors()) {
-			case true -> {
-				// Validation errors found
-				yield "pets/createOrUpdateVisitForm";
-			}
-			case false -> {
-				// No errors, proceed with visit creation
-				owner.addVisit(petId, visit);
-				// VIRTUALIZATION POINT (12/21): I/O-bound JPA operation - save (visit persistence)
-				// File: VisitController.java, Line: 105
-				// Type: Database mutation (nested visit entity persist)
-				// Involves: SQL INSERT for visit, cascading FK updates, transaction overhead
-				// Virtual thread benefit: Efficient handling of nested entity persistence
-				this.owners.save(owner);
-				redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
-				yield "redirect:/owners/{ownerId}";
-			}
-		};
+		// Handle validation errors and success (Java 17 compatible)
+		if (result.hasErrors()) {
+			// Validation errors found
+			return "pets/createOrUpdateVisitForm";
+		}
+		// No errors, proceed with visit creation
+		owner.addVisit(petId, visit);
+		// VIRTUALIZATION POINT (12/21): I/O-bound JPA operation - save (visit
+		// persistence)
+		// File: VisitController.java, Line: 105
+		// Type: Database mutation (nested visit entity persist)
+		// Involves: SQL INSERT for visit, cascading FK updates, transaction overhead
+		// Virtual thread benefit: Efficient handling of nested entity persistence
+		this.owners.save(owner);
+		redirectAttributes.addFlashAttribute("message", "Your visit has been booked");
+		return "redirect:/owners/{ownerId}";
 	}
 
 }

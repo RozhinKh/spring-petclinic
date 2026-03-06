@@ -1,0 +1,56 @@
+[
+  {
+    "concurrency": 100,
+    "duration_seconds": 30.13,
+    "total_requests": 18567,
+    "successful_requests": 18567,
+    "error_count": 0,
+    "error_rate_pct": 0.0,
+    "throughput_rps": 616.29,
+    "latency_ms": {
+      "min": 17.54,
+      "avg": 161.96,
+      "p50": 135.92,
+      "p95": 342.6,
+      "p99": 456.3,
+      "p99_9": 540.15,
+      "max": 661.33
+    }
+  },
+  {
+    "concurrency": 250,
+    "duration_seconds": 30.35,
+    "total_requests": 19075,
+    "successful_requests": 19075,
+    "error_count": 0,
+    "error_rate_pct": 0.0,
+    "throughput_rps": 628.59,
+    "latency_ms": {
+      "min": 29.45,
+      "avg": 395.73,
+      "p50": 350.1,
+      "p95": 741.34,
+      "p99": 840.96,
+      "p99_9": 1051.53,
+      "max": 1267.05
+    }
+  },
+  {
+    "concurrency": 500,
+    "duration_seconds": 30.53,
+    "total_requests": 22424,
+    "successful_requests": 759,
+    "error_count": 21665,
+    "error_rate_pct": 96.615,
+    "throughput_rps": 734.42,
+    "latency_ms": {
+      "min": 16.74,
+      "avg": 673.8,
+      "p50": 423.49,
+      "p95": 2481.72,
+      "p99": 6047.04,
+      "p99_9": 8308.81,
+      "max": 9378.82
+    }
+  }
+]

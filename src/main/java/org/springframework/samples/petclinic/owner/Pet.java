@@ -21,14 +21,14 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.model.BaseEntity;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -46,37 +46,113 @@ import jakarta.validation.constraints.NotBlank;
  */
 @Entity
 @Table(name = "pets")
-public record Pet(
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
-	@Column @NotBlank String name,
-	@Column @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate birthDate,
-	@ManyToOne @JoinColumn(name = "type_id") PetType type,
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) @JoinColumn(name = "pet_id") @OrderBy("date ASC") Set<Visit> visits
-) {
+@Access(AccessType.FIELD)
+public class Pet extends BaseEntity {
+
+	@Column
+	@NotBlank
+	private String name;
+
+	@Column
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private LocalDate birthDate;
+
+	@ManyToOne
+	@JoinColumn(name = "type_id")
+	private PetType type;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "pet_id")
+	@OrderBy("date ASC")
+	private Set<Visit> visits = new LinkedHashSet<>();
+
+	public Pet() {
+	}
 
 	public Pet(Integer id, String name, LocalDate birthDate, PetType type) {
-		this(id, name, birthDate, type, new LinkedHashSet<>());
+		setId(id);
+		this.name = name;
+		this.birthDate = birthDate;
+		this.type = type;
+	}
+
+	public Pet(Integer id, String name, LocalDate birthDate, PetType type, Set<Visit> visits) {
+		setId(id);
+		this.name = name;
+		this.birthDate = birthDate;
+		this.type = type;
+		if (visits != null) {
+			this.visits = visits;
+		}
 	}
 
 	public Pet(String name, LocalDate birthDate, PetType type) {
-		this(null, name, birthDate, type, new LinkedHashSet<>());
+		this.name = name;
+		this.birthDate = birthDate;
+		this.type = type;
 	}
 
 	public Pet(String name) {
-		this(null, name, null, null, new LinkedHashSet<>());
+		this.name = name;
 	}
 
-	public Pet() {
-		this(null, null, null, null, new LinkedHashSet<>());
+	/** Record-style accessor. */
+	public Integer id() {
+		return getId();
+	}
+
+	/** Record-style accessor. */
+	public String name() {
+		return name;
+	}
+
+	/** Record-style accessor. */
+	public LocalDate birthDate() {
+		return birthDate;
+	}
+
+	/** Record-style accessor. */
+	public PetType type() {
+		return type;
+	}
+
+	/** Record-style accessor. */
+	public Set<Visit> visits() {
+		return visits;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public LocalDate getBirthDate() {
+		return birthDate;
+	}
+
+	public void setBirthDate(LocalDate birthDate) {
+		this.birthDate = birthDate;
+	}
+
+	public PetType getType() {
+		return type;
+	}
+
+	public void setType(PetType type) {
+		this.type = type;
+	}
+
+	public Collection<Visit> getVisits() {
+		return visits;
 	}
 
 	public void addVisit(Visit visit) {
-		if (visits != null) {
+		if (visit != null) {
 			visits.add(visit);
 		}
 	}
 
-	public boolean isNew() {
-		return this.id == null;
-	}
 }

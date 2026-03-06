@@ -31,14 +31,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Collector for Java 21 domain model modernization metrics.
- * Tracks LOC before/after, records created, pattern matching applications, and switch expression conversions.
+ * Collector for Java 21 domain model modernization metrics. Tracks LOC before/after,
+ * records created, pattern matching applications, and switch expression conversions.
  *
  * @author Modernization Refactoring Task
  */
 public class ModernizationMetricsCollector {
 
 	private final Map<String, FileLOCMetrics> fileMetrics = new LinkedHashMap<>();
+
 	private final Map<String, Integer> constructMetrics = new HashMap<>();
 
 	public ModernizationMetricsCollector() {
@@ -92,8 +93,8 @@ public class ModernizationMetricsCollector {
 		for (FileLOCMetrics metric : fileMetrics.values()) {
 			int savings = metric.beforeLOC - metric.afterLOC;
 			double percent = metric.beforeLOC > 0 ? (savings * 100.0) / metric.beforeLOC : 0;
-			csv.append(String.format("%s,%s,%d,%d,%d,%.2f%%\n",
-					metric.fileName, metric.category, metric.beforeLOC, metric.afterLOC, savings, percent));
+			csv.append(String.format("%s,%s,%d,%d,%d,%.2f%%\n", metric.fileName, metric.category, metric.beforeLOC,
+					metric.afterLOC, savings, percent));
 		}
 
 		csv.append("\n--- MODERNIZATION CONSTRUCTS APPLIED ---\n");
@@ -127,7 +128,10 @@ public class ModernizationMetricsCollector {
 			fileMetric.put("beforeLOC", metric.beforeLOC);
 			fileMetric.put("afterLOC", metric.afterLOC);
 			fileMetric.put("locSavings", metric.beforeLOC - metric.afterLOC);
-			fileMetric.put("reductionPercent", metric.beforeLOC > 0 ? String.format("%.2f%%", ((metric.beforeLOC - metric.afterLOC) * 100.0) / metric.beforeLOC) : "0%");
+			fileMetric.put("reductionPercent",
+					metric.beforeLOC > 0
+							? String.format("%.2f%%", ((metric.beforeLOC - metric.afterLOC) * 100.0) / metric.beforeLOC)
+							: "0%");
 			fileMetricsJson.put(metric.fileName, fileMetric);
 		}
 		report.put("fileMetrics", fileMetricsJson);
@@ -164,7 +168,8 @@ public class ModernizationMetricsCollector {
 			try {
 				Files.writeString(jsonPath, exportAsJSON(), StandardCharsets.UTF_8);
 				System.out.println("Metrics exported to: " + jsonPath);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				throw new IOException("Failed to export JSON metrics", e);
 			}
 		}
@@ -204,9 +209,13 @@ public class ModernizationMetricsCollector {
 	 * Inner class to hold LOC metrics for a file
 	 */
 	public static class FileLOCMetrics {
+
 		public final String fileName;
+
 		public final int beforeLOC;
+
 		public final int afterLOC;
+
 		public final String category;
 
 		public FileLOCMetrics(String fileName, int beforeLOC, int afterLOC, String category) {
@@ -215,5 +224,7 @@ public class ModernizationMetricsCollector {
 			this.afterLOC = afterLOC;
 			this.category = category;
 		}
+
 	}
+
 }

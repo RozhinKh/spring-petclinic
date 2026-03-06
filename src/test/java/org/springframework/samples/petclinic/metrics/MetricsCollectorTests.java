@@ -50,25 +50,14 @@ class MetricsCollectorTests {
 	@Test
 	void metricsSnapshotCanBeCreated() {
 		// Create a sample metrics snapshot
-		Map<String, Object> httpMetrics = Map.of(
-			"mean_response_time_ms", 50.0,
-			"max_response_time_ms", 100.0,
-			"request_count", 1000.0
-		);
+		Map<String, Object> httpMetrics = Map.of("mean_response_time_ms", 50.0, "max_response_time_ms", 100.0,
+				"request_count", 1000.0);
 
-		Map<String, Object> jvmMetrics = Map.of(
-			"heap_memory_used_bytes", 1024000.0,
-			"heap_memory_max_bytes", 2048000.0
-		);
+		Map<String, Object> jvmMetrics = Map.of("heap_memory_used_bytes", 1024000.0, "heap_memory_max_bytes",
+				2048000.0);
 
-		Map<String, Object> snapshot = MetricsExporter.createMetricsSnapshot(
-			System.currentTimeMillis(),
-			httpMetrics,
-			jvmMetrics,
-			Map.of(),
-			Map.of(),
-			Map.of()
-		);
+		Map<String, Object> snapshot = MetricsExporter.createMetricsSnapshot(System.currentTimeMillis(), httpMetrics,
+				jvmMetrics, Map.of(), Map.of(), Map.of());
 
 		// Verify snapshot structure
 		assertThat(snapshot).containsKeys("timestamp_ms", "timestamp_iso", "metrics");

@@ -1,0 +1,35 @@
+╔════════════════════════════════════════════════════════════════════╗
+║              BENCHMARK RESULTS - java17-baseline
+║              Timestamp: Fri Mar  6 05:11:35 IST 2026
+║              Duration: 777 seconds
+╚════════════════════════════════════════════════════════════════════╝
+
+BENCHMARK CONFIGURATION
+=======================
+Java Version: openjdk version "17.0.18" 2026-01-20 LTS
+Variant: java17-baseline
+
+LOAD TEST METRICS
+=================
+Total Requests: 0
+Errors: 0 (0%)
+Avg Response Time: 0ms
+
+JVM METRICS (from Actuator)
+===========================
+Avg Memory Usage: N/AMB
+Samples Collected: 0
+
+OUTPUT FILES
+============
+- metrics.jsonl: Actuator metrics timeseries
+- recording.jfr: Java Flight Recorder output
+- recording.json: JFR converted to JSON
+- jmeter-results.jtl: Load test results (CSV)
+- surefire-reports/: Unit test results
+- jacoco-report/: Code coverage report
+- app.log: Application startup log
+
+END-TO-END EXECUTION TIME
+==========================
+Total: 777 seconds (~12 minutes)

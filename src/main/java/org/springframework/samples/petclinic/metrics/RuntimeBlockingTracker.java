@@ -25,8 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Aggregates runtime blocking events captured by JFR listener.
- * Produces blocking statistics aggregated by method/class for comparison with static analysis.
+ * Aggregates runtime blocking events captured by JFR listener. Produces blocking
+ * statistics aggregated by method/class for comparison with static analysis.
  */
 public class RuntimeBlockingTracker {
 
@@ -65,11 +65,9 @@ public class RuntimeBlockingTracker {
 			totalBlockingEvents++;
 
 			// Aggregate by method
-			String methodKey = formatMethodKey(event.getClassName(), event.getMethodName(),
-					event.getType());
+			String methodKey = formatMethodKey(event.getClassName(), event.getMethodName(), event.getType());
 			MethodBlockingStats methodStats = blockingStatsByMethod.computeIfAbsent(methodKey,
-					k -> new MethodBlockingStats(event.getClassName(), event.getMethodName(),
-							event.getType()));
+					k -> new MethodBlockingStats(event.getClassName(), event.getMethodName(), event.getType()));
 			methodStats.recordEvent(event);
 
 			// Aggregate by class
@@ -79,8 +77,7 @@ public class RuntimeBlockingTracker {
 			classStats.recordEvent(event);
 		}
 
-		logger.info("Aggregated {} blocking events, total time: {}ms", totalBlockingEvents,
-				totalBlockingTime);
+		logger.info("Aggregated {} blocking events, total time: {}ms", totalBlockingEvents, totalBlockingTime);
 	}
 
 	/**
@@ -113,32 +110,36 @@ public class RuntimeBlockingTracker {
 
 		// Top blocking methods
 		List<Map<String, Object>> topMethods = new ArrayList<>();
-		blockingStatsByMethod.values().stream()
-				.sorted((a, b) -> Long.compare(b.getTotalDuration(), a.getTotalDuration()))
-				.limit(10).forEach(method -> {
-					Map<String, Object> methodMap = new HashMap<>();
-					methodMap.put("method", method.getMethodName());
-					methodMap.put("class", method.getClassName());
-					methodMap.put("type", method.getBlockingType());
-					methodMap.put("count", method.getCount());
-					methodMap.put("total_duration_ms", method.getTotalDuration());
-					methodMap.put("average_duration_ms", method.getAverageDuration());
-					topMethods.add(methodMap);
-				});
+		blockingStatsByMethod.values()
+			.stream()
+			.sorted((a, b) -> Long.compare(b.getTotalDuration(), a.getTotalDuration()))
+			.limit(10)
+			.forEach(method -> {
+				Map<String, Object> methodMap = new HashMap<>();
+				methodMap.put("method", method.getMethodName());
+				methodMap.put("class", method.getClassName());
+				methodMap.put("type", method.getBlockingType());
+				methodMap.put("count", method.getCount());
+				methodMap.put("total_duration_ms", method.getTotalDuration());
+				methodMap.put("average_duration_ms", method.getAverageDuration());
+				topMethods.add(methodMap);
+			});
 		summary.put("top_blocking_methods", topMethods);
 
 		// Top blocking classes
 		List<Map<String, Object>> topClasses = new ArrayList<>();
-		blockingStatsByClass.values().stream()
-				.sorted((a, b) -> Long.compare(b.getTotalDuration(), a.getTotalDuration()))
-				.limit(10).forEach(cls -> {
-					Map<String, Object> classMap = new HashMap<>();
-					classMap.put("class", cls.getClassName());
-					classMap.put("type", cls.getBlockingType());
-					classMap.put("count", cls.getCount());
-					classMap.put("total_duration_ms", cls.getTotalDuration());
-					topClasses.add(classMap);
-				});
+		blockingStatsByClass.values()
+			.stream()
+			.sorted((a, b) -> Long.compare(b.getTotalDuration(), a.getTotalDuration()))
+			.limit(10)
+			.forEach(cls -> {
+				Map<String, Object> classMap = new HashMap<>();
+				classMap.put("class", cls.getClassName());
+				classMap.put("type", cls.getBlockingType());
+				classMap.put("count", cls.getCount());
+				classMap.put("total_duration_ms", cls.getTotalDuration());
+				topClasses.add(classMap);
+			});
 		summary.put("top_blocking_classes", topClasses);
 
 		return summary;

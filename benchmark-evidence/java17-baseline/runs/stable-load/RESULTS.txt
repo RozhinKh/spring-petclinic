@@ -1,0 +1,15 @@
+BENCHMARK RESULTS - java17-baseline
+Results directory: C:\Users\BiaDigi\Desktop\Spring Pet Clinic\benchmark-results\20260306_130936
+
+Cold startup: 11597 ms
+Warm startup: 11609 ms
+
+Load test:
+100 users: TPS=346.04 P50=176.25ms P95=437.29ms P99=586.98ms P99.9=15021.21ms Err=0.0%
+250 users: TPS=559.4 P50=370.5ms P95=979.91ms P99=1172.74ms P99.9=15348.79ms Err=0.0%
+500 users: TPS=334.98 P50=1014.34ms P95=4707.35ms P99=6934.04ms P99.9=18356.25ms Err=0.0%
+
+Allocation rate: 560.04 MB/s
+Promotion rate: 0.04 MB/s
+SpotBugs blocking findings: 18
+Runtime blocking events from JFR: 

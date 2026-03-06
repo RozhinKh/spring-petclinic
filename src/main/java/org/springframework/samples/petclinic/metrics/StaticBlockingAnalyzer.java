@@ -30,12 +30,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Static code analyzer for detecting blocking patterns in compiled Java classes.
- * Scans bytecode patterns using regular expressions and SpotBugs reports for:
- * - Synchronized blocks/methods
- * - Thread.sleep() calls
- * - BlockingQueue/BlockingDeque operations
- * - Blocking I/O (URLConnection, FileInputStream, etc.)
+ * Static code analyzer for detecting blocking patterns in compiled Java classes. Scans
+ * bytecode patterns using regular expressions and SpotBugs reports for: - Synchronized
+ * blocks/methods - Thread.sleep() calls - BlockingQueue/BlockingDeque operations -
+ * Blocking I/O (URLConnection, FileInputStream, etc.)
  */
 public class StaticBlockingAnalyzer {
 
@@ -107,16 +105,15 @@ public class StaticBlockingAnalyzer {
 		}
 
 		try {
-			Files.walk(Paths.get(classDirectory)).filter(path -> path.toString().endsWith(".class"))
-					.forEach(path -> {
-						try {
-							String content = new String(Files.readAllBytes(path));
-							scanClassContent(path.toString(), content);
-						}
-						catch (IOException e) {
-							logger.warn("Failed to read class file: {}", path);
-						}
-					});
+			Files.walk(Paths.get(classDirectory)).filter(path -> path.toString().endsWith(".class")).forEach(path -> {
+				try {
+					String content = new String(Files.readAllBytes(path));
+					scanClassContent(path.toString(), content);
+				}
+				catch (IOException e) {
+					logger.warn("Failed to read class file: {}", path);
+				}
+			});
 		}
 		catch (IOException e) {
 			logger.warn("Failed to scan class directory: {}", e.getMessage());
@@ -159,14 +156,16 @@ public class StaticBlockingAnalyzer {
 
 		try {
 			Files.walk(Paths.get(spotbugsReportDirectory))
-					.filter(path -> path.toString().endsWith("spotbugsXml.xml")).findFirst().ifPresent(path -> {
-						try {
-							parseSpotBugsXml(path.toString());
-						}
-						catch (IOException e) {
-							logger.warn("Failed to parse SpotBugs report: {}", e.getMessage());
-						}
-					});
+				.filter(path -> path.toString().endsWith("spotbugsXml.xml"))
+				.findFirst()
+				.ifPresent(path -> {
+					try {
+						parseSpotBugsXml(path.toString());
+					}
+					catch (IOException e) {
+						logger.warn("Failed to parse SpotBugs report: {}", e.getMessage());
+					}
+				});
 		}
 		catch (IOException e) {
 			logger.warn("Failed to scan spotbugs directory: {}", e.getMessage());
@@ -180,8 +179,8 @@ public class StaticBlockingAnalyzer {
 		String content = new String(Files.readAllBytes(Paths.get(xmlPath)));
 
 		// Extract bug patterns related to threading
-		Pattern bugPattern = Pattern.compile(
-				"<Bug.*?type=\"([^\"]+)\".*?abbrev=\"([^\"]+)\".*?category=\"([^\"]+)\".*?priority=\"([^\"]+)\"");
+		Pattern bugPattern = Pattern
+			.compile("<Bug.*?type=\"([^\"]+)\".*?abbrev=\"([^\"]+)\".*?category=\"([^\"]+)\".*?priority=\"([^\"]+)\"");
 		Matcher matcher = bugPattern.matcher(content);
 
 		while (matcher.find()) {
@@ -191,8 +190,8 @@ public class StaticBlockingAnalyzer {
 			String priority = matcher.group(4);
 
 			// Filter for concurrency-related issues
-			if (category.toLowerCase().contains("concurrency") || abbrev.contains("SYN")
-					|| abbrev.contains("WAIT") || type.contains("Lock")) {
+			if (category.toLowerCase().contains("concurrency") || abbrev.contains("SYN") || abbrev.contains("WAIT")
+					|| type.contains("Lock")) {
 
 				BlockingFinding finding = new BlockingFinding();
 				finding.setPattern(abbrev);
@@ -241,8 +240,7 @@ public class StaticBlockingAnalyzer {
 	private Map<String, Integer> groupByPattern() {
 		Map<String, Integer> grouped = new HashMap<>();
 		for (BlockingFinding finding : staticFindings) {
-			grouped.put(finding.getPattern(),
-					grouped.getOrDefault(finding.getPattern(), 0) + 1);
+			grouped.put(finding.getPattern(), grouped.getOrDefault(finding.getPattern(), 0) + 1);
 		}
 		return grouped;
 	}
@@ -272,9 +270,7 @@ public class StaticBlockingAnalyzer {
 		// Convert /path/to/ClassName.class to ClassName
 		String className = filePath.replaceAll(".*[\\\\/]", "").replace(".class", "");
 		// Convert path/to/ClassName to path.to.ClassName
-		return filePath.replace(File.separator, ".")
-				.replaceAll("^.*target\\.classes\\.", "")
-				.replace(".class", "");
+		return filePath.replace(File.separator, ".").replaceAll("^.*target\\.classes\\.", "").replace(".class", "");
 	}
 
 	/**

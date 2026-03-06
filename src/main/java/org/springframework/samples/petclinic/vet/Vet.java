@@ -21,12 +21,13 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.samples.petclinic.model.BaseEntity;
+
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
@@ -44,23 +45,77 @@ import jakarta.xml.bind.annotation.XmlElement;
  */
 @Entity
 @Table(name = "vets")
-public record Vet(
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
-	@Column @NotBlank String firstName,
-	@Column @NotBlank String lastName,
-	@ManyToMany(fetch = FetchType.EAGER) @JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"), inverseJoinColumns = @JoinColumn(name = "specialty_id")) Set<Specialty> specialties
-) {
+@Access(AccessType.FIELD)
+public class Vet extends BaseEntity {
+
+	@Column
+	@NotBlank
+	private String firstName;
+
+	@Column
+	@NotBlank
+	private String lastName;
+
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "vet_specialties", joinColumns = @JoinColumn(name = "vet_id"),
+			inverseJoinColumns = @JoinColumn(name = "specialty_id"))
+	private Set<Specialty> specialties = new HashSet<>();
+
+	public Vet() {
+	}
 
 	public Vet(Integer id, String firstName, String lastName) {
-		this(id, firstName, lastName, new HashSet<>());
+		setId(id);
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+
+	public Vet(Integer id, String firstName, String lastName, Set<Specialty> specialties) {
+		this(id, firstName, lastName);
+		if (specialties != null) {
+			this.specialties = specialties;
+		}
 	}
 
 	public Vet(String firstName, String lastName) {
-		this(null, firstName, lastName, new HashSet<>());
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 
-	public Vet() {
-		this(null, null, null, new HashSet<>());
+	/** Record-style accessor. */
+	public Integer id() {
+		return getId();
+	}
+
+	/** Record-style accessor. */
+	public String firstName() {
+		return firstName;
+	}
+
+	/** Record-style accessor. */
+	public String lastName() {
+		return lastName;
+	}
+
+	/** Record-style accessor. */
+	public Set<Specialty> specialties() {
+		return specialties;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	protected Set<Specialty> getSpecialtiesInternal() {
@@ -82,7 +137,4 @@ public record Vet(
 		getSpecialtiesInternal().add(specialty);
 	}
 
-	public boolean isNew() {
-		return this.id == null;
-	}
 }

@@ -1,0 +1,5 @@
+[0.361s][info][jfr,startup] Started recording 1. The result will be written to:
+[0.361s][info][jfr,startup] 
+[0.361s][info][jfr,startup] C:\Users\BiaDigi\Desktop\Spring
+Error: Could not find or load main class Pet
+Caused by: java.lang.ClassNotFoundException: Pet

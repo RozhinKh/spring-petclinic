@@ -32,8 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Parses JaCoCo XML coverage reports.
- * Extracts line, branch, and method coverage percentages.
+ * Parses JaCoCo XML coverage reports. Extracts line, branch, and method coverage
+ * percentages.
  */
 public class JaCoCoReportParser {
 
@@ -41,8 +41,8 @@ public class JaCoCoReportParser {
 
 	/**
 	 * Parse JaCoCo XML report and extract coverage metrics.
-	 *
-	 * @param reportXmlPath Path to JaCoCo XML report (target/site/jacoco/index.xml or similar)
+	 * @param reportXmlPath Path to JaCoCo XML report (target/site/jacoco/index.xml or
+	 * similar)
 	 * @return JSON object with coverage metrics
 	 */
 	public ObjectNode parseJaCoCoReport(String reportXmlPath) throws Exception {
@@ -58,15 +58,9 @@ public class JaCoCoReportParser {
 	}
 
 	/**
-	 * Parse JaCoCo XML file and extract coverage data.
-	 * JaCoCo XML structure:
-	 * <report>
-	 *   <package ...>
-	 *     <counter type="LINE" ... />
-	 *     <counter type="BRANCH" ... />
-	 *     <counter type="METHOD" ... />
-	 *   </package>
-	 * </report>
+	 * Parse JaCoCo XML file and extract coverage data. JaCoCo XML structure: <report>
+	 * <package ...> <counter type="LINE" ... /> <counter type="BRANCH" ... /> <counter
+	 * type="METHOD" ... /> </package> </report>
 	 */
 	private ObjectNode parseJaCoCoXml(File xmlFile) throws Exception {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -109,8 +103,8 @@ public class JaCoCoReportParser {
 
 		// Calculate aggregated percentages
 		if (aggregated.lineCovered + aggregated.lineMissed > 0) {
-			aggregated.lineCoverage = (double) aggregated.lineCovered
-					/ (aggregated.lineCovered + aggregated.lineMissed) * 100.0;
+			aggregated.lineCoverage = (double) aggregated.lineCovered / (aggregated.lineCovered + aggregated.lineMissed)
+					* 100.0;
 		}
 		if (aggregated.branchCovered + aggregated.branchMissed > 0) {
 			aggregated.branchCoverage = (double) aggregated.branchCovered
@@ -157,13 +151,15 @@ public class JaCoCoReportParser {
 				if (covered + missed > 0) {
 					metrics.lineCoverage = (double) covered / (covered + missed) * 100.0;
 				}
-			} else if ("BRANCH".equals(type)) {
+			}
+			else if ("BRANCH".equals(type)) {
 				metrics.branchMissed = missed;
 				metrics.branchCovered = covered;
 				if (covered + missed > 0) {
 					metrics.branchCoverage = (double) covered / (covered + missed) * 100.0;
 				}
-			} else if ("METHOD".equals(type)) {
+			}
+			else if ("METHOD".equals(type)) {
 				metrics.methodMissed = missed;
 				metrics.methodCovered = covered;
 				if (covered + missed > 0) {
@@ -197,7 +193,8 @@ public class JaCoCoReportParser {
 	private int parseInt(String value) {
 		try {
 			return Integer.parseInt(value);
-		} catch (NumberFormatException e) {
+		}
+		catch (NumberFormatException e) {
 			return 0;
 		}
 	}
@@ -206,15 +203,25 @@ public class JaCoCoReportParser {
 	 * Helper class for coverage metrics.
 	 */
 	private static class CoverageMetrics {
+
 		double lineCoverage = 0.0;
+
 		double branchCoverage = 0.0;
+
 		double methodCoverage = 0.0;
+
 		int lineMissed = 0;
+
 		int lineCovered = 0;
+
 		int branchMissed = 0;
+
 		int branchCovered = 0;
+
 		int methodMissed = 0;
+
 		int methodCovered = 0;
+
 	}
 
 }

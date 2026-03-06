@@ -30,12 +30,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatException;
 
 /**
- * Tests for load test harness components.
- * Tests database setup, configuration loading, and results processing.
+ * Tests for load test harness components. Tests database setup, configuration loading,
+ * and results processing.
  */
 public class LoadTestHarnessTests {
 
 	private static final String TEST_RESULTS_DIR = "target/test-results";
+
 	private static final String TEST_CONFIG_PATH = "src/main/resources/load-test-harness-config.properties";
 
 	@BeforeEach
@@ -50,18 +51,16 @@ public class LoadTestHarnessTests {
 	@Test
 	public void testDatabaseTypeEnum() {
 		// Test enum creation from name
-		assertThat(DatabaseSetupManager.DatabaseType.fromName("h2")).isEqualTo(
-				DatabaseSetupManager.DatabaseType.H2);
-		assertThat(DatabaseSetupManager.DatabaseType.fromName("mysql")).isEqualTo(
-				DatabaseSetupManager.DatabaseType.MYSQL);
-		assertThat(DatabaseSetupManager.DatabaseType.fromName("postgres")).isEqualTo(
-				DatabaseSetupManager.DatabaseType.POSTGRES);
+		assertThat(DatabaseSetupManager.DatabaseType.fromName("h2")).isEqualTo(DatabaseSetupManager.DatabaseType.H2);
+		assertThat(DatabaseSetupManager.DatabaseType.fromName("mysql"))
+			.isEqualTo(DatabaseSetupManager.DatabaseType.MYSQL);
+		assertThat(DatabaseSetupManager.DatabaseType.fromName("postgres"))
+			.isEqualTo(DatabaseSetupManager.DatabaseType.POSTGRES);
 
 		// Test case insensitivity
-		assertThat(DatabaseSetupManager.DatabaseType.fromName("H2")).isEqualTo(
-				DatabaseSetupManager.DatabaseType.H2);
-		assertThat(DatabaseSetupManager.DatabaseType.fromName("MySQL")).isEqualTo(
-				DatabaseSetupManager.DatabaseType.MYSQL);
+		assertThat(DatabaseSetupManager.DatabaseType.fromName("H2")).isEqualTo(DatabaseSetupManager.DatabaseType.H2);
+		assertThat(DatabaseSetupManager.DatabaseType.fromName("MySQL"))
+			.isEqualTo(DatabaseSetupManager.DatabaseType.MYSQL);
 	}
 
 	@Test
@@ -82,7 +81,7 @@ public class LoadTestHarnessTests {
 	@Test
 	public void testDatabaseTypeInvalidName() {
 		assertThatException().isThrownBy(() -> DatabaseSetupManager.DatabaseType.fromName("invalid"))
-				.withMessageContaining("Unknown database type");
+			.withMessageContaining("Unknown database type");
 	}
 
 	// ============================================
@@ -91,8 +90,8 @@ public class LoadTestHarnessTests {
 
 	@Test
 	public void testApplicationStarterConfiguration() {
-		ApplicationStarter starter = new ApplicationStarter("test-variant", "8080", "default", "-Xms512m",
-				30L, 60L, 30L, 50);
+		ApplicationStarter starter = new ApplicationStarter("test-variant", "8080", "default", "-Xms512m", 30L, 60L,
+				30L, 50);
 
 		assertThat(starter.getVariant()).isEqualTo("test-variant");
 		assertThat(starter.getPort()).isEqualTo("8080");
@@ -101,12 +100,10 @@ public class LoadTestHarnessTests {
 
 	@Test
 	public void testApplicationStarterPortVariations() {
-		ApplicationStarter starter8080 = new ApplicationStarter("v1", "8080", "default", "-Xms512m",
-				30L, 60L, 30L, 50);
+		ApplicationStarter starter8080 = new ApplicationStarter("v1", "8080", "default", "-Xms512m", 30L, 60L, 30L, 50);
 		assertThat(starter8080.getBaseUrl()).isEqualTo("http://localhost:8080");
 
-		ApplicationStarter starter8081 = new ApplicationStarter("v2", "8081", "default", "-Xms512m",
-				30L, 60L, 30L, 50);
+		ApplicationStarter starter8081 = new ApplicationStarter("v2", "8081", "default", "-Xms512m", 30L, 60L, 30L, 50);
 		assertThat(starter8081.getBaseUrl()).isEqualTo("http://localhost:8081");
 	}
 
@@ -116,8 +113,8 @@ public class LoadTestHarnessTests {
 
 	@Test
 	public void testJMeterTestRunResultContainer() {
-		JMeterTestRunner.TestRunResult result = new JMeterTestRunner.TestRunResult("java17-baseline", "light",
-				100, 1704067200L, "/path/to/results.csv", 60000L);
+		JMeterTestRunner.TestRunResult result = new JMeterTestRunner.TestRunResult("java17-baseline", "light", 100,
+				1704067200L, "/path/to/results.csv", 60000L);
 
 		assertThat(result.getVariant()).isEqualTo("java17-baseline");
 		assertThat(result.getProfile()).isEqualTo("light");
@@ -144,7 +141,8 @@ public class LoadTestHarnessTests {
 	@Test
 	public void testConfigurationFileExists() {
 		assertThat(Files.exists(Paths.get(TEST_CONFIG_PATH)))
-				.as("Configuration file should exist at " + TEST_CONFIG_PATH).isTrue();
+			.as("Configuration file should exist at " + TEST_CONFIG_PATH)
+			.isTrue();
 	}
 
 	@Test
@@ -152,7 +150,8 @@ public class LoadTestHarnessTests {
 		List<String> lines = Files.readAllLines(Paths.get(TEST_CONFIG_PATH));
 		assertThat(lines).isNotEmpty();
 		assertThat(lines.stream().anyMatch(line -> line.contains("variant.java17.name")))
-				.as("Configuration should contain java17 variant").isTrue();
+			.as("Configuration should contain java17 variant")
+			.isTrue();
 	}
 
 	// ============================================
@@ -161,20 +160,22 @@ public class LoadTestHarnessTests {
 
 	@Test
 	public void testH2ResetScriptExists() {
-		assertThat(Files.exists(Paths.get("src/main/resources/db/h2/reset.sql")))
-				.as("H2 reset script should exist").isTrue();
+		assertThat(Files.exists(Paths.get("src/main/resources/db/h2/reset.sql"))).as("H2 reset script should exist")
+			.isTrue();
 	}
 
 	@Test
 	public void testMySQLResetScriptExists() {
 		assertThat(Files.exists(Paths.get("src/main/resources/db/mysql/reset.sql")))
-				.as("MySQL reset script should exist").isTrue();
+			.as("MySQL reset script should exist")
+			.isTrue();
 	}
 
 	@Test
 	public void testPostgresResetScriptExists() {
 		assertThat(Files.exists(Paths.get("src/main/resources/db/postgres/reset.sql")))
-				.as("PostgreSQL reset script should exist").isTrue();
+			.as("PostgreSQL reset script should exist")
+			.isTrue();
 	}
 
 	@Test
@@ -243,15 +244,18 @@ public class LoadTestHarnessTests {
 
 		// Verify light profile
 		assertThat(lines.stream().anyMatch(line -> line.contains("test.profile.light.threads=100")))
-				.as("Light profile should have 100 threads").isTrue();
+			.as("Light profile should have 100 threads")
+			.isTrue();
 
 		// Verify medium profile
 		assertThat(lines.stream().anyMatch(line -> line.contains("test.profile.medium.threads=250")))
-				.as("Medium profile should have 250 threads").isTrue();
+			.as("Medium profile should have 250 threads")
+			.isTrue();
 
 		// Verify peak profile
 		assertThat(lines.stream().anyMatch(line -> line.contains("test.profile.peak.threads=500")))
-				.as("Peak profile should have 500 threads").isTrue();
+			.as("Peak profile should have 500 threads")
+			.isTrue();
 	}
 
 	// ============================================
@@ -263,7 +267,7 @@ public class LoadTestHarnessTests {
 		List<String> lines = Files.readAllLines(Paths.get(TEST_CONFIG_PATH));
 
 		boolean foundTestPlan = lines.stream()
-				.anyMatch(line -> line.contains("jmeter.test_plan=") && line.contains(".jmx"));
+			.anyMatch(line -> line.contains("jmeter.test_plan=") && line.contains(".jmx"));
 
 		assertThat(foundTestPlan).as("Configuration should specify JMeter test plan path").isTrue();
 	}
@@ -277,13 +281,16 @@ public class LoadTestHarnessTests {
 		List<String> lines = Files.readAllLines(Paths.get(TEST_CONFIG_PATH));
 
 		assertThat(lines.stream().anyMatch(line -> line.contains("application.health_timeout_seconds")))
-				.as("Health check timeout should be configured").isTrue();
+			.as("Health check timeout should be configured")
+			.isTrue();
 
 		assertThat(lines.stream().anyMatch(line -> line.contains("application.startup_timeout_seconds")))
-				.as("Startup timeout should be configured").isTrue();
+			.as("Startup timeout should be configured")
+			.isTrue();
 
 		assertThat(lines.stream().anyMatch(line -> line.contains("application.warmup_seconds")))
-				.as("Warm-up period should be configured").isTrue();
+			.as("Warm-up period should be configured")
+			.isTrue();
 	}
 
 }

@@ -1,0 +1,85 @@
+{
+  "bundle": "java17-baseline",
+  "created_from_workspace": "c:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic",
+  "purpose": "Comparison-ready Java 17 baseline evidence package",
+  "recommended_sources": {
+    "performance_baseline": "runs/stable-load/benchmark-summary.json",
+    "raw_jfr_profile": "runs/artifact-complete/recording.jfr",
+    "parsed_jfr_profile": "runs/artifact-complete/recording.json",
+    "test_reports": "tests/",
+    "coverage_report": "coverage/jacoco.xml"
+  },
+  "runs": {
+    "stable_load": {
+      "source_run_dir": "benchmark-results/20260306_130936",
+      "use_for": [
+        "startup metrics",
+        "load test metrics",
+        "CPU under load",
+        "thread count under load",
+        "GC pause derived from actuator",
+        "database pool usage",
+        "idle memory footprint",
+        "JMH results",
+        "SpotBugs summary"
+      ],
+      "notes": [
+        "Cleaner performance run",
+        "In-run recording.jfr is empty in this run"
+      ]
+    },
+    "artifact_complete": {
+      "source_run_dir": "benchmark-results/20260306_141217",
+      "use_for": [
+        "raw JFR artifact",
+        "parsed JFR JSON",
+        "runtime blocking event count"
+      ],
+      "notes": [
+        "Valid recording.jfr and recording.json present",
+        "500-user load segment showed a 96.615% error rate, so do not use its load numbers as the primary baseline without qualification"
+      ]
+    }
+  },
+  "derived_metrics_from_stable_load": {
+    "cpu_avg_pct": 23.38,
+    "cpu_max_pct": 41.69,
+    "thread_avg": 119.2,
+    "thread_max": 120,
+    "db_pool_active_avg": 5.8,
+    "db_pool_active_max": 10,
+    "idle_heap_mb": 153.11,
+    "gc_pause_avg_ms": 49.0,
+    "gc_pause_max_ms": 84.0
+  },
+  "test_suite": {
+    "source": "tests/",
+    "tests": 78,
+    "passed": 73,
+    "failures": 1,
+    "errors": 2,
+    "skipped": 2,
+    "total_time_s": 27.81,
+    "known_failures": [
+      "BlockingDetectionTests.testBlockingDetectionHarnessMultipleVariants has an order-sensitive assertion on map keys",
+      "MetricsCollectorTests fails because MetricsExporter is not registered as a Spring bean"
+    ]
+  },
+  "coverage": {
+    "source": "coverage/jacoco.xml",
+    "line_coverage_pct": 9.91,
+    "lines_covered": 977,
+    "lines_missed": 8879
+  },
+  "profiles": {
+    "baseline_runtime": [
+      "profiles/application.properties",
+      "profiles/application-benchmark.properties"
+    ],
+    "comparison_profiles_present": [
+      "profiles/application-java21-traditional.properties",
+      "profiles/application-java21-virtual.properties",
+      "profiles/application-vthreads.properties"
+    ]
+  }
+}

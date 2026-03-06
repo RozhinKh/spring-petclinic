@@ -33,8 +33,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
- * Main orchestrator for multi-variant load testing harness.
- * Coordinates the complete lifecycle: build, start, test, shutdown, results collection.
+ * Main orchestrator for multi-variant load testing harness. Coordinates the complete
+ * lifecycle: build, start, test, shutdown, results collection.
  *
  * Usage:
  *
@@ -48,9 +48,13 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class LoadTestExecutionHarness {
 
 	private static final ObjectMapper mapper = new ObjectMapper();
+
 	private final Properties config;
+
 	private final String configPath;
+
 	private final String masterResultsDir;
+
 	private final List<VariantResult> allResults;
 
 	public LoadTestExecutionHarness(String configPath) throws IOException {
@@ -86,7 +90,8 @@ public class LoadTestExecutionHarness {
 				System.out.println("╚════════════════════════════════════════════════════════════════════╝");
 
 				executeVariant(variant);
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				System.err.println("ERROR: Variant failed: " + variant);
 				e.printStackTrace();
 
@@ -172,8 +177,8 @@ public class LoadTestExecutionHarness {
 				long rampup = Long.parseLong(config.getProperty("test.profile." + testProfile + ".rampup"));
 				long duration = Long.parseLong(config.getProperty("test.profile." + testProfile + ".duration"));
 
-				JMeterTestRunner.TestRunResult testResult = jmeterRunner.runTest(variant, testProfile, threads,
-						rampup, duration);
+				JMeterTestRunner.TestRunResult testResult = jmeterRunner.runTest(variant, testProfile, threads, rampup,
+						duration);
 
 				// Process results
 				String jsonResultPath = resultsProcessor.processResults(testResult.getResultFilePath(), variant,
@@ -184,7 +189,8 @@ public class LoadTestExecutionHarness {
 
 			variantResult.success = true;
 
-		} finally {
+		}
+		finally {
 			// Graceful shutdown
 			System.out.println("\n>>> Step 6: Shutdown");
 			if (appStarter.isHealthy()) {
@@ -213,12 +219,11 @@ public class LoadTestExecutionHarness {
 		System.out.println("  Pet count: " + petCount + " (required: " + minPets + ")");
 
 		if (ownerCount < minOwners) {
-			throw new RuntimeException("Insufficient test data: owners count " + ownerCount + " < required "
-					+ minOwners);
+			throw new RuntimeException(
+					"Insufficient test data: owners count " + ownerCount + " < required " + minOwners);
 		}
 		if (petCount < minPets) {
-			throw new RuntimeException(
-					"Insufficient test data: pets count " + petCount + " < required " + minPets);
+			throw new RuntimeException("Insufficient test data: pets count " + petCount + " < required " + minPets);
 		}
 
 		System.out.println("✓ Test data validation passed");
@@ -249,8 +254,7 @@ public class LoadTestExecutionHarness {
 		}
 
 		String reportPath = masterResultsDir + "/master-report.json";
-		Files.writeString(Paths.get(reportPath),
-				mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report));
+		Files.writeString(Paths.get(reportPath), mapper.writerWithDefaultPrettyPrinter().writeValueAsString(report));
 
 		System.out.println("\n✓ Master report generated: " + reportPath);
 	}
@@ -272,9 +276,12 @@ public class LoadTestExecutionHarness {
 
 		String resultDir;
 		if (Boolean.parseBoolean(config.getProperty("results.create_timestamp_subdirs", "true"))) {
-			String timestamp = Instant.now().atZone(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
+			String timestamp = Instant.now()
+				.atZone(ZoneId.of("UTC"))
+				.format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"));
 			resultDir = resultsBase + "/run_" + timestamp;
-		} else {
+		}
+		else {
 			resultDir = resultsBase;
 		}
 
@@ -288,9 +295,13 @@ public class LoadTestExecutionHarness {
 	private static class VariantResult {
 
 		String variant;
+
 		boolean success;
+
 		long startupTimeMs;
+
 		long startupTimestamp;
+
 		Map<String, String> testResults;
 
 		VariantResult(String variant) {

@@ -10,21 +10,29 @@ import java.util.Objects;
 public class NormalizedMetric implements Serializable, Comparable<NormalizedMetric> {
 
 	private String metricName;
+
 	private Double value;
+
 	private String unit;
+
 	private String variant; // e.g., "Java 17", "Java 21 Trad", "Java 21 Virtual"
+
 	private Integer runNumber;
-	private String category; // e.g., "startup", "latency", "throughput", "memory", "gc", "threading",
-							// "blocking", "test_suite", "modernization"
-	private String dataSource; // Where metric came from: "jmh", "jfr", "test_suite", "load_test",
-							// "actuator", "blocking", "modernization"
+
+	private String category; // e.g., "startup", "latency", "throughput", "memory", "gc",
+								// "threading",
+								// "blocking", "test_suite", "modernization"
+
+	private String dataSource; // Where metric came from: "jmh", "jfr", "test_suite",
+								// "load_test",
+								// "actuator", "blocking", "modernization"
+
 	private Long timestamp; // When this metric was captured
 
 	public NormalizedMetric() {
 	}
 
-	public NormalizedMetric(String metricName, Double value, String unit, String variant,
-			Integer runNumber) {
+	public NormalizedMetric(String metricName, Double value, String unit, String variant, Integer runNumber) {
 		this.metricName = metricName;
 		this.value = value;
 		this.unit = unit;
@@ -32,8 +40,8 @@ public class NormalizedMetric implements Serializable, Comparable<NormalizedMetr
 		this.runNumber = runNumber;
 	}
 
-	public NormalizedMetric(String metricName, Double value, String unit, String variant,
-			Integer runNumber, String category, String dataSource) {
+	public NormalizedMetric(String metricName, Double value, String unit, String variant, Integer runNumber,
+			String category, String dataSource) {
 		this.metricName = metricName;
 		this.value = value;
 		this.unit = unit;
@@ -126,9 +134,8 @@ public class NormalizedMetric implements Serializable, Comparable<NormalizedMetr
 		if (o == null || getClass() != o.getClass())
 			return false;
 		NormalizedMetric that = (NormalizedMetric) o;
-		return Objects.equals(metricName, that.metricName)
-				&& Objects.equals(value, that.value) && Objects.equals(unit, that.unit)
-				&& Objects.equals(variant, that.variant)
+		return Objects.equals(metricName, that.metricName) && Objects.equals(value, that.value)
+				&& Objects.equals(unit, that.unit) && Objects.equals(variant, that.variant)
 				&& Objects.equals(runNumber, that.runNumber);
 	}
 
@@ -139,10 +146,9 @@ public class NormalizedMetric implements Serializable, Comparable<NormalizedMetr
 
 	@Override
 	public String toString() {
-		return "NormalizedMetric{" + "metricName='" + metricName + '\'' + ", value=" + value
-				+ ", unit='" + unit + '\'' + ", variant='" + variant + '\'' + ", runNumber="
-				+ runNumber + ", category='" + category + '\'' + ", dataSource='" + dataSource
-				+ '\'' + ", timestamp=" + timestamp + '}';
+		return "NormalizedMetric{" + "metricName='" + metricName + '\'' + ", value=" + value + ", unit='" + unit + '\''
+				+ ", variant='" + variant + '\'' + ", runNumber=" + runNumber + ", category='" + category + '\''
+				+ ", dataSource='" + dataSource + '\'' + ", timestamp=" + timestamp + '}';
 	}
 
 }

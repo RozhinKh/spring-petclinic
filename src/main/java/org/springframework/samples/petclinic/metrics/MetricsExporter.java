@@ -29,8 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Exports collected metrics to JSON format with timestamped files.
- * Stores metrics in target/metrics/ directory for correlation with JMH/JFR events.
+ * Exports collected metrics to JSON format with timestamped files. Stores metrics in
+ * target/metrics/ directory for correlation with JMH/JFR events.
  */
 public class MetricsExporter {
 
@@ -63,10 +63,9 @@ public class MetricsExporter {
 
 	/**
 	 * Export metrics snapshot to JSON file
-	 *
 	 * @param metrics the metrics to export
 	 * @param variant the variant name (e.g., "java17", "java21-traditional",
-	 *                "java21-virtual")
+	 * "java21-virtual")
 	 * @return the exported file path
 	 * @throws IOException if export fails
 	 */
@@ -89,14 +88,12 @@ public class MetricsExporter {
 
 	/**
 	 * Export batch of metrics snapshots
-	 *
 	 * @param metricsBatch list of metric snapshots
 	 * @param variant the variant name
 	 * @return the exported file path
 	 * @throws IOException if export fails
 	 */
-	public String exportMetricsBatch(List<Map<String, Object>> metricsBatch, String variant)
-			throws IOException {
+	public String exportMetricsBatch(List<Map<String, Object>> metricsBatch, String variant) throws IOException {
 		String filename = generateBatchFilename(variant);
 		String filePath = metricsDirectory + File.separator + filename;
 
@@ -151,7 +148,6 @@ public class MetricsExporter {
 
 	/**
 	 * Create a metrics snapshot from raw actuator data
-	 *
 	 * @param timestamp snapshot timestamp
 	 * @param httpMetrics HTTP metrics
 	 * @param jvmMetrics JVM metrics
@@ -160,9 +156,8 @@ public class MetricsExporter {
 	 * @param dbMetrics database metrics
 	 * @return metrics snapshot map
 	 */
-	public static Map<String, Object> createMetricsSnapshot(Long timestamp,
-			Map<String, Object> httpMetrics, Map<String, Object> jvmMetrics,
-			Map<String, Object> threadMetrics, Map<String, Object> cacheMetrics,
+	public static Map<String, Object> createMetricsSnapshot(Long timestamp, Map<String, Object> httpMetrics,
+			Map<String, Object> jvmMetrics, Map<String, Object> threadMetrics, Map<String, Object> cacheMetrics,
 			Map<String, Object> dbMetrics) {
 
 		Map<String, Object> snapshot = new HashMap<>();

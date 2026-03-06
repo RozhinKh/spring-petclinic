@@ -51,8 +51,8 @@ public class BlockingDetectionTests {
 		Map<String, Object> summary = analyzer.getSummary();
 
 		// Verify summary structure
-		assertThat(summary).containsKeys("total_findings", "findings_by_pattern",
-				"findings_by_severity", "affected_classes");
+		assertThat(summary).containsKeys("total_findings", "findings_by_pattern", "findings_by_severity",
+				"affected_classes");
 	}
 
 	@Test
@@ -103,8 +103,8 @@ public class BlockingDetectionTests {
 		runtimeTracker.aggregateBlockingEvents();
 
 		Map<String, Object> summary = runtimeTracker.getSummary();
-		assertThat(summary).containsKeys("total_blocking_events", "total_blocking_time_ms",
-				"affected_methods", "affected_classes");
+		assertThat(summary).containsKeys("total_blocking_events", "total_blocking_time_ms", "affected_methods",
+				"affected_classes");
 	}
 
 	@Test
@@ -112,17 +112,15 @@ public class BlockingDetectionTests {
 		StaticBlockingAnalyzer staticAnalyzer = new StaticBlockingAnalyzer();
 		staticAnalyzer.analyze();
 
-		BlockingComparisonReporter reporter = new BlockingComparisonReporter(staticAnalyzer,
-				runtimeTracker);
+		BlockingComparisonReporter reporter = new BlockingComparisonReporter(staticAnalyzer, runtimeTracker);
 		reporter.generateReport();
 
-		List<BlockingComparisonReporter.BlockingComparison> comparisons = reporter
-				.getComparisons();
+		List<BlockingComparisonReporter.BlockingComparison> comparisons = reporter.getComparisons();
 		Map<String, Object> summary = reporter.getSummary();
 
 		// Verify summary contains expected fields
-		assertThat(summary).containsKeys("total_static_findings", "total_runtime_findings",
-				"triggered_findings", "false_positives", "false_negatives");
+		assertThat(summary).containsKeys("total_static_findings", "total_runtime_findings", "triggered_findings",
+				"false_positives", "false_negatives");
 	}
 
 	@Test
@@ -135,8 +133,7 @@ public class BlockingDetectionTests {
 		assertThat(blockingHarness.getCurrentVariant()).isEqualTo("java17");
 
 		// Stop benchmark
-		BlockingDetectionHarness.BlockingDetectionResult result = blockingHarness
-				.stopBenchmark("java17");
+		BlockingDetectionHarness.BlockingDetectionResult result = blockingHarness.stopBenchmark("java17");
 		assertThat(result).isNotNull();
 		assertThat(result.getVariant()).isEqualTo("java17");
 		assertThat(blockingHarness.isCollecting()).isFalse();
@@ -160,19 +157,16 @@ public class BlockingDetectionTests {
 			blockingHarness.stopBenchmark(variant);
 		}
 
-		Map<String, BlockingDetectionHarness.BlockingDetectionResult> results = blockingHarness
-				.getAllResults();
+		Map<String, BlockingDetectionHarness.BlockingDetectionResult> results = blockingHarness.getAllResults();
 		assertThat(results).hasSize(3);
-		assertThat(results.keySet()).containsExactly("java17", "java21-traditional",
-				"java21-virtual");
+		assertThat(results.keySet()).containsExactly("java17", "java21-traditional", "java21-virtual");
 	}
 
 	@Test
 	void testBlockingExporter() throws IOException {
 		blockingHarness.initialize();
 		blockingHarness.startBenchmark("test-variant");
-		BlockingDetectionHarness.BlockingDetectionResult result = blockingHarness
-				.stopBenchmark("test-variant");
+		BlockingDetectionHarness.BlockingDetectionResult result = blockingHarness.stopBenchmark("test-variant");
 
 		// Export to JSON and CSV
 		Map<String, String> exports = blockingHarness.exportResults("test-variant");
@@ -204,8 +198,7 @@ public class BlockingDetectionTests {
 	void testBlockingDetectionResultStructure() throws IOException {
 		blockingHarness.initialize();
 		blockingHarness.startBenchmark("test");
-		BlockingDetectionHarness.BlockingDetectionResult result = blockingHarness
-				.stopBenchmark("test");
+		BlockingDetectionHarness.BlockingDetectionResult result = blockingHarness.stopBenchmark("test");
 
 		// Verify result contains all required components
 		assertThat(result.getVariant()).isEqualTo("test");
@@ -218,8 +211,8 @@ public class BlockingDetectionTests {
 
 		// Verify map serialization works
 		Map<String, Object> resultMap = result.toMap();
-		assertThat(resultMap).containsKeys("variant", "static_summary", "runtime_summary",
-				"comparison_summary", "static_findings", "runtime_events", "comparisons");
+		assertThat(resultMap).containsKeys("variant", "static_summary", "runtime_summary", "comparison_summary",
+				"static_findings", "runtime_events", "comparisons");
 	}
 
 	@Test
@@ -234,8 +227,7 @@ public class BlockingDetectionTests {
 
 		Map<String, Object> findingMap = finding.toMap();
 
-		assertThat(findingMap).containsKeys("pattern", "class", "location", "severity",
-				"source", "line");
+		assertThat(findingMap).containsKeys("pattern", "class", "location", "severity", "source", "line");
 		assertThat(findingMap.get("pattern")).isEqualTo("synchronized_block");
 		assertThat(findingMap.get("severity")).isEqualTo("MEDIUM");
 	}
@@ -254,8 +246,8 @@ public class BlockingDetectionTests {
 
 		Map<String, Object> eventMap = event.toMap();
 
-		assertThat(eventMap).containsKeys("type", "timestamp_ms", "duration_ms", "thread_name",
-				"thread_id", "class", "method", "lock_class");
+		assertThat(eventMap).containsKeys("type", "timestamp_ms", "duration_ms", "thread_name", "thread_id", "class",
+				"method", "lock_class");
 		assertThat(eventMap.get("type")).isEqualTo("MONITOR_ENTER");
 		assertThat(eventMap.get("duration_ms")).isEqualTo(100L);
 	}
@@ -274,8 +266,8 @@ public class BlockingDetectionTests {
 
 		Map<String, Object> comparisonMap = comparison.toMap();
 
-		assertThat(comparisonMap).containsKeys("pattern", "class", "static_count",
-				"runtime_count", "runtime_duration_ms", "triggered", "false_negative");
+		assertThat(comparisonMap).containsKeys("pattern", "class", "static_count", "runtime_count",
+				"runtime_duration_ms", "triggered", "false_negative");
 		assertThat(comparisonMap.get("triggered")).isEqualTo(true);
 		assertThat(comparisonMap.get("runtime_count")).isEqualTo(3);
 	}

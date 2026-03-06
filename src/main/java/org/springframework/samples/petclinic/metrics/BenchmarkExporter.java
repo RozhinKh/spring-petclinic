@@ -10,11 +10,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Exports benchmark results to JSON and CSV formats suitable for analysis.
- * Generates three output files:
- * - benchmark-results.json: Complete dataset with all metrics and statistics
- * - benchmark-results.csv: Flat spreadsheet format for Excel/Sheets
- * - benchmark-summary.json: Executive summary with key metrics only
+ * Exports benchmark results to JSON and CSV formats suitable for analysis. Generates
+ * three output files: - benchmark-results.json: Complete dataset with all metrics and
+ * statistics - benchmark-results.csv: Flat spreadsheet format for Excel/Sheets -
+ * benchmark-summary.json: Executive summary with key metrics only
  */
 public class BenchmarkExporter {
 
@@ -28,8 +27,8 @@ public class BenchmarkExporter {
 	/**
 	 * Exports aggregated metrics to JSON, CSV, and summary formats
 	 */
-	public void export(List<AggregatedMetric> aggregatedMetrics, String outputDir,
-			ManualMetricsSection manualMetrics, ExportMetadata metadata) throws IOException {
+	public void export(List<AggregatedMetric> aggregatedMetrics, String outputDir, ManualMetricsSection manualMetrics,
+			ExportMetadata metadata) throws IOException {
 		File outputDirectory = new File(outputDir);
 		if (!outputDirectory.exists()) {
 			outputDirectory.mkdirs();
@@ -44,8 +43,8 @@ public class BenchmarkExporter {
 	/**
 	 * Exports complete benchmark dataset to JSON
 	 */
-	private void exportFullJson(List<AggregatedMetric> aggregatedMetrics, ExportMetadata metadata,
-			File outputFile) throws IOException {
+	private void exportFullJson(List<AggregatedMetric> aggregatedMetrics, ExportMetadata metadata, File outputFile)
+			throws IOException {
 		Map<String, Object> root = new LinkedHashMap<>();
 
 		// Add metadata
@@ -53,7 +52,7 @@ public class BenchmarkExporter {
 
 		// Organize metrics by category
 		Map<String, List<AggregatedMetric>> byCategory = aggregatedMetrics.stream()
-				.collect(Collectors.groupingBy(AggregatedMetric::getCategory));
+			.collect(Collectors.groupingBy(AggregatedMetric::getCategory));
 
 		Map<String, Object> metrics = new LinkedHashMap<>();
 		for (String category : sortedCategories()) {
@@ -77,12 +76,12 @@ public class BenchmarkExporter {
 	/**
 	 * Exports metrics to CSV format
 	 */
-	private void exportCsv(List<AggregatedMetric> aggregatedMetrics, File outputFile)
-			throws IOException {
+	private void exportCsv(List<AggregatedMetric> aggregatedMetrics, File outputFile) throws IOException {
 		try (FileWriter writer = new FileWriter(outputFile)) {
 			// Get all unique variants
-			Set<String> variants = aggregatedMetrics.stream().map(AggregatedMetric::getVariant)
-					.collect(Collectors.toCollection(TreeSet::new));
+			Set<String> variants = aggregatedMetrics.stream()
+				.map(AggregatedMetric::getVariant)
+				.collect(Collectors.toCollection(TreeSet::new));
 
 			// Write header
 			writer.append("Metric,Unit,Category,Data Source");
@@ -94,15 +93,16 @@ public class BenchmarkExporter {
 			List<String> variantList = new ArrayList<>(variants);
 			for (int i = 0; i < variantList.size() - 1; i++) {
 				for (int j = i + 1; j < variantList.size(); j++) {
-					writer.append(",").append(ExportFormatting.toCsvString(
-							"Delta " + variantList.get(i) + "→" + variantList.get(j) + " (%)"));
+					writer.append(",")
+						.append(ExportFormatting
+							.toCsvString("Delta " + variantList.get(i) + "→" + variantList.get(j) + " (%)"));
 				}
 			}
 			writer.append(",Notes\n");
 
 			// Group metrics by name
 			Map<String, List<AggregatedMetric>> byMetricName = aggregatedMetrics.stream()
-					.collect(Collectors.groupingBy(AggregatedMetric::getMetricName));
+				.collect(Collectors.groupingBy(AggregatedMetric::getMetricName));
 
 			// Write data rows
 			for (String metricName : byMetricName.keySet()) {
@@ -112,14 +112,17 @@ public class BenchmarkExporter {
 				}
 
 				AggregatedMetric first = metricVariants.get(0);
-				writer.append(ExportFormatting.toCsvString(first.getMetricName())).append(",")
-						.append(ExportFormatting.toCsvString(first.getUnit())).append(",")
-						.append(ExportFormatting.toCsvString(first.getCategory())).append(",")
-						.append(ExportFormatting.toCsvString(first.getDataSource()));
+				writer.append(ExportFormatting.toCsvString(first.getMetricName()))
+					.append(",")
+					.append(ExportFormatting.toCsvString(first.getUnit()))
+					.append(",")
+					.append(ExportFormatting.toCsvString(first.getCategory()))
+					.append(",")
+					.append(ExportFormatting.toCsvString(first.getDataSource()));
 
 				// Group by variant
 				Map<String, AggregatedMetric> byVariant = metricVariants.stream()
-						.collect(Collectors.toMap(AggregatedMetric::getVariant, m -> m));
+					.collect(Collectors.toMap(AggregatedMetric::getVariant, m -> m));
 
 				// Write variant values and stdDev
 				for (String variant : variants) {
@@ -127,7 +130,8 @@ public class BenchmarkExporter {
 					if (metric != null) {
 						writer.append(",").append(ExportFormatting.toCsvDouble(metric.getAverage(), first.getUnit()));
 						writer.append(",").append(ExportFormatting.toCsvDouble(metric.getStdDev(), ""));
-					} else {
+					}
+					else {
 						writer.append(",,");
 					}
 				}
@@ -140,16 +144,16 @@ public class BenchmarkExporter {
 						AggregatedMetric compMetric = byVariant.get(variantList.get(j));
 
 						Double delta = null;
-						if (baseMetric != null && baseMetric.getAverage() != null
-								&& compMetric != null && compMetric.getAverage() != null
-								&& baseMetric.getAverage() != 0) {
-							delta = ((compMetric.getAverage() - baseMetric.getAverage())
-									/ baseMetric.getAverage()) * 100;
+						if (baseMetric != null && baseMetric.getAverage() != null && compMetric != null
+								&& compMetric.getAverage() != null && baseMetric.getAverage() != 0) {
+							delta = ((compMetric.getAverage() - baseMetric.getAverage()) / baseMetric.getAverage())
+									* 100;
 						}
 
 						if (delta != null) {
 							writer.append(",").append(ExportFormatting.toCsvDouble(delta, "%"));
-						} else {
+						}
+						else {
 							writer.append(",");
 						}
 					}
@@ -164,9 +168,8 @@ public class BenchmarkExporter {
 	/**
 	 * Exports executive summary to JSON
 	 */
-	private void exportSummaryJson(List<AggregatedMetric> aggregatedMetrics,
-			ManualMetricsSection manualMetrics, ExportMetadata metadata, File outputFile)
-			throws IOException {
+	private void exportSummaryJson(List<AggregatedMetric> aggregatedMetrics, ManualMetricsSection manualMetrics,
+			ExportMetadata metadata, File outputFile) throws IOException {
 		Map<String, Object> root = new LinkedHashMap<>();
 
 		// Add metadata
@@ -176,8 +179,8 @@ public class BenchmarkExporter {
 		Map<String, Object> keyMetrics = new LinkedHashMap<>();
 
 		// Define key metrics by category
-		keyMetrics.put("startup", extractKeyMetricsFromCategory(aggregatedMetrics, "startup",
-				Arrays.asList("Startup Time")));
+		keyMetrics.put("startup",
+				extractKeyMetricsFromCategory(aggregatedMetrics, "startup", Arrays.asList("Startup Time")));
 		keyMetrics.put("latency", extractKeyMetricsFromCategory(aggregatedMetrics, "latency",
 				Arrays.asList("P95 Latency", "P99 Latency", "Average Latency")));
 		keyMetrics.put("throughput", extractKeyMetricsFromCategory(aggregatedMetrics, "throughput",
@@ -192,9 +195,8 @@ public class BenchmarkExporter {
 				Arrays.asList("Blocking Events", "Blocking Call Count", "Blocking Time Ratio")));
 		keyMetrics.put("test_suite", extractKeyMetricsFromCategory(aggregatedMetrics, "test_suite",
 				Arrays.asList("Test Count", "Code Coverage %")));
-		keyMetrics.put("modernization",
-				extractKeyMetricsFromCategory(aggregatedMetrics, "modernization",
-						Arrays.asList("Lines of Code", "Virtual Thread Usage Points")));
+		keyMetrics.put("modernization", extractKeyMetricsFromCategory(aggregatedMetrics, "modernization",
+				Arrays.asList("Lines of Code", "Virtual Thread Usage Points")));
 
 		root.put("key_metrics", keyMetrics);
 
@@ -202,20 +204,16 @@ public class BenchmarkExporter {
 		if (manualMetrics != null) {
 			Map<String, Object> manual = new LinkedHashMap<>();
 			if (manualMetrics.getTestPassRate() != null) {
-				manual.put("test_pass_rate",
-						buildTestPassRateMap(manualMetrics.getTestPassRate()));
+				manual.put("test_pass_rate", buildTestPassRateMap(manualMetrics.getTestPassRate()));
 			}
 			if (manualMetrics.getCloudCostAnalysis() != null) {
-				manual.put("cloud_cost_analysis",
-						buildCloudCostMap(manualMetrics.getCloudCostAnalysis()));
+				manual.put("cloud_cost_analysis", buildCloudCostMap(manualMetrics.getCloudCostAnalysis()));
 			}
 			if (manualMetrics.getInstancesRequired() != null) {
-				manual.put("instances_required",
-						buildInstancesRequiredMap(manualMetrics.getInstancesRequired()));
+				manual.put("instances_required", buildInstancesRequiredMap(manualMetrics.getInstancesRequired()));
 			}
 			if (manualMetrics.getEffortEstimate() != null) {
-				manual.put("effort_estimate",
-						buildEffortEstimateMap(manualMetrics.getEffortEstimate()));
+				manual.put("effort_estimate", buildEffortEstimateMap(manualMetrics.getEffortEstimate()));
 			}
 			root.put("manual_metrics", manual);
 		}
@@ -254,8 +252,7 @@ public class BenchmarkExporter {
 		variantMap.put("sample_count", metric.getSampleCount());
 		variantMap.put("coefficient_of_variation",
 				metric.getStdDev() != null && metric.getAverage() != null && metric.getAverage() != 0
-						? (metric.getStdDev() / metric.getAverage())
-						: null);
+						? (metric.getStdDev() / metric.getAverage()) : null);
 		return variantMap;
 	}
 
@@ -283,7 +280,8 @@ public class BenchmarkExporter {
 			map.put("tool_versions", metadata.getToolVersions());
 			map.put("environment_info", metadata.getEnvironmentInfo());
 			map.put("benchmark_duration_minutes", metadata.getBenchmarkDurationMinutes());
-		} else {
+		}
+		else {
 			map.put("timestamp", Instant.now().toString());
 			map.put("jdk_versions", new HashMap<>());
 			map.put("tool_versions", new HashMap<>());
@@ -297,8 +295,7 @@ public class BenchmarkExporter {
 	private Map<String, Object> buildStatisticsSummary(List<AggregatedMetric> metrics) {
 		Map<String, Object> summary = new LinkedHashMap<>();
 		summary.put("total_metrics", metrics.size());
-		summary.put("variants", metrics.stream().map(AggregatedMetric::getVariant)
-				.collect(Collectors.toSet()).size());
+		summary.put("variants", metrics.stream().map(AggregatedMetric::getVariant).collect(Collectors.toSet()).size());
 		summary.put("categories",
 				metrics.stream().map(AggregatedMetric::getCategory).collect(Collectors.toSet()).size());
 		summary.put("data_sources",
@@ -311,26 +308,27 @@ public class BenchmarkExporter {
 	 */
 	private Map<String, Object> buildDataSourcesSummary(List<AggregatedMetric> metrics) {
 		Map<String, Long> sources = metrics.stream()
-				.collect(Collectors.groupingBy(AggregatedMetric::getDataSource, Collectors.counting()));
+			.collect(Collectors.groupingBy(AggregatedMetric::getDataSource, Collectors.counting()));
 		return new LinkedHashMap<>(sources);
 	}
 
 	/**
 	 * Extracts key metrics from a category
 	 */
-	private List<Map<String, Object>> extractKeyMetricsFromCategory(List<AggregatedMetric> metrics,
-			String category, List<String> metricNames) {
-		return metrics.stream().filter(m -> category.equals(m.getCategory())
-				&& metricNames.contains(m.getMetricName()))
-				.map(m -> {
-					Map<String, Object> map = new LinkedHashMap<>();
-					map.put("metric_name", m.getMetricName());
-					map.put("unit", m.getUnit());
-					map.put("variant", m.getVariant());
-					map.put("average", m.getAverage());
-					map.put("std_dev", m.getStdDev());
-					return map;
-				}).collect(Collectors.toList());
+	private List<Map<String, Object>> extractKeyMetricsFromCategory(List<AggregatedMetric> metrics, String category,
+			List<String> metricNames) {
+		return metrics.stream()
+			.filter(m -> category.equals(m.getCategory()) && metricNames.contains(m.getMetricName()))
+			.map(m -> {
+				Map<String, Object> map = new LinkedHashMap<>();
+				map.put("metric_name", m.getMetricName());
+				map.put("unit", m.getUnit());
+				map.put("variant", m.getVariant());
+				map.put("average", m.getAverage());
+				map.put("std_dev", m.getStdDev());
+				return map;
+			})
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -361,8 +359,7 @@ public class BenchmarkExporter {
 	/**
 	 * Builds instances required map
 	 */
-	private Map<String, Object> buildInstancesRequiredMap(
-			ManualMetricsSection.InstancesRequired instancesRequired) {
+	private Map<String, Object> buildInstancesRequiredMap(ManualMetricsSection.InstancesRequired instancesRequired) {
 		Map<String, Object> map = new LinkedHashMap<>();
 		map.put("peak_load_ops_per_sec", instancesRequired.getPeakLoadOpsPerSec());
 		map.put("per_instance_capacity", instancesRequired.getPerInstanceCapacity());
@@ -386,7 +383,8 @@ public class BenchmarkExporter {
 	 * Returns sorted list of categories for consistent ordering
 	 */
 	private List<String> sortedCategories() {
-		return Arrays.asList("startup", "latency", "throughput", "memory", "gc", "threading",
-				"blocking", "test_suite", "modernization");
+		return Arrays.asList("startup", "latency", "throughput", "memory", "gc", "threading", "blocking", "test_suite",
+				"modernization");
 	}
+
 }

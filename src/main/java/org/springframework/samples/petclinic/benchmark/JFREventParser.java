@@ -30,9 +30,8 @@ import java.util.Map;
 import static org.springframework.samples.petclinic.benchmark.BenchmarkRunner.getObjectMapper;
 
 /**
- * Parses Java Flight Recorder (JFR) binary files and extracts metrics
- * relevant to benchmarking: GC pauses, thread counts, memory allocation rates,
- * and blocking events.
+ * Parses Java Flight Recorder (JFR) binary files and extracts metrics relevant to
+ * benchmarking: GC pauses, thread counts, memory allocation rates, and blocking events.
  */
 public class JFREventParser {
 
@@ -44,7 +43,6 @@ public class JFREventParser {
 
 	/**
 	 * Parse JFR file and extract all relevant metrics.
-	 *
 	 * @return ObjectNode containing parsed JFR metrics
 	 * @throws Exception if JFR file cannot be read
 	 */
@@ -78,8 +76,8 @@ public class JFREventParser {
 			while (recordingFile.hasMoreEvents()) {
 				RecordedEvent event = recordingFile.readEvent();
 
-				if ("jdk.GCPauseLevel".equals(event.getEventType().getName()) ||
-					"jdk.GarbageCollection".equals(event.getEventType().getName())) {
+				if ("jdk.GCPauseLevel".equals(event.getEventType().getName())
+						|| "jdk.GarbageCollection".equals(event.getEventType().getName())) {
 
 					long duration = event.getDuration().toMillis();
 					Instant eventTime = event.getStartTime();
@@ -107,7 +105,8 @@ public class JFREventParser {
 					gcPauses.add(pauseDetail);
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Failed to parse GC metrics from JFR: " + e.getMessage());
 		}
 
@@ -154,13 +153,16 @@ public class JFREventParser {
 
 				if ("jdk.ThreadStart".equals(eventName)) {
 					threadStartCount++;
-				} else if ("jdk.ThreadEnd".equals(eventName)) {
+				}
+				else if ("jdk.ThreadEnd".equals(eventName)) {
 					threadEndCount++;
-				} else if ("jdk.ThreadPark".equals(eventName)) {
+				}
+				else if ("jdk.ThreadPark".equals(eventName)) {
 					threadParkCount++;
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Failed to parse thread metrics from JFR: " + e.getMessage());
 		}
 
@@ -191,18 +193,22 @@ public class JFREventParser {
 					try {
 						long size = event.getLong("tlabSize");
 						totalAllocationBytes += size;
-					} catch (Exception ignored) {
 					}
-				} else if ("jdk.ObjectAllocationOutsideTLAB".equals(eventName)) {
+					catch (Exception ignored) {
+					}
+				}
+				else if ("jdk.ObjectAllocationOutsideTLAB".equals(eventName)) {
 					outsideTlabAllocations++;
 					try {
 						long size = event.getLong("allocSize");
 						totalAllocationBytes += size;
-					} catch (Exception ignored) {
+					}
+					catch (Exception ignored) {
 					}
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Failed to parse memory metrics from JFR: " + e.getMessage());
 		}
 
@@ -232,7 +238,8 @@ public class JFREventParser {
 
 				if ("jdk.JavaMonitorEnter".equals(eventName)) {
 					monitorEnterCount++;
-				} else if ("jdk.JavaMonitorWait".equals(eventName)) {
+				}
+				else if ("jdk.JavaMonitorWait".equals(eventName)) {
 					monitorWaitCount++;
 					long waitDuration = event.getDuration().toMillis();
 					totalWaitDuration += waitDuration;
@@ -241,14 +248,16 @@ public class JFREventParser {
 					waitDetail.put("wait_duration_ms", waitDuration);
 					try {
 						waitDetail.put("timeout_ms", event.getLong("timeout"));
-					} catch (Exception ignored) {
+					}
+					catch (Exception ignored) {
 					}
 					waitDetail.put("timestamp", event.getStartTime().toString());
 
 					blockingEvents.add(waitDetail);
 				}
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Failed to parse blocking metrics from JFR: " + e.getMessage());
 		}
 
@@ -280,7 +289,8 @@ public class JFREventParser {
 				recordingFile.readEvent();
 				count++;
 			}
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			System.err.println("Warning: Failed to count total JFR events: " + e.getMessage());
 		}
 		return count;

@@ -20,15 +20,15 @@ import java.util.List;
 import java.util.Objects;
 
 import org.springframework.core.style.ToStringCreator;
+import org.springframework.samples.petclinic.model.BaseEntity;
 import org.springframework.util.Assert;
 
+import jakarta.persistence.Access;
+import jakarta.persistence.AccessType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
@@ -48,26 +48,137 @@ import jakarta.validation.constraints.Pattern;
  */
 @Entity
 @Table(name = "owners")
-public record Owner(
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) Integer id,
-	@Column @NotBlank String firstName,
-	@Column @NotBlank String lastName,
-	@Column @NotBlank String address,
-	@Column @NotBlank String city,
-	@Column @NotBlank @Pattern(regexp = "\\d{10}", message = "{telephone.invalid}") String telephone,
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) @JoinColumn(name = "owner_id") @OrderBy("name") List<Pet> pets
-) {
+@Access(AccessType.FIELD)
+public class Owner extends BaseEntity {
+
+	@Column
+	@NotBlank
+	private String firstName;
+
+	@Column
+	@NotBlank
+	private String lastName;
+
+	@Column
+	@NotBlank
+	private String address;
+
+	@Column
+	@NotBlank
+	private String city;
+
+	@Column
+	@NotBlank
+	@Pattern(regexp = "\\d{10}", message = "{telephone.invalid}")
+	private String telephone;
+
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	@JoinColumn(name = "owner_id")
+	@OrderBy("name")
+	private List<Pet> pets = new ArrayList<>();
+
+	public Owner() {
+	}
 
 	public Owner(Integer id, String firstName, String lastName, String address, String city, String telephone) {
-		this(id, firstName, lastName, address, city, telephone, new ArrayList<>());
+		setId(id);
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.address = address;
+		this.city = city;
+		this.telephone = telephone;
+	}
+
+	public Owner(Integer id, String firstName, String lastName, String address, String city, String telephone,
+			List<Pet> pets) {
+		this(id, firstName, lastName, address, city, telephone);
+		if (pets != null) {
+			this.pets = pets;
+		}
 	}
 
 	public Owner(String firstName, String lastName) {
-		this(null, firstName, lastName, null, null, null, new ArrayList<>());
+		this.firstName = firstName;
+		this.lastName = lastName;
 	}
 
-	public Owner() {
-		this(null, null, null, null, null, null, new ArrayList<>());
+	/** Record-style accessor. */
+	public Integer id() {
+		return getId();
+	}
+
+	/** Record-style accessor. */
+	public String firstName() {
+		return firstName;
+	}
+
+	/** Record-style accessor. */
+	public String lastName() {
+		return lastName;
+	}
+
+	/** Record-style accessor. */
+	public String address() {
+		return address;
+	}
+
+	/** Record-style accessor. */
+	public String city() {
+		return city;
+	}
+
+	/** Record-style accessor. */
+	public String telephone() {
+		return telephone;
+	}
+
+	/** Record-style accessor. */
+	public List<Pet> pets() {
+		return pets;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getTelephone() {
+		return telephone;
+	}
+
+	public void setTelephone(String telephone) {
+		this.telephone = telephone;
+	}
+
+	public List<Pet> getPets() {
+		return pets;
 	}
 
 	public void addPet(Pet pet) {
@@ -81,7 +192,9 @@ public record Owner(
 	}
 
 	public Pet getPet(Integer id) {
-		if (pets == null) return null;
+		if (pets == null) {
+			return null;
+		}
 		for (Pet pet : pets) {
 			if (!pet.isNew()) {
 				Integer compId = pet.id();
@@ -94,7 +207,9 @@ public record Owner(
 	}
 
 	public Pet getPet(String name, boolean ignoreNew) {
-		if (pets == null) return null;
+		if (pets == null) {
+			return null;
+		}
 		for (Pet pet : pets) {
 			String compName = pet.name();
 			if (compName != null && compName.equalsIgnoreCase(name)) {
@@ -108,7 +223,7 @@ public record Owner(
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.id)
+		return new ToStringCreator(this).append("id", this.getId())
 			.append("new", this.isNew())
 			.append("lastName", this.lastName)
 			.append("firstName", this.firstName)
@@ -127,7 +242,4 @@ public record Owner(
 		pet.addVisit(visit);
 	}
 
-	public boolean isNew() {
-		return this.id == null;
-	}
 }

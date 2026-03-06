@@ -30,8 +30,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 /**
- * Exports load test results in JSON format with latency percentiles and performance metrics.
- * Processes JMeter results and creates aggregated metrics for analysis.
+ * Exports load test results in JSON format with latency percentiles and performance
+ * metrics. Processes JMeter results and creates aggregated metrics for analysis.
  *
  * @author Load Test Framework
  */
@@ -39,13 +39,13 @@ public class LoadTestResultsExporter {
 
 	private static final String EXPORT_DIR = "target/load-test-results";
 
-	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper()
-		.enable(SerializationFeature.INDENT_OUTPUT);
+	private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().enable(SerializationFeature.INDENT_OUTPUT);
 
 	/**
 	 * Exports JMeter test results to JSON format.
 	 * @param csvResultsPath path to JMeter CSV results file
-	 * @param testProfile concurrent user profile (e.g., "light-100", "medium-250", "peak-500")
+	 * @param testProfile concurrent user profile (e.g., "light-100", "medium-250",
+	 * "peak-500")
 	 * @throws IOException if export fails
 	 */
 	public void exportResults(String csvResultsPath, String testProfile) throws IOException {
@@ -105,7 +105,8 @@ public class LoadTestResultsExporter {
 				result.success = Boolean.parseBoolean(getValue(values, headers, "success", "true"));
 
 				results.add(result);
-			} catch (NumberFormatException e) {
+			}
+			catch (NumberFormatException e) {
 				// Skip malformed lines
 			}
 		}
@@ -147,7 +148,8 @@ public class LoadTestResultsExporter {
 				successfulLatencies.add(result.elapsed);
 
 				latenciesByEndpoint.computeIfAbsent(result.label, k -> new ArrayList<>()).add(result.elapsed);
-			} else {
+			}
+			else {
 				failedCount++;
 			}
 		}
@@ -163,8 +165,7 @@ public class LoadTestResultsExporter {
 			metrics.latency = new LatencyMetrics();
 			metrics.latency.min = successfulLatencies.get(0);
 			metrics.latency.max = successfulLatencies.get(successfulLatencies.size() - 1);
-			metrics.latency.mean = (long) successfulLatencies.stream().mapToLong(Long::longValue).average()
-				.orElse(0);
+			metrics.latency.mean = (long) successfulLatencies.stream().mapToLong(Long::longValue).average().orElse(0);
 			metrics.latency.p50 = calculatePercentile(successfulLatencies, 50);
 			metrics.latency.p75 = calculatePercentile(successfulLatencies, 75);
 			metrics.latency.p90 = calculatePercentile(successfulLatencies, 90);
@@ -259,8 +260,7 @@ public class LoadTestResultsExporter {
 		Path exportPath = Paths.get(EXPORT_DIR);
 		Files.createDirectories(exportPath);
 
-		String filename = String.format("load-test-results-%s-%d.json", testProfile,
-				System.currentTimeMillis());
+		String filename = String.format("load-test-results-%s-%d.json", testProfile, System.currentTimeMillis());
 		Path jsonFile = exportPath.resolve(filename);
 
 		String jsonContent = OBJECT_MAPPER.writeValueAsString(metrics);

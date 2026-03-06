@@ -30,33 +30,28 @@ import org.springframework.stereotype.Component;
 
 /**
  * AOP Interceptor for virtualizing Spring Data JPA repository operations.
- * 
- * This interceptor intercepts all method calls on Spring Data repository interfaces
- * and executes them on a virtual thread executor when the java21-virtual profile is active.
- * 
- * By wrapping repository calls in virtual threads, we achieve:
- * - Better resource utilization (virtual threads are cheap to create)
- * - Higher concurrency without exhausting platform threads
- * - Simplified error handling (compared to reactive approaches)
- * - Natural blocking semantics (no need for reactive streams)
- * 
- * Repository operations virtualized:
- * - OwnerRepository: findById, findByLastNameStartingWith, save, saveAll, delete, deleteAll
- * - VetRepository: findAll, findAll(Pageable)
- * - PetTypeRepository: findAll, findPetTypes, save, saveAll
- * 
- * Execution Model:
- * 1. Controller/Service calls repository method (e.g., owners.findById(1))
- * 2. AOP interceptor captures the call
- * 3. Method is executed on virtual thread executor
- * 4. Calling thread blocks waiting for result (natural blocking semantics)
- * 5. Virtual thread handles I/O blocking without platform thread exhaustion
- * 
- * Thread-Safety Guarantees:
- * - Synchronous semantics maintained (caller blocks until result available)
- * - No race conditions or visibility issues
- * - Transactional context is preserved via ThreadLocal (HibernateSession)
- * 
+ *
+ * This interceptor intercepts all method calls on Spring Data repository interfaces and
+ * executes them on a virtual thread executor when the java21-virtual profile is active.
+ *
+ * By wrapping repository calls in virtual threads, we achieve: - Better resource
+ * utilization (virtual threads are cheap to create) - Higher concurrency without
+ * exhausting platform threads - Simplified error handling (compared to reactive
+ * approaches) - Natural blocking semantics (no need for reactive streams)
+ *
+ * Repository operations virtualized: - OwnerRepository: findById,
+ * findByLastNameStartingWith, save, saveAll, delete, deleteAll - VetRepository: findAll,
+ * findAll(Pageable) - PetTypeRepository: findAll, findPetTypes, save, saveAll
+ *
+ * Execution Model: 1. Controller/Service calls repository method (e.g.,
+ * owners.findById(1)) 2. AOP interceptor captures the call 3. Method is executed on
+ * virtual thread executor 4. Calling thread blocks waiting for result (natural blocking
+ * semantics) 5. Virtual thread handles I/O blocking without platform thread exhaustion
+ *
+ * Thread-Safety Guarantees: - Synchronous semantics maintained (caller blocks until
+ * result available) - No race conditions or visibility issues - Transactional context is
+ * preserved via ThreadLocal (HibernateSession)
+ *
  * @author Wick Dynex
  */
 @Component
@@ -69,7 +64,6 @@ public class VirtualThreadRepositoryInterceptor implements MethodInterceptor {
 
 	/**
 	 * Intercepts repository method invocations and executes them on a virtual thread.
-	 * 
 	 * @param invocation the method invocation to intercept
 	 * @return the result of the method invocation
 	 * @throws Throwable if the intercepted method throws an exception
@@ -94,11 +88,14 @@ public class VirtualThreadRepositoryInterceptor implements MethodInterceptor {
 		Callable<?> task = () -> {
 			try {
 				return invocation.proceed();
-			} catch (Throwable throwable) {
-				// Re-throw checked exceptions as RuntimeException for Callable compatibility
+			}
+			catch (Throwable throwable) {
+				// Re-throw checked exceptions as RuntimeException for Callable
+				// compatibility
 				if (throwable instanceof RuntimeException rte) {
 					throw rte;
-				} else {
+				}
+				else {
 					throw new RuntimeException(throwable);
 				}
 			}
@@ -110,15 +107,18 @@ public class VirtualThreadRepositoryInterceptor implements MethodInterceptor {
 		try {
 			// Block until the virtual thread completes (maintains synchronous semantics)
 			return future.get();
-		} catch (ExecutionException ee) {
+		}
+		catch (ExecutionException ee) {
 			// Unwrap the actual exception
 			Throwable cause = ee.getCause();
 			if (cause instanceof RuntimeException rte) {
 				throw rte;
-			} else {
+			}
+			else {
 				throw cause;
 			}
-		} catch (InterruptedException ie) {
+		}
+		catch (InterruptedException ie) {
 			// Restore interrupt status and throw
 			Thread.currentThread().interrupt();
 			throw new RuntimeException("Repository operation interrupted", ie);
@@ -127,11 +127,9 @@ public class VirtualThreadRepositoryInterceptor implements MethodInterceptor {
 
 	/**
 	 * Determines if a method should be virtualized.
-	 * 
-	 * Some methods should not be virtualized:
-	 * - Object methods: toString(), equals(), hashCode()
-	 * - Proxy methods: getProxyTargetClass(), etc.
-	 * 
+	 *
+	 * Some methods should not be virtualized: - Object methods: toString(), equals(),
+	 * hashCode() - Proxy methods: getProxyTargetClass(), etc.
 	 * @param methodName the method name to check
 	 * @return true if the method should NOT be virtualized
 	 */

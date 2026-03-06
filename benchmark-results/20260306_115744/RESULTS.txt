@@ -1,0 +1,64 @@
+============================================================
+  BENCHMARK RESULTS — java17-baseline
+  Run: Fri Mar  6 12:02:05 IST 2026
+  Total duration: 261s (~4m)
+============================================================
+
+CONFIGURATION
+-------------
+  Java Version : openjdk version "17.0.18" 2026-01-20 LTS
+  Variant      : java17-baseline
+  Load test    : 30s per concurrency level
+
+STARTUP TIME
+------------
+  Cold Startup : 9813ms
+  Warm Startup : 12487ms
+
+LOAD TEST — LATENCY PERCENTILES & THROUGHPUT
+--------------------------------------------
+  Users  TPS        P50       P95       P99       P99.9     Err%  
+  ------ ---------- --------- --------- --------- --------- ------
+  100    582.77     77.78ms   478.19ms  555.01ms  616.23ms  80.262%
+  250    662.08     134.74ms  1136.97ms 1350.66ms 1493.26ms 80.595%
+  500    707.44     491.72ms  1434.14ms 1628.17ms 1750.07ms 81.005%
+
+JVM MEMORY (Spring Actuator snapshots)
+--------------------------------------
+  Heap Used Avg    : 198MB
+  Heap Used Peak   : 201MB
+  Heap Configured  : 512MB (-Xmx)
+  Threads (avg)    : 217
+  CPU Usage (avg)  : 1%
+
+GC METRICS (Spring Actuator — jvm.gc.*)
+----------------------------------------
+  GC Total Pause     : 2763ms (cumulative)
+  Allocation Pressure: 168849MB allocated (cumulative)
+  Promotion Rate     : 462MB promoted (cumulative)
+  DB Pool Peak Active: 0.0 connections
+
+JFR — RUNTIME BLOCKING EVENTS
+------------------------------
+  MonitorWait + ThreadPark events: N/A
+  (See recording.jfr for full event trace)
+
+CODE MODERNIZATION METRICS
+--------------------------
+  Java record files        : 6
+  Pattern matching usages  : 11
+  Virtual thread references: 22
+  Switch expression yields : 0
+  Total Java source files  : 87
+  Total Java LOC           : 14992
+  Benchmark+Metrics LOC    : 12612
+
+OUTPUT FILES
+------------
+  RESULTS.txt              — this report
+  load-test-results.json   — full JSON (all 3 concurrency levels)
+  metrics.jsonl            — actuator time-series (6 snapshots)
+  recording.jfr            — JFR binary recording
+  app.log                  — application stdout/stderr
+  cold-start.log / warm-start.log — startup logs
+  load-test.log            — load test output

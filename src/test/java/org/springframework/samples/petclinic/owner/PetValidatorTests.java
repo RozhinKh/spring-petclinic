@@ -42,10 +42,6 @@ public class PetValidatorTests {
 
 	private PetValidator petValidator;
 
-	private Pet pet;
-
-	private PetType petType;
-
 	private Errors errors;
 
 	private static final String petName = "Buddy";
@@ -57,17 +53,13 @@ public class PetValidatorTests {
 	@BeforeEach
 	void setUp() {
 		petValidator = new PetValidator();
-		pet = new Pet();
-		petType = new PetType();
 		errors = new MapBindingResult(new HashMap<>(), "pet");
 	}
 
 	@Test
 	void testValidate() {
-		petType.setName(petTypeName);
-		pet.setName(petName);
-		pet.setType(petType);
-		pet.setBirthDate(petBirthDate);
+		PetType petType = new PetType(null, petTypeName);
+		Pet pet = new Pet(null, petName, petBirthDate, petType);
 
 		petValidator.validate(pet, errors);
 
@@ -79,10 +71,8 @@ public class PetValidatorTests {
 
 		@Test
 		void testValidateWithInvalidPetName() {
-			petType.setName(petTypeName);
-			pet.setName("");
-			pet.setType(petType);
-			pet.setBirthDate(petBirthDate);
+			PetType petType = new PetType(null, petTypeName);
+			Pet pet = new Pet(null, "", petBirthDate, petType);
 
 			petValidator.validate(pet, errors);
 
@@ -91,9 +81,7 @@ public class PetValidatorTests {
 
 		@Test
 		void testValidateWithInvalidPetType() {
-			pet.setName(petName);
-			pet.setType(null);
-			pet.setBirthDate(petBirthDate);
+			Pet pet = new Pet(null, petName, petBirthDate, null);
 
 			petValidator.validate(pet, errors);
 
@@ -102,10 +90,8 @@ public class PetValidatorTests {
 
 		@Test
 		void testValidateWithInvalidBirthDate() {
-			petType.setName(petTypeName);
-			pet.setName(petName);
-			pet.setType(petType);
-			pet.setBirthDate(null);
+			PetType petType = new PetType(null, petTypeName);
+			Pet pet = new Pet(null, petName, null, petType);
 
 			petValidator.validate(pet, errors);
 
