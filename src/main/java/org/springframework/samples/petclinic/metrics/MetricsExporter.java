@@ -62,6 +62,14 @@ public class MetricsExporter {
 	}
 
 	/**
+	 * Create exporter with default metrics directory (target/metrics).
+	 * @return exporter instance
+	 */
+	public static MetricsExporter createDefault() {
+		return new MetricsExporter(DEFAULT_METRICS_DIR);
+	}
+
+	/**
 	 * Export metrics snapshot to JSON file
 	 * @param metrics the metrics to export
 	 * @param variant the variant name (e.g., "java17", "java21-traditional",

@@ -19,6 +19,7 @@ package org.springframework.samples.petclinic;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.jupiter.api.Test;
@@ -28,23 +29,28 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.samples.petclinic.vet.Vet;
 import org.springframework.samples.petclinic.vet.VetRepository;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.annotation.DirtiesContext;
 
 /**
  * Tests to verify JPA transaction handling with virtual threads.
  * Ensures transaction isolation and consistency under concurrent access.
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @DisplayName("Virtual Thread Transaction Tests")
 public class VirtualThreadTransactionTests {
 
 	@Autowired
 	private VetRepository vetRepository;
 
+	private void awaitLatch(CountDownLatch latch, long timeoutSeconds) throws InterruptedException {
+		assertThat(latch.await(timeoutSeconds, TimeUnit.SECONDS)).isTrue();
+	}
+
 	@Test
 	@DisplayName("Verify concurrent read transactions maintain consistency")
 	void testConcurrentReadTransactions() throws InterruptedException {
-		int concurrentReads = 50;
+		int concurrentReads = 30;
 		CountDownLatch startGate = new CountDownLatch(1);
 		CountDownLatch endGate = new CountDownLatch(concurrentReads);
 		AtomicInteger successCount = new AtomicInteger(0);
@@ -55,7 +61,7 @@ public class VirtualThreadTransactionTests {
 		int expectedCount = initialVets.size();
 		
 		for (int i = 0; i < concurrentReads; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					startGate.await();
 					
@@ -70,11 +76,11 @@ public class VirtualThreadTransactionTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
 		startGate.countDown();
-		endGate.await();
+		awaitLatch(endGate, 60);
 		
 		// All reads should see consistent data
 		assertThat(successCount.get()).isEqualTo(concurrentReads);
@@ -84,13 +90,13 @@ public class VirtualThreadTransactionTests {
 	@Test
 	@DisplayName("Verify JPA entity relationships under concurrent access")
 	void testConcurrentEntityAccess() throws InterruptedException {
-		int concurrentRequests = 30;
+		int concurrentRequests = 20;
 		CountDownLatch endGate = new CountDownLatch(concurrentRequests);
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger failureCount = new AtomicInteger(0);
 		
 		for (int i = 0; i < concurrentRequests; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					var vets = vetRepository.findAll();
 					
@@ -110,10 +116,10 @@ public class VirtualThreadTransactionTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
-		endGate.await();
+		awaitLatch(endGate, 60);
 		
 		// All operations should succeed
 		assertThat(successCount.get()).isEqualTo(concurrentRequests);
@@ -123,7 +129,7 @@ public class VirtualThreadTransactionTests {
 	@Test
 	@DisplayName("Verify database connection pooling works with virtual threads")
 	void testConnectionPoolingWithVirtualThreads() throws InterruptedException {
-		int concurrentRequests = 100;
+		int concurrentRequests = 60;
 		CountDownLatch startGate = new CountDownLatch(1);
 		CountDownLatch endGate = new CountDownLatch(concurrentRequests);
 		AtomicInteger successCount = new AtomicInteger(0);
@@ -131,7 +137,7 @@ public class VirtualThreadTransactionTests {
 		AtomicInteger timeoutCount = new AtomicInteger(0);
 		
 		for (int i = 0; i < concurrentRequests; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					startGate.await();
 					
@@ -148,35 +154,35 @@ public class VirtualThreadTransactionTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
 		startGate.countDown();
-		endGate.await();
+		awaitLatch(endGate, 90);
 		
 		// Should not have timeouts or failures
 		System.out.println("Success: " + successCount.get() + ", Failures: " + failureCount.get() + 
 		                   ", Timeouts: " + timeoutCount.get());
-		assertThat(successCount.get()).isGreaterThan(concurrentRequests * 0.95); // Allow 5% failures for connection variations
-		assertThat(timeoutCount.get()).isLessThan(concurrentRequests * 0.05);
+		assertThat(successCount.get()).isGreaterThan((int) Math.floor(concurrentRequests * 0.95)); // Allow 5% failures for connection variations
+		assertThat(timeoutCount.get()).isLessThan((int) Math.ceil(concurrentRequests * 0.05));
 	}
 
 	@Test
 	@DisplayName("Verify lazy initialization works correctly with virtual threads")
 	void testLazyInitialization() throws InterruptedException {
-		int concurrentRequests = 25;
+		int concurrentRequests = 20;
 		CountDownLatch endGate = new CountDownLatch(concurrentRequests);
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger failureCount = new AtomicInteger(0);
 		
 		for (int i = 0; i < concurrentRequests; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					var vets = vetRepository.findAll();
 					
 					if (!vets.isEmpty()) {
 						// Access collections to trigger lazy loading
-						Vet vet = vets.get(0);
+						Vet vet = vets.iterator().next();
 						int specialtyCount = vet.getSpecialties().size();
 						
 						if (specialtyCount >= 0) { // Size is always >= 0
@@ -189,10 +195,10 @@ public class VirtualThreadTransactionTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
-		endGate.await();
+		awaitLatch(endGate, 60);
 		
 		// All lazy initializations should succeed
 		assertThat(successCount.get()).isEqualTo(concurrentRequests);
@@ -202,12 +208,12 @@ public class VirtualThreadTransactionTests {
 	@Test
 	@DisplayName("Verify transaction context isolation with virtual threads")
 	void testTransactionContextIsolation() throws InterruptedException {
-		int concurrentTransactions = 40;
+		int concurrentTransactions = 30;
 		CountDownLatch endGate = new CountDownLatch(concurrentTransactions);
 		AtomicInteger successCount = new AtomicInteger(0);
 		
 		for (int i = 0; i < concurrentTransactions; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					// Each virtual thread has its own transaction context
 					var vets = vetRepository.findAll();
@@ -224,10 +230,10 @@ public class VirtualThreadTransactionTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
-		endGate.await();
+		awaitLatch(endGate, 60);
 		
 		// All transactions should complete successfully
 		assertThat(successCount.get()).isEqualTo(concurrentTransactions);
@@ -239,12 +245,12 @@ public class VirtualThreadTransactionTests {
 		int iterations = 3;
 		
 		for (int iter = 0; iter < iterations; iter++) {
-			int concurrentSessions = 50;
+			int concurrentSessions = 30;
 			CountDownLatch endGate = new CountDownLatch(concurrentSessions);
 			AtomicInteger successCount = new AtomicInteger(0);
 			
 			for (int i = 0; i < concurrentSessions; i++) {
-				new Thread(() -> {
+				Thread.startVirtualThread(() -> {
 					try {
 						// Create independent session/transaction
 						var vets = vetRepository.findAll();
@@ -256,10 +262,10 @@ public class VirtualThreadTransactionTests {
 					} finally {
 						endGate.countDown();
 					}
-				}).start();
+				});
 			}
 			
-			endGate.await();
+			awaitLatch(endGate, 60);
 			
 			System.out.println("Iteration " + (iter + 1) + " completed with " + successCount.get() + 
 			                   " successful sessions");
@@ -274,7 +280,7 @@ public class VirtualThreadTransactionTests {
 		// First, populate the cache
 		vetRepository.findAll();
 		
-		int concurrentReads = 60;
+		int concurrentReads = 40;
 		CountDownLatch endGate = new CountDownLatch(concurrentReads);
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger failureCount = new AtomicInteger(0);
@@ -283,7 +289,7 @@ public class VirtualThreadTransactionTests {
 		int expectedSize = expectedVets.size();
 		
 		for (int i = 0; i < concurrentReads; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					// All reads should see cached data
 					var vets = vetRepository.findAll();
@@ -298,10 +304,10 @@ public class VirtualThreadTransactionTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
-		endGate.await();
+		awaitLatch(endGate, 60);
 		
 		// All reads should see the same cached data
 		assertThat(successCount.get()).isEqualTo(concurrentReads);

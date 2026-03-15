@@ -20,6 +20,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +33,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.samples.petclinic.vet.VetRepository;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -39,6 +43,7 @@ import org.springframework.web.client.RestTemplate;
  * Spring Boot automatically enables virtual threads for servlet request handling
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @DisplayName("Virtual Thread Behavior Tests")
 public class VirtualThreadBehaviorTests {
 
@@ -50,6 +55,21 @@ public class VirtualThreadBehaviorTests {
 
 	@Autowired
 	private RestTemplateBuilder builder;
+
+	private RestTemplate restTemplate() {
+		return builder.requestFactory(() -> {
+				SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+				factory.setConnectTimeout(5000);
+				factory.setReadTimeout(15000);
+				return factory;
+			})
+			.rootUri("http://localhost:" + port)
+			.build();
+	}
+
+	private void awaitLatch(CountDownLatch latch, long timeoutSeconds) throws InterruptedException {
+		assertThat(latch.await(timeoutSeconds, TimeUnit.SECONDS)).isTrue();
+	}
 
 	@Test
 	@DisplayName("Verify virtual thread support is available in Java 21")
@@ -69,7 +89,7 @@ public class VirtualThreadBehaviorTests {
 	@Test
 	@DisplayName("Verify servlet request handling works with virtual threads")
 	void testServletRequestHandling() {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		
 		// Test basic GET request
 		ResponseEntity<String> response = template.exchange(
@@ -104,7 +124,7 @@ public class VirtualThreadBehaviorTests {
 		assertThat(initialThreadCount).isGreaterThan(0);
 		
 		// Perform some requests
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		for (int i = 0; i < 5; i++) {
 			ResponseEntity<String> response = template.exchange(
 				RequestEntity.get("/owners?lastName=").build(), 
@@ -124,15 +144,16 @@ public class VirtualThreadBehaviorTests {
 	@Test
 	@DisplayName("Verify multiple servlet requests are processed concurrently")
 	void testConcurrentServletRequests() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		
 		// Create multiple concurrent request threads
 		Thread[] threads = new Thread[10];
 		boolean[] results = new boolean[10];
+		CountDownLatch endGate = new CountDownLatch(threads.length);
 		
 		for (int i = 0; i < 10; i++) {
 			final int index = i;
-			threads[i] = new Thread(() -> {
+			threads[i] = Thread.startVirtualThread(() -> {
 				try {
 					ResponseEntity<String> response = template.exchange(
 						RequestEntity.get("/owners?lastName=").build(), 
@@ -141,15 +162,14 @@ public class VirtualThreadBehaviorTests {
 					results[index] = response.getStatusCode() == HttpStatus.OK;
 				} catch (Exception e) {
 					results[index] = false;
+				} finally {
+					endGate.countDown();
 				}
 			});
-			threads[i].start();
 		}
 		
 		// Wait for all threads to complete
-		for (Thread thread : threads) {
-			thread.join();
-		}
+		awaitLatch(endGate, 30);
 		
 		// Verify all requests succeeded
 		for (boolean result : results) {
@@ -160,15 +180,16 @@ public class VirtualThreadBehaviorTests {
 	@Test
 	@DisplayName("Verify servlet request context is properly isolated between concurrent requests")
 	void testRequestContextIsolation() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		
 		// Execute concurrent requests that access different resources
 		Thread[] threads = new Thread[5];
 		ResponseEntity<?>[] responses = new ResponseEntity<?>[5];
+		CountDownLatch endGate = new CountDownLatch(threads.length);
 		
 		for (int i = 1; i <= 5; i++) {
 			final int ownerIndex = i;
-			threads[i - 1] = new Thread(() -> {
+			threads[i - 1] = Thread.startVirtualThread(() -> {
 				try {
 					responses[ownerIndex - 1] = template.exchange(
 						RequestEntity.get("/owners/" + ownerIndex).build(), 
@@ -176,15 +197,14 @@ public class VirtualThreadBehaviorTests {
 					);
 				} catch (Exception e) {
 					responses[ownerIndex - 1] = null;
+				} finally {
+					endGate.countDown();
 				}
 			});
-			threads[i - 1].start();
 		}
 		
 		// Wait for completion
-		for (Thread thread : threads) {
-			thread.join();
-		}
+		awaitLatch(endGate, 30);
 		
 		// Verify each request got the correct response
 		for (ResponseEntity<?> response : responses) {
@@ -196,15 +216,16 @@ public class VirtualThreadBehaviorTests {
 	@Test
 	@DisplayName("Verify no deadlocks occur during concurrent database and servlet operations")
 	void testNoDeadlocks() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		
 		// Concurrent mix of database and servlet operations
 		Thread[] threads = new Thread[20];
 		Exception[] exceptions = new Exception[20];
+		CountDownLatch endGate = new CountDownLatch(threads.length);
 		
 		for (int i = 0; i < 20; i++) {
 			final int index = i;
-			threads[i] = new Thread(() -> {
+			threads[i] = Thread.startVirtualThread(() -> {
 				try {
 					if (index % 2 == 0) {
 						// Database operation
@@ -221,16 +242,14 @@ public class VirtualThreadBehaviorTests {
 					}
 				} catch (Exception e) {
 					exceptions[index] = e;
+				} finally {
+					endGate.countDown();
 				}
 			});
-			threads[i].start();
 		}
 		
 		// Wait for completion with timeout to detect potential deadlocks
-		for (Thread thread : threads) {
-			thread.join(10000); // 10 second timeout per thread
-			assertThat(thread.isAlive()).isFalse();
-		}
+		awaitLatch(endGate, 30);
 		
 		// Verify no exceptions occurred
 		for (Exception exception : exceptions) {

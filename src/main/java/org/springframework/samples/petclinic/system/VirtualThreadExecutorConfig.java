@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.system;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -68,16 +67,9 @@ public class VirtualThreadExecutorConfig {
 	 * Optional @Async method invocations
 	 * @return ExecutorService backed by virtual threads
 	 */
-	@Bean(name = "virtualThreadExecutor")
+	@Bean(name = "virtualThreadExecutor", destroyMethod = "shutdown")
 	public ExecutorService virtualThreadExecutor() {
-		// Java 17 baseline: uses cached thread pool (virtual threads enabled on Java 21)
-		ThreadFactory factory = r -> {
-			Thread t = new Thread(r);
-			t.setName("virtual-io-" + t.getId());
-			t.setDaemon(true);
-			return t;
-		};
-		return Executors.newCachedThreadPool(factory);
+		return newVirtualExecutor("virtual-io-");
 	}
 
 	/**
@@ -91,10 +83,9 @@ public class VirtualThreadExecutorConfig {
 	 * execution - Entity persistence operations
 	 * @return ExecutorService optimized for database I/O
 	 */
-	@Bean(name = "databaseVirtualThreadExecutor")
+	@Bean(name = "databaseVirtualThreadExecutor", destroyMethod = "shutdown")
 	public ExecutorService databaseVirtualThreadExecutor() {
-		// Java 17 baseline: cached thread pool (virtual threads enabled on Java 21)
-		return Executors.newCachedThreadPool();
+		return newVirtualExecutor("virtual-db-");
 	}
 
 	/**
@@ -107,10 +98,13 @@ public class VirtualThreadExecutorConfig {
 	 * complexity of reactive frameworks.
 	 * @return ExecutorService optimized for HTTP/network I/O
 	 */
-	@Bean(name = "httpVirtualThreadExecutor")
+	@Bean(name = "httpVirtualThreadExecutor", destroyMethod = "shutdown")
 	public ExecutorService httpVirtualThreadExecutor() {
-		// Java 17 baseline: cached thread pool (virtual threads enabled on Java 21)
-		return Executors.newCachedThreadPool();
+		return newVirtualExecutor("virtual-http-");
+	}
+
+	private static ExecutorService newVirtualExecutor(String namePrefix) {
+		return Executors.newThreadPerTaskExecutor(Thread.ofVirtual().name(namePrefix, 0).factory());
 	}
 
 }

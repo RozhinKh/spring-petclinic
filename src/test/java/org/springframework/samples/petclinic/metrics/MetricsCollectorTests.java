@@ -32,8 +32,7 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("benchmark")
 class MetricsCollectorTests {
 
-	@Autowired
-	private MetricsExporter metricsExporter;
+	private final MetricsExporter metricsExporter = MetricsExporter.createDefault();
 
 	@Autowired(required = false)
 	private MetricsCollector metricsCollector;

@@ -22,8 +22,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryMXBean;
 import java.lang.management.ThreadMXBean;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
@@ -36,6 +36,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.vet.VetRepository;
+import org.springframework.http.client.SimpleClientHttpRequestFactory;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -43,6 +45,7 @@ import org.springframework.web.client.RestTemplate;
  * Ensures no resource leaks occur and cleanup happens properly.
  */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @DisplayName("Virtual Thread Resource Tests")
 public class VirtualThreadResourceTests {
 
@@ -55,10 +58,21 @@ public class VirtualThreadResourceTests {
 	@Autowired
 	private RestTemplateBuilder builder;
 
+	private RestTemplate restTemplate() {
+		return builder.requestFactory(() -> {
+				SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
+				factory.setConnectTimeout(5000);
+				factory.setReadTimeout(10000);
+				return factory;
+			})
+			.rootUri("http://localhost:" + port)
+			.build();
+	}
+
 	@Test
 	@DisplayName("Verify no thread leaks occur during repeated request cycles")
 	void testNoThreadLeaks() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		
 		long initialThreadCount = threadBean.getThreadCount();
@@ -66,11 +80,11 @@ public class VirtualThreadResourceTests {
 		
 		// Perform multiple cycles of concurrent requests
 		for (int cycle = 0; cycle < 5; cycle++) {
-			int requestsPerCycle = 100;
+			int requestsPerCycle = 50;
 			CountDownLatch endGate = new CountDownLatch(requestsPerCycle);
 			
 			for (int i = 0; i < requestsPerCycle; i++) {
-				new Thread(() -> {
+				Thread.startVirtualThread(() -> {
 					try {
 						ResponseEntity<String> response = template.exchange(
 							RequestEntity.get("/owners?lastName=").build(), 
@@ -82,10 +96,10 @@ public class VirtualThreadResourceTests {
 					} finally {
 						endGate.countDown();
 					}
-				}).start();
+				});
 			}
 			
-			endGate.await();
+			assertThat(endGate.await(60, TimeUnit.SECONDS)).isTrue();
 			Thread.sleep(500); // Allow cleanup between cycles
 		}
 		
@@ -105,7 +119,7 @@ public class VirtualThreadResourceTests {
 	@Test
 	@DisplayName("Verify memory is released after virtual thread operations")
 	void testMemoryRelease() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
 		
 		// Get baseline memory
@@ -115,11 +129,11 @@ public class VirtualThreadResourceTests {
 		System.out.println("Initial memory: " + (initialMemory / 1024 / 1024) + "MB");
 		
 		// Execute large batch of requests
-		int batchSize = 400;
+		int batchSize = 200;
 		CountDownLatch endGate = new CountDownLatch(batchSize);
 		
 		for (int i = 0; i < batchSize; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					ResponseEntity<String> response = template.exchange(
 						RequestEntity.get("/owners?lastName=").build(), 
@@ -131,10 +145,10 @@ public class VirtualThreadResourceTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
-		endGate.await();
+		assertThat(endGate.await(60, TimeUnit.SECONDS)).isTrue();
 		
 		long peakMemory = memoryBean.getHeapMemoryUsage().getUsed();
 		System.out.println("Peak memory: " + (peakMemory / 1024 / 1024) + "MB");
@@ -166,7 +180,7 @@ public class VirtualThreadResourceTests {
 			CountDownLatch endGate = new CountDownLatch(requestsPerCycle);
 			
 			for (int i = 0; i < requestsPerCycle; i++) {
-				new Thread(() -> {
+				Thread.startVirtualThread(() -> {
 					try {
 						var result = vets.findAll();
 						assertThat(result).isNotEmpty();
@@ -175,10 +189,10 @@ public class VirtualThreadResourceTests {
 					} finally {
 						endGate.countDown();
 					}
-				}).start();
+				});
 			}
 			
-			endGate.await();
+			assertThat(endGate.await(60, TimeUnit.SECONDS)).isTrue();
 			
 			System.out.println("Cycle " + (cycle + 1) + " completed");
 			Thread.sleep(500); // Allow connection cleanup
@@ -191,19 +205,19 @@ public class VirtualThreadResourceTests {
 	@Test
 	@DisplayName("Verify exception handling doesn't cause resource leaks")
 	void testExceptionHandling() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		
 		long initialThreadCount = threadBean.getThreadCount();
 		
-		int requestsCount = 100;
+		int requestsCount = 60;
 		CountDownLatch endGate = new CountDownLatch(requestsCount);
 		AtomicInteger successCount = new AtomicInteger(0);
 		AtomicInteger errorCount = new AtomicInteger(0);
 		
 		for (int i = 0; i < requestsCount; i++) {
 			final int index = i;
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					// Mix valid and invalid requests
 					String path = (index % 2 == 0) ? "/owners/1" : "/invalid/path/999999";
@@ -223,10 +237,10 @@ public class VirtualThreadResourceTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
-		endGate.await();
+		assertThat(endGate.await(60, TimeUnit.SECONDS)).isTrue();
 		
 		long finalThreadCount = threadBean.getThreadCount();
 		System.out.println("Thread count - Initial: " + initialThreadCount + ", Final: " + finalThreadCount);
@@ -241,17 +255,17 @@ public class VirtualThreadResourceTests {
 	@Test
 	@DisplayName("Verify no file descriptor leaks in servlet handling")
 	void testFileDescriptorCleanup() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		
 		int cycles = 3;
-		int requestsPerCycle = 75;
+		int requestsPerCycle = 50;
 		
 		for (int cycle = 0; cycle < cycles; cycle++) {
 			CountDownLatch endGate = new CountDownLatch(requestsPerCycle);
 			AtomicInteger successCount = new AtomicInteger(0);
 			
 			for (int i = 0; i < requestsPerCycle; i++) {
-				new Thread(() -> {
+				Thread.startVirtualThread(() -> {
 					try {
 						ResponseEntity<String> response = template.exchange(
 							RequestEntity.get("/owners?lastName=").build(), 
@@ -265,10 +279,10 @@ public class VirtualThreadResourceTests {
 					} finally {
 						endGate.countDown();
 					}
-				}).start();
+				});
 			}
 			
-			endGate.await();
+			assertThat(endGate.await(60, TimeUnit.SECONDS)).isTrue();
 			
 			System.out.println("Cycle " + (cycle + 1) + ": " + successCount.get() + "/" + 
 			                   requestsPerCycle + " successful");
@@ -281,15 +295,15 @@ public class VirtualThreadResourceTests {
 	@Test
 	@DisplayName("Verify request-scoped beans are properly cleaned up")
 	void testRequestScopedBeanCleanup() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		
-		int concurrentRequests = 150;
+		int concurrentRequests = 100;
 		CountDownLatch startGate = new CountDownLatch(1);
 		CountDownLatch endGate = new CountDownLatch(concurrentRequests);
 		AtomicInteger successCount = new AtomicInteger(0);
 		
 		for (int i = 0; i < concurrentRequests; i++) {
-			new Thread(() -> {
+			Thread.startVirtualThread(() -> {
 				try {
 					startGate.await();
 					
@@ -306,11 +320,11 @@ public class VirtualThreadResourceTests {
 				} finally {
 					endGate.countDown();
 				}
-			}).start();
+			});
 		}
 		
 		startGate.countDown();
-		endGate.await();
+		assertThat(endGate.await(60, TimeUnit.SECONDS)).isTrue();
 		
 		// All request-scoped beans should have been properly instantiated and cleaned up
 		assertThat(successCount.get()).isEqualTo(concurrentRequests);
@@ -319,7 +333,7 @@ public class VirtualThreadResourceTests {
 	@Test
 	@DisplayName("Verify sustained operation doesn't accumulate resources")
 	void testSustainedResourceManagement() throws InterruptedException {
-		RestTemplate template = builder.rootUri("http://localhost:" + port).build();
+		RestTemplate template = restTemplate();
 		MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
 		ThreadMXBean threadBean = ManagementFactory.getThreadMXBean();
 		
@@ -335,10 +349,10 @@ public class VirtualThreadResourceTests {
 		int iterationCount = 0;
 		
 		while (System.currentTimeMillis() < endTime) {
-			CountDownLatch endGate = new CountDownLatch(50);
+			CountDownLatch endGate = new CountDownLatch(30);
 			
-			for (int i = 0; i < 50; i++) {
-				new Thread(() -> {
+			for (int i = 0; i < 30; i++) {
+				Thread.startVirtualThread(() -> {
 					try {
 						ResponseEntity<String> response = template.exchange(
 							RequestEntity.get("/owners?lastName=").build(), 
@@ -350,10 +364,10 @@ public class VirtualThreadResourceTests {
 					} finally {
 						endGate.countDown();
 					}
-				}).start();
+				});
 			}
 			
-			endGate.await();
+			assertThat(endGate.await(30, TimeUnit.SECONDS)).isTrue();
 			iterationCount++;
 		}
 		

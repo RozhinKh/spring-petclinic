@@ -15,6 +15,9 @@ import threading
 from datetime import datetime
 
 
+REQUEST_TIMEOUT_SECONDS = 30
+ERROR_SAMPLE_LIMIT = 5
+
 ENDPOINTS = [
     "/owners?page=1",
     "/owners/1",
@@ -24,7 +27,7 @@ ENDPOINTS = [
 ]
 
 
-def make_request(base_url, endpoint, timeout=15):
+def make_request(base_url, endpoint, timeout=REQUEST_TIMEOUT_SECONDS):
     url = base_url + endpoint
     start = time.perf_counter()
     try:
@@ -32,13 +35,23 @@ def make_request(base_url, endpoint, timeout=15):
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             resp.read()
             latency_ms = (time.perf_counter() - start) * 1000
-            return {"ok": True, "status": resp.status, "latency_ms": latency_ms}
+        return {"ok": True, "status": resp.status, "latency_ms": latency_ms}
     except urllib.error.HTTPError as e:
         latency_ms = (time.perf_counter() - start) * 1000
-        return {"ok": e.code < 500, "status": e.code, "latency_ms": latency_ms}
+        body = ""
+        try:
+            body = e.read(512).decode(errors="ignore")
+        except Exception:
+            body = ""
+        return {
+            "ok": e.code < 500,
+            "status": e.code,
+            "latency_ms": latency_ms,
+            "error": body.replace("\n", " ")[:200],
+        }
     except Exception as e:
         latency_ms = (time.perf_counter() - start) * 1000
-        return {"ok": False, "status": 0, "latency_ms": latency_ms, "error": str(e)[:80]}
+        return {"ok": False, "status": 0, "latency_ms": latency_ms, "error": str(e)[:120]}
 
 
 def percentile(sorted_data, pct):
@@ -107,6 +120,13 @@ def run_load_test(base_url, concurrency, duration_seconds):
     errors = len(results) - successes
     error_rate = errors / len(results) * 100 if results else 0
     throughput_rps = len(results) / elapsed
+    status_counts = {}
+    error_samples = []
+    for r in results:
+        status = r.get("status", 0)
+        status_counts[status] = status_counts.get(status, 0) + 1
+        if not r.get("ok") and "error" in r and len(error_samples) < ERROR_SAMPLE_LIMIT:
+            error_samples.append(r["error"])
 
     report = {
         "concurrency": concurrency,
@@ -116,6 +136,8 @@ def run_load_test(base_url, concurrency, duration_seconds):
         "error_count": errors,
         "error_rate_pct": round(error_rate, 3),
         "throughput_rps": round(throughput_rps, 2),
+        "status_counts": status_counts,
+        "error_samples": error_samples,
         "latency_ms": {
             "min": round(latencies[0], 2),
             "avg": round(sum(latencies) / len(latencies), 2),

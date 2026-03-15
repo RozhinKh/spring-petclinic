@@ -53,8 +53,8 @@ import java.util.function.Supplier;
  */
 public final class VirtualThreadWrapper {
 
-	// Java 17 baseline: cached thread pool (virtual threads enabled on Java 21)
-	private static final ExecutorService VIRTUAL_EXECUTOR = Executors.newCachedThreadPool();
+	private static final ExecutorService VIRTUAL_EXECUTOR = Executors
+		.newThreadPerTaskExecutor(Thread.ofVirtual().name("vt-wrapper-", 0).factory());
 
 	// Prevent instantiation
 	private VirtualThreadWrapper() {
@@ -71,6 +71,9 @@ public final class VirtualThreadWrapper {
 	 * @throws RuntimeException if the operation throws a checked exception
 	 */
 	public static <T> T execute(Supplier<T> supplier) {
+		if (Thread.currentThread().isVirtual()) {
+			return supplier.get();
+		}
 		try {
 			return VIRTUAL_EXECUTOR.submit(supplier::get).get();
 		}
@@ -99,6 +102,9 @@ public final class VirtualThreadWrapper {
 	 * @throws RuntimeException if the operation throws a checked exception
 	 */
 	public static <T, R> R execute(Function<T, R> function, T input) {
+		if (Thread.currentThread().isVirtual()) {
+			return function.apply(input);
+		}
 		try {
 			return VIRTUAL_EXECUTOR.submit(() -> function.apply(input)).get();
 		}
@@ -139,6 +145,10 @@ public final class VirtualThreadWrapper {
 	 * @throws RuntimeException if the operation throws a checked exception
 	 */
 	public static <T> void execute(Consumer<T> consumer, T input) {
+		if (Thread.currentThread().isVirtual()) {
+			consumer.accept(input);
+			return;
+		}
 		try {
 			VIRTUAL_EXECUTOR.submit(() -> {
 				consumer.accept(input);
@@ -168,6 +178,14 @@ public final class VirtualThreadWrapper {
 	 * @throws RuntimeException if the operation throws a checked exception
 	 */
 	public static <T> T execute(Callable<T> callable) {
+		if (Thread.currentThread().isVirtual()) {
+			try {
+				return callable.call();
+			}
+			catch (Exception ex) {
+				throw new RuntimeException("Virtual thread operation failed", ex);
+			}
+		}
 		try {
 			return VIRTUAL_EXECUTOR.submit(callable).get();
 		}

@@ -157,6 +157,7 @@ class PetController {
 		return "redirect:/owners/{ownerId}";
 	}
 
+	/**
 	 * Updates the pet details if it exists or adds a new pet to the owner.
 	 * @param owner The owner of the pet
 	 * @param pet The pet with updated details

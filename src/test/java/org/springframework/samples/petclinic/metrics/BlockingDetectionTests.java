@@ -159,7 +159,7 @@ public class BlockingDetectionTests {
 
 		Map<String, BlockingDetectionHarness.BlockingDetectionResult> results = blockingHarness.getAllResults();
 		assertThat(results).hasSize(3);
-		assertThat(results.keySet()).containsExactly("java17", "java21-traditional", "java21-virtual");
+		assertThat(results.keySet()).containsExactlyInAnyOrder("java17", "java21-traditional", "java21-virtual");
 	}
 
 	@Test

@@ -84,6 +84,11 @@ public class VirtualThreadRepositoryInterceptor implements MethodInterceptor {
 			return invocation.proceed();
 		}
 
+		// Avoid double-virtualizing when already on a virtual thread
+		if (Thread.currentThread().isVirtual()) {
+			return invocation.proceed();
+		}
+
 		// Wrap the invocation in a Callable for virtual thread execution
 		Callable<?> task = () -> {
 			try {
