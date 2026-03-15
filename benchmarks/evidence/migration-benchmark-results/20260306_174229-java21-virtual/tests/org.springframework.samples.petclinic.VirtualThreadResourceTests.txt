@@ -1,0 +1,13 @@
+-------------------------------------------------------------------------------
+Test set: org.springframework.samples.petclinic.VirtualThreadResourceTests
+-------------------------------------------------------------------------------
+Tests run: 7, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 43.37 s <<< FAILURE! -- in org.springframework.samples.petclinic.VirtualThreadResourceTests
+org.springframework.samples.petclinic.VirtualThreadResourceTests.testExceptionHandling -- Time elapsed: 0.226 s <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting actual:
+  75L
+to be less than:
+  50L 
+	at org.springframework.samples.petclinic.VirtualThreadResourceTests.testExceptionHandling(VirtualThreadResourceTests.java:238)
+

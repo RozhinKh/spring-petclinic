@@ -1,0 +1,36 @@
+[ERROR] COMPILATION ERROR : 
+[ERROR] /C:/Users/BiaDigi/Desktop/Spring Pet Clinic/src/test/java/org/springframework/samples/petclinic/VirtualThreadTransactionTests.java:[160,47] no suitable method found for isGreaterThan(double)
+    method org.assertj.core.api.AbstractComparableAssert.isGreaterThan(java.lang.Integer) is not applicable
+      (argument mismatch; double cannot be converted to java.lang.Integer)
+    method org.assertj.core.api.AbstractIntegerAssert.isGreaterThan(int) is not applicable
+      (argument mismatch; possible lossy conversion from double to int)
+[ERROR] /C:/Users/BiaDigi/Desktop/Spring Pet Clinic/src/test/java/org/springframework/samples/petclinic/VirtualThreadTransactionTests.java:[161,47] no suitable method found for isLessThan(double)
+    method org.assertj.core.api.AbstractComparableAssert.isLessThan(java.lang.Integer) is not applicable
+      (argument mismatch; double cannot be converted to java.lang.Integer)
+    method org.assertj.core.api.AbstractIntegerAssert.isLessThan(int) is not applicable
+      (argument mismatch; possible lossy conversion from double to int)
+[ERROR] /C:/Users/BiaDigi/Desktop/Spring Pet Clinic/src/test/java/org/springframework/samples/petclinic/VirtualThreadTransactionTests.java:[179,63] cannot find symbol
+  symbol:   method get(int)
+  location: variable vets of type java.util.Collection<org.springframework.samples.petclinic.vet.Vet>
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.11.0:testCompile (default-testCompile) on project spring-petclinic: Compilation failure: Compilation failure: 
+[ERROR] /C:/Users/BiaDigi/Desktop/Spring Pet Clinic/src/test/java/org/springframework/samples/petclinic/VirtualThreadTransactionTests.java:[160,47] no suitable method found for isGreaterThan(double)
+[ERROR]     method org.assertj.core.api.AbstractComparableAssert.isGreaterThan(java.lang.Integer) is not applicable
+[ERROR]       (argument mismatch; double cannot be converted to java.lang.Integer)
+[ERROR]     method org.assertj.core.api.AbstractIntegerAssert.isGreaterThan(int) is not applicable
+[ERROR]       (argument mismatch; possible lossy conversion from double to int)
+[ERROR] /C:/Users/BiaDigi/Desktop/Spring Pet Clinic/src/test/java/org/springframework/samples/petclinic/VirtualThreadTransactionTests.java:[161,47] no suitable method found for isLessThan(double)
+[ERROR]     method org.assertj.core.api.AbstractComparableAssert.isLessThan(java.lang.Integer) is not applicable
+[ERROR]       (argument mismatch; double cannot be converted to java.lang.Integer)
+[ERROR]     method org.assertj.core.api.AbstractIntegerAssert.isLessThan(int) is not applicable
+[ERROR]       (argument mismatch; possible lossy conversion from double to int)
+[ERROR] /C:/Users/BiaDigi/Desktop/Spring Pet Clinic/src/test/java/org/springframework/samples/petclinic/VirtualThreadTransactionTests.java:[179,63] cannot find symbol
+[ERROR]   symbol:   method get(int)
+[ERROR]   location: variable vets of type java.util.Collection<org.springframework.samples.petclinic.vet.Vet>
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoFailureException
+
