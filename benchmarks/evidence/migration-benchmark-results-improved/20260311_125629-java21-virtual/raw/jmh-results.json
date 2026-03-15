@@ -1,0 +1,443 @@
+[
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnerByIdThroughput",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 472.5888847059666,
+            "scoreError" : 900.2194517182426,
+            "scoreConfidence" : [
+                -427.63056701227595,
+                1372.8083364242093
+            ],
+            "scorePercentiles" : {
+                "0.0" : 417.89834742098515,
+                "50.0" : 486.09415050897616,
+                "90.0" : 513.7741561879386,
+                "95.0" : 513.7741561879386,
+                "99.0" : 513.7741561879386,
+                "99.9" : 513.7741561879386,
+                "99.99" : 513.7741561879386,
+                "99.999" : 513.7741561879386,
+                "99.9999" : 513.7741561879386,
+                "100.0" : 513.7741561879386
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    417.89834742098515,
+                    486.09415050897616,
+                    513.7741561879386
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnersThroughput",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 261.1204990611827,
+            "scoreError" : 101.78932559973622,
+            "scoreConfidence" : [
+                159.3311734614465,
+                362.90982466091896
+            ],
+            "scorePercentiles" : {
+                "0.0" : 257.17777250941066,
+                "50.0" : 258.6792590276336,
+                "90.0" : 267.504465646504,
+                "95.0" : 267.504465646504,
+                "99.0" : 267.504465646504,
+                "99.9" : 267.504465646504,
+                "99.99" : 267.504465646504,
+                "99.999" : 267.504465646504,
+                "99.9999" : 267.504465646504,
+                "100.0" : 267.504465646504
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    257.17777250941066,
+                    258.6792590276336,
+                    267.504465646504
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getVetsThroughput",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 2768.985193564009,
+            "scoreError" : 5150.687125038839,
+            "scoreConfidence" : [
+                -2381.7019314748304,
+                7919.6723186028485
+            ],
+            "scorePercentiles" : {
+                "0.0" : 2443.070741298174,
+                "50.0" : 2925.3771009413763,
+                "90.0" : 2938.507738452477,
+                "95.0" : 2938.507738452477,
+                "99.0" : 2938.507738452477,
+                "99.9" : 2938.507738452477,
+                "99.99" : 2938.507738452477,
+                "99.999" : 2938.507738452477,
+                "99.9999" : 2938.507738452477,
+                "100.0" : 2938.507738452477
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    2938.507738452477,
+                    2925.3771009413763,
+                    2443.070741298174
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.mixedWorkloadThroughput",
+        "mode" : "thrpt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "2 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 518.5310277573655,
+            "scoreError" : 92.64248623356607,
+            "scoreConfidence" : [
+                425.8885415237994,
+                611.1735139909315
+            ],
+            "scorePercentiles" : {
+                "0.0" : 514.4533297696106,
+                "50.0" : 516.9207880289067,
+                "90.0" : 524.2189654735791,
+                "95.0" : 524.2189654735791,
+                "99.0" : 524.2189654735791,
+                "99.9" : 524.2189654735791,
+                "99.99" : 524.2189654735791,
+                "99.999" : 524.2189654735791,
+                "99.9999" : 524.2189654735791,
+                "100.0" : 524.2189654735791
+            },
+            "scoreUnit" : "ops/s",
+            "rawData" : [
+                [
+                    516.9207880289067,
+                    524.2189654735791,
+                    514.4533297696106
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerById",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1.428426677439452,
+            "scoreError" : 0.7298556530246869,
+            "scoreConfidence" : [
+                0.6985710244147652,
+                2.158282330464139
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.4038014005602242,
+                "50.0" : 1.406891643454039,
+                "90.0" : 1.4745869883040936,
+                "95.0" : 1.4745869883040936,
+                "99.0" : 1.4745869883040936,
+                "99.9" : 1.4745869883040936,
+                "99.99" : 1.4745869883040936,
+                "99.999" : 1.4745869883040936,
+                "99.9999" : 1.4745869883040936,
+                "100.0" : 1.4745869883040936
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    1.406891643454039,
+                    1.4038014005602242,
+                    1.4745869883040936
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerFind",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1.749850591154264,
+            "scoreError" : 0.43861704761432124,
+            "scoreConfidence" : [
+                1.3112335435399427,
+                2.1884676387685853
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.7222641156462586,
+                "50.0" : 1.7609491289198607,
+                "90.0" : 1.7663385288966724,
+                "95.0" : 1.7663385288966724,
+                "99.0" : 1.7663385288966724,
+                "99.9" : 1.7663385288966724,
+                "99.99" : 1.7663385288966724,
+                "99.999" : 1.7663385288966724,
+                "99.9999" : 1.7663385288966724,
+                "100.0" : 1.7663385288966724
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    1.7222641156462586,
+                    1.7663385288966724,
+                    1.7609491289198607
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwners",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 3.545849296329243,
+            "scoreError" : 0.7477691177913841,
+            "scoreConfidence" : [
+                2.798080178537859,
+                4.293618414120627
+            ],
+            "scorePercentiles" : {
+                "0.0" : 3.507213888888889,
+                "50.0" : 3.5414926573426575,
+                "90.0" : 3.588841342756184,
+                "95.0" : 3.588841342756184,
+                "99.0" : 3.588841342756184,
+                "99.9" : 3.588841342756184,
+                "99.99" : 3.588841342756184,
+                "99.999" : 3.588841342756184,
+                "99.9999" : 3.588841342756184,
+                "100.0" : 3.588841342756184
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    3.588841342756184,
+                    3.507213888888889,
+                    3.5414926573426575
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getVets",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 0.4898952885963633,
+            "scoreError" : 0.21782511822852463,
+            "scoreConfidence" : [
+                0.27207017036783865,
+                0.7077204068248879
+            ],
+            "scorePercentiles" : {
+                "0.0" : 0.47794950495049504,
+                "50.0" : 0.4899074056147144,
+                "90.0" : 0.5018289552238806,
+                "95.0" : 0.5018289552238806,
+                "99.0" : 0.5018289552238806,
+                "99.9" : 0.5018289552238806,
+                "99.99" : 0.5018289552238806,
+                "99.999" : 0.5018289552238806,
+                "99.9999" : 0.5018289552238806,
+                "100.0" : 0.5018289552238806
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    0.4899074056147144,
+                    0.5018289552238806,
+                    0.47794950495049504
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    },
+    {
+        "jmhVersion" : "1.37",
+        "benchmark" : "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.postNewOwner",
+        "mode" : "avgt",
+        "threads" : 1,
+        "forks" : 1,
+        "jvm" : "C:\\Program Files\\Microsoft\\jdk-21.0.10.7-hotspot\\bin\\java.exe",
+        "jvmArgs" : [
+        ],
+        "jdkVersion" : "21.0.10",
+        "vmName" : "OpenJDK 64-Bit Server VM",
+        "vmVersion" : "21.0.10+7-LTS",
+        "warmupIterations" : 2,
+        "warmupTime" : "1 s",
+        "warmupBatchSize" : 1,
+        "measurementIterations" : 3,
+        "measurementTime" : "1 s",
+        "measurementBatchSize" : 1,
+        "primaryMetric" : {
+            "score" : 1.0165759557344065,
+            "scoreError" : "NaN",
+            "scoreConfidence" : [
+                "NaN",
+                "NaN"
+            ],
+            "scorePercentiles" : {
+                "0.0" : 1.0165759557344065,
+                "50.0" : 1.0165759557344065,
+                "90.0" : 1.0165759557344065,
+                "95.0" : 1.0165759557344065,
+                "99.0" : 1.0165759557344065,
+                "99.9" : 1.0165759557344065,
+                "99.99" : 1.0165759557344065,
+                "99.999" : 1.0165759557344065,
+                "99.9999" : 1.0165759557344065,
+                "100.0" : 1.0165759557344065
+            },
+            "scoreUnit" : "ms/op",
+            "rawData" : [
+                [
+                    1.0165759557344065
+                ]
+            ]
+        },
+        "secondaryMetrics" : {
+        }
+    }
+]
+
+

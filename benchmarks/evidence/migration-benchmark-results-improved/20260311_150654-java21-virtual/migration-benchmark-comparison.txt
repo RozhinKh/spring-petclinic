@@ -1,0 +1,43 @@
+Migration Benchmark Comparison
+Baseline: 20260306_174229-java21-virtual
+Improved: 20260311_150654-java21-virtual
+
+Startup (lower is better)
+cold_ms: 23384 -> 7841 (-66.5%) improved
+warm_ms: 22315 -> 8705 (-61.0%) improved
+
+Load Test
+users_100:
+  throughput_rps (higher is better): 273.75 -> 319.58 (+16.7%) improved
+  latency_avg_ms (lower is better): 363.68 -> 311.55 (-14.3%) improved
+  latency_p95_ms (lower is better): 589.79 -> 663.24 (+12.5%) worse
+  error_rate_pct (lower is better): 0.0 -> 0.0 (n/a)
+users_250:
+  throughput_rps (higher is better): 303.34 -> 401.93 (+32.5%) improved
+  latency_avg_ms (lower is better): 815.24 -> 616.82 (-24.3%) improved
+  latency_p95_ms (lower is better): 1330.95 -> 1210.25 (-9.1%) improved
+  error_rate_pct (lower is better): 0.0 -> 0.0 (n/a)
+users_500:
+  throughput_rps (higher is better): 287.32 -> 389.09 (+35.4%) improved
+  latency_avg_ms (lower is better): 1702.5 -> 1264.15 (-25.7%) improved
+  latency_p95_ms (lower is better): 3170.89 -> 2408.33 (-24.0%) improved
+  error_rate_pct (lower is better): 0.0 -> 0.0 (n/a)
+
+JMH Latency (lower is better)
+org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerById: 8.865450287086757 -> 4.804709425299957 (-45.8%) improved
+org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerFind: 7.89484741309347 -> 6.237971981493433 (-21.0%) improved
+org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwners: 14.134882884217232 -> 10.460850262045769 (-26.0%) improved
+org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getVets: 2.5744579759587047 -> 1.5074151673454619 (-41.4%) improved
+org.springframework.samples.petclinic.benchmark.LatencyBenchmark.postNewOwner: 8.090176532505792 -> 7.283958734884504 (-10.0%) improved
+
+JMH Throughput (higher is better)
+org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnerByIdThroughput: 109.73790710510553 -> 207.71774975206935 (+89.3%) improved
+org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnersThroughput: 67.00995630587501 -> 90.47098488636946 (+35.0%) improved
+org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getVetsThroughput: 371.56127207900107 -> 553.411728489482 (+48.9%) improved
+org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.mixedWorkloadThroughput: 125.34926467745224 -> 156.26700751176563 (+24.7%) improved
+
+SpotBugs
+Baseline SpotBugs data missing; only improved counts shown below.
+blocking_bug_instances: 18
+total_bug_instances: 6526
+report_file: C:\Users\BiaDigi\Desktop\Spring Pet Clinic\target\\spotbugsXml.xml

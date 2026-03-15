@@ -1,0 +1,247 @@
+{
+    "label":  "migration-benchmark",
+    "variant":  "java21-virtual",
+    "benchmark_timestamp":  "2026-03-11T13:00:45.8322597Z",
+    "baseline_reference":  {
+                               "evidence_dir":  "benchmark-evidence\\java17-baseline",
+                               "git_ref":  "e1e80ed"
+                           },
+    "post_migration_reference":  {
+                                     "git_ref":  "HEAD",
+                                     "workspace_commit":  "c3949df9263736a4d6281116382f0d5a09be919e"
+                                 },
+    "migration_effort_metrics":  {
+                                     "total_java_loc_in_project":  19708,
+                                     "baseline_java_loc_in_project":  109,
+                                     "lines_of_code_migrated_refactored":  5343,
+                                     "percentage_of_codebase_modified":  4901.83,
+                                     "number_of_files_modified":  94,
+                                     "number_of_java_files_modified":  88,
+                                     "number_of_modules_or_packages_touched":  8,
+                                     "packages_touched":  [
+                                                              "org.springframework.samples.petclinic",
+                                                              "org.springframework.samples.petclinic.benchmark",
+                                                              "org.springframework.samples.petclinic.metrics",
+                                                              "org.springframework.samples.petclinic.metrics.parser",
+                                                              "org.springframework.samples.petclinic.owner",
+                                                              "org.springframework.samples.petclinic.service",
+                                                              "org.springframework.samples.petclinic.system",
+                                                              "org.springframework.samples.petclinic.vet"
+                                                          ],
+                                     "records_introduced":  1,
+                                     "pattern_matching_usages_introduced":  2,
+                                     "switch_expression_or_pattern_switch_conversions":  0,
+                                     "virtual_thread_usage_points_introduced":  27,
+                                     "deprecated_api_replacements":  0,
+                                     "removed_legacy_constructs":  1,
+                                     "dependency_upgrades_required_for_java21":  2,
+                                     "number_of_build_configuration_changes":  3,
+                                     "build_files_changed":  [
+                                                                 "build.gradle",
+                                                                 "pom.xml",
+                                                                 "run_tests.sh"
+                                                             ],
+                                     "static_analysis_issues_before_migration":  6525,
+                                     "static_analysis_issues_after_migration":  6526,
+                                     "blocking_related_findings_before_migration":  {
+                                                                                        "static":  18,
+                                                                                        "runtime":  "See baseline artifact_complete JFR evidence"
+                                                                                    },
+                                     "blocking_related_findings_after_migration":  {
+                                                                                       "static":  18,
+                                                                                       "runtime":  0
+                                                                                   },
+                                     "test_suite_pass_rate_before_migration":  96.15,
+                                     "test_suite_pass_rate_after_migration":  null,
+                                     "test_failures_introduced_by_migration":  [
+
+                                                                               ],
+                                     "test_failures_resolved_during_migration":  [
+                                                                                     "org.springframework.samples.petclinic.metrics.BlockingDetectionTests.testBlockingDetectionHarnessMultipleVariants",
+                                                                                     "org.springframework.samples.petclinic.metrics.MetricsCollectorTests.contextLoads",
+                                                                                     "org.springframework.samples.petclinic.metrics.MetricsCollectorTests.metricsSnapshotCanBeCreated"
+                                                                                 ],
+                                     "total_test_suite_execution_time_before_migration_s":  27.81,
+                                     "total_test_suite_execution_time_after_migration_s":  0,
+                                     "code_coverage_before_migration_pct":  9.91,
+                                     "code_coverage_after_migration_pct":  9.84,
+                                     "number_of_migration_errors_encountered":  0,
+                                     "number_of_rework_cycles_required":  "not_tracked",
+                                     "estimated_manual_migration_effort":  "not_tracked",
+                                     "actual_migration_effort_with_artemis":  "not_tracked",
+                                     "time_spent_debugging_migration_issues":  "not_tracked",
+                                     "percentage_of_migration_automated_by_artemis":  "not_tracked",
+                                     "manual_code_review_effort_reduction":  "not_tracked",
+                                     "cves_resolved_by_upgrading_runtime_or_dependencies":  "not_tracked"
+                                 },
+    "actual_post_migration_code_shape":  {
+                                             "record_declarations_after":  1,
+                                             "pattern_matching_usages_after":  12,
+                                             "switch_expression_markers_after":  0,
+                                             "virtual_thread_references_after":  64
+                                         },
+    "runtime_benchmark":  {
+                              "startup":  {
+                                              "cold_ms":  11773,
+                                              "warm_ms":  12874
+                                          },
+                              "load_test":  {
+                                                "users_100":  {
+                                                                  "concurrency":  100,
+                                                                  "duration_seconds":  30.31,
+                                                                  "total_requests":  9685,
+                                                                  "successful_requests":  9685,
+                                                                  "error_count":  0,
+                                                                  "error_rate_pct":  0.0,
+                                                                  "throughput_rps":  319.58,
+                                                                  "status_counts":  {
+                                                                                        "200":  9685
+                                                                                    },
+                                                                  "error_samples":  [
+
+                                                                                    ],
+                                                                  "latency_ms":  {
+                                                                                     "min":  13.4,
+                                                                                     "avg":  311.55,
+                                                                                     "p50":  299.41,
+                                                                                     "p95":  663.24,
+                                                                                     "p99":  976.93,
+                                                                                     "p99_9":  1257.89,
+                                                                                     "max":  1466.29
+                                                                                 }
+                                                              },
+                                                "users_250":  {
+                                                                  "concurrency":  250,
+                                                                  "duration_seconds":  30.63,
+                                                                  "total_requests":  12310,
+                                                                  "successful_requests":  12310,
+                                                                  "error_count":  0,
+                                                                  "error_rate_pct":  0.0,
+                                                                  "throughput_rps":  401.93,
+                                                                  "status_counts":  {
+                                                                                        "200":  12310
+                                                                                    },
+                                                                  "error_samples":  [
+
+                                                                                    ],
+                                                                  "latency_ms":  {
+                                                                                     "min":  10.88,
+                                                                                     "avg":  616.82,
+                                                                                     "p50":  598.11,
+                                                                                     "p95":  1210.25,
+                                                                                     "p99":  1329.87,
+                                                                                     "p99_9":  1452.39,
+                                                                                     "max":  1496.38
+                                                                                 }
+                                                              },
+                                                "users_500":  {
+                                                                  "concurrency":  500,
+                                                                  "duration_seconds":  31.16,
+                                                                  "total_requests":  12125,
+                                                                  "successful_requests":  12125,
+                                                                  "error_count":  0,
+                                                                  "error_rate_pct":  0.0,
+                                                                  "throughput_rps":  389.09,
+                                                                  "status_counts":  {
+                                                                                        "200":  12125
+                                                                                    },
+                                                                  "error_samples":  [
+
+                                                                                    ],
+                                                                  "latency_ms":  {
+                                                                                     "min":  9.69,
+                                                                                     "avg":  1264.15,
+                                                                                     "p50":  1143.36,
+                                                                                     "p95":  2408.33,
+                                                                                     "p99":  3231.11,
+                                                                                     "p99_9":  3366.91,
+                                                                                     "max":  3429.15
+                                                                                 }
+                                                              }
+                                            },
+                              "actuator":  {
+                                               "heap_avg_mb":  96.52,
+                                               "heap_peak_mb":  155.88,
+                                               "allocation_rate_mb_per_sec":  748.83,
+                                               "promotion_rate_mb_per_sec":  0.8,
+                                               "allocation_pressure_mb":  49953,
+                                               "promotion_total_mb":  55.6
+                                           },
+                              "jfr":  {
+                                          "runtime_blocking_event_count":  0,
+                                          "gc_pause_total_ms":  0,
+                                          "sampled_allocation_events":  0
+                                      },
+                              "jmh":  {
+                                          "latency":  [
+                                                          {
+                                                              "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerById",
+                                                              "mode":  "avgt",
+                                                              "score":  4.804709425299957,
+                                                              "unit":  "ms/op"
+                                                          },
+                                                          {
+                                                              "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerFind",
+                                                              "mode":  "avgt",
+                                                              "score":  6.237971981493433,
+                                                              "unit":  "ms/op"
+                                                          },
+                                                          {
+                                                              "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwners",
+                                                              "mode":  "avgt",
+                                                              "score":  10.460850262045769,
+                                                              "unit":  "ms/op"
+                                                          },
+                                                          {
+                                                              "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getVets",
+                                                              "mode":  "avgt",
+                                                              "score":  1.5074151673454619,
+                                                              "unit":  "ms/op"
+                                                          },
+                                                          {
+                                                              "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.postNewOwner",
+                                                              "mode":  "avgt",
+                                                              "score":  7.283958734884504,
+                                                              "unit":  "ms/op"
+                                                          }
+                                                      ],
+                                          "throughput":  [
+                                                             {
+                                                                 "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnerByIdThroughput",
+                                                                 "mode":  "thrpt",
+                                                                 "score":  207.71774975206935,
+                                                                 "unit":  "ops/s"
+                                                             },
+                                                             {
+                                                                 "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnersThroughput",
+                                                                 "mode":  "thrpt",
+                                                                 "score":  90.47098488636946,
+                                                                 "unit":  "ops/s"
+                                                             },
+                                                             {
+                                                                 "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getVetsThroughput",
+                                                                 "mode":  "thrpt",
+                                                                 "score":  553.411728489482,
+                                                                 "unit":  "ops/s"
+                                                             },
+                                                             {
+                                                                 "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.mixedWorkloadThroughput",
+                                                                 "mode":  "thrpt",
+                                                                 "score":  156.26700751176563,
+                                                                 "unit":  "ops/s"
+                                                             }
+                                                         ]
+                                      },
+                              "spotbugs":  {
+                                               "report_file":  "C:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic\\target\\spotbugsXml.xml",
+                                               "total_bug_instances":  6526,
+                                               "blocking_bug_instances":  18
+                                           }
+                          },
+    "artifact_locations":  {
+                               "summary":  "C:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic\\migration-benchmark-results-improved\\20260311_150654-java21-virtual\\migration-benchmark-summary.json",
+                               "raw":  "C:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic\\migration-benchmark-results-improved\\20260311_150654-java21-virtual\\raw",
+                               "tests":  "C:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic\\migration-benchmark-results-improved\\20260311_150654-java21-virtual\\tests",
+                               "coverage":  "C:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic\\migration-benchmark-results-improved\\20260311_150654-java21-virtual\\coverage"
+                           }
+}

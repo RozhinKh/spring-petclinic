@@ -1,0 +1,89 @@
+[
+  {
+    "concurrency": 100,
+    "duration_seconds": 43.52,
+    "total_requests": 542,
+    "successful_requests": 0,
+    "error_count": 542,
+    "error_rate_pct": 100.0,
+    "throughput_rps": 12.45,
+    "status_counts": {
+      "500": 529,
+      "0": 13
+    },
+    "error_samples": [
+      "timed out",
+      "timed out",
+      "timed out",
+      "timed out",
+      "timed out"
+    ],
+    "latency_ms": {
+      "min": 25.23,
+      "avg": 6186.61,
+      "p50": 4151.23,
+      "p95": 16649.39,
+      "p99": 31015.49,
+      "p99_9": 33039.3,
+      "max": 33039.3
+    }
+  },
+  {
+    "concurrency": 250,
+    "duration_seconds": 45.44,
+    "total_requests": 757,
+    "successful_requests": 0,
+    "error_count": 757,
+    "error_rate_pct": 100.0,
+    "throughput_rps": 16.66,
+    "status_counts": {
+      "500": 564,
+      "0": 193
+    },
+    "error_samples": [
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a"
+    ],
+    "latency_ms": {
+      "min": 19.24,
+      "avg": 11612.11,
+      "p50": 7203.7,
+      "p95": 31018.1,
+      "p99": 33030.8,
+      "p99_9": 33048.93,
+      "max": 33048.93
+    }
+  },
+  {
+    "concurrency": 500,
+    "duration_seconds": 45.48,
+    "total_requests": 1240,
+    "successful_requests": 0,
+    "error_count": 1240,
+    "error_rate_pct": 100.0,
+    "throughput_rps": 27.27,
+    "status_counts": {
+      "0": 651,
+      "500": 589
+    },
+    "error_samples": [
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "<urlopen error [WinError 10060] A connection attempt failed because the connected party did not properly respond after a",
+      "timed out",
+      "timed out"
+    ],
+    "latency_ms": {
+      "min": 16.44,
+      "avg": 15489.32,
+      "p50": 21032.61,
+      "p95": 30034.91,
+      "p99": 31034.74,
+      "p99_9": 33036.07,
+      "max": 33039.86
+    }
+  }
+]

@@ -1,0 +1,38 @@
+MIGRATION BENCHMARK RESULTS - java21-virtual
+Label: migration-benchmark
+Results directory: C:\Users\BiaDigi\Desktop\Spring Pet Clinic\migration-benchmark-results-improved\20260311_133102-java21-virtual
+
+Migration effort
+Total Java LOC after migration: 19700
+Baseline Java LOC: 109
+Changed LOC across migration diff: 5343
+Codebase modified: 4901.83%
+Files modified: 94
+Packages touched: 8
+Records introduced (diff): 1
+Pattern matching introduced (diff markers): 2
+Switch expression conversions (diff markers): 0
+Virtual thread points introduced (diff markers): 27
+
+Quality and validation
+Static analysis issues before: 6525
+Static analysis issues after: 
+Blocking findings before (static): 18
+Blocking findings after (static): 
+Blocking findings after (runtime JFR): 0
+Test pass rate before: 96.15%
+Test pass rate after: %
+Coverage before: 9.91%
+Coverage after: %
+Introduced failing tests: none
+Resolved failing tests: org.springframework.samples.petclinic.metrics.BlockingDetectionTests.testBlockingDetectionHarnessMultipleVariants, org.springframework.samples.petclinic.metrics.MetricsCollectorTests.contextLoads, org.springframework.samples.petclinic.metrics.MetricsCollectorTests.metricsSnapshotCanBeCreated
+
+Runtime benchmark
+Cold startup: 20290 ms
+Warm startup: 11635 ms
+100 users: TPS=763.36 P95=258.45ms P99=309.07ms Err=0.0%
+250 users: TPS=888.18 P95=431.53ms P99=587.34ms Err=59.901%
+500 users: TPS=992.8 P95=751.3ms P99=1230.47ms Err=98.253%
+
+Summary JSON: C:\Users\BiaDigi\Desktop\Spring Pet Clinic\migration-benchmark-results-improved\20260311_133102-java21-virtual\migration-benchmark-summary.json
+Detailed metrics JSON: C:\Users\BiaDigi\Desktop\Spring Pet Clinic\migration-benchmark-results-improved\20260311_133102-java21-virtual\migration-metrics.json

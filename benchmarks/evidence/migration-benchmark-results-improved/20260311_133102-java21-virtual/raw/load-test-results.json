@@ -1,0 +1,82 @@
+[
+  {
+    "concurrency": 100,
+    "duration_seconds": 30.14,
+    "total_requests": 23010,
+    "successful_requests": 23010,
+    "error_count": 0,
+    "error_rate_pct": 0.0,
+    "throughput_rps": 763.36,
+    "status_counts": {
+      "200": 23010
+    },
+    "error_samples": [],
+    "latency_ms": {
+      "min": 10.04,
+      "avg": 130.75,
+      "p50": 126.66,
+      "p95": 258.45,
+      "p99": 309.07,
+      "p99_9": 462.37,
+      "max": 558.49
+    }
+  },
+  {
+    "concurrency": 250,
+    "duration_seconds": 30.4,
+    "total_requests": 26998,
+    "successful_requests": 10826,
+    "error_count": 16172,
+    "error_rate_pct": 59.901,
+    "throughput_rps": 888.18,
+    "status_counts": {
+      "200": 10826,
+      "0": 16172
+    },
+    "error_samples": [
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit"
+    ],
+    "latency_ms": {
+      "min": 5.28,
+      "avg": 280.13,
+      "p50": 283.2,
+      "p95": 431.53,
+      "p99": 587.34,
+      "p99_9": 939.2,
+      "max": 1187.25
+    }
+  },
+  {
+    "concurrency": 500,
+    "duration_seconds": 30.56,
+    "total_requests": 30338,
+    "successful_requests": 530,
+    "error_count": 29808,
+    "error_rate_pct": 98.253,
+    "throughput_rps": 992.8,
+    "status_counts": {
+      "0": 29808,
+      "200": 530
+    },
+    "error_samples": [
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit",
+      "<urlopen error [WinError 10048] Only one usage of each socket address (protocol/network address/port) is normally permit"
+    ],
+    "latency_ms": {
+      "min": 23.55,
+      "avg": 500.58,
+      "p50": 466.06,
+      "p95": 751.3,
+      "p99": 1230.47,
+      "p99_9": 3435.53,
+      "max": 3889.26
+    }
+  }
+]

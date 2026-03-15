@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: org.springframework.samples.petclinic.benchmark.LoadTestHarnessTests
+-------------------------------------------------------------------------------
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.497 s -- in org.springframework.samples.petclinic.benchmark.LoadTestHarnessTests

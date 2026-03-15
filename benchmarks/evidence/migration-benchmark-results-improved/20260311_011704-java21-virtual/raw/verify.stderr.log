@@ -1,0 +1,36 @@
+Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+WARNING: A Java agent has been loaded dynamically (C:\Users\BiaDigi\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.8\byte-buddy-agent-1.17.8.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" java.lang.RuntimeException: org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:53934/owners": null
+	at org.springframework.samples.petclinic.VirtualThreadResourceTests.lambda$testMemoryRelease$1(VirtualThreadResourceTests.java:129)
+	at java.base/java.lang.VirtualThread.run(VirtualThread.java:329)
+Caused by: org.springframework.web.client.ResourceAccessException: I/O error on GET request for "http://localhost:53934/owners": null
+	at org.springframework.web.client.RestTemplate.createResourceAccessException(RestTemplate.java:780)
+	at org.springframework.web.client.RestTemplate.doExecute(RestTemplate.java:760)
+	at org.springframework.web.client.RestTemplate.exchange(RestTemplate.java:619)
+	at org.springframework.samples.petclinic.VirtualThreadResourceTests.lambda$testMemoryRelease$1(VirtualThreadResourceTests.java:123)
+	... 1 more
+Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Exception in thread "" Caused by: java.net.ConnectException
+	at java.net.http/jdk.internal.net.http.common.Utils.toConnectException(Utils.java:1065)
+	at java.net.http/jdk.internal.net.http.PlainHttpConnection.connectAsync(PlainHttpConnection.java:227)
+	at java.net.http/jdk.internal.net.http.PlainHttpConnection.checkRetryConnect(PlainHttpConnection.java:280)
+	at java.net.http/jdk.internal.net.http.PlainHttpConnection.lambda$connectAsync$2(PlainHttpConnection.java:238)
+	at java.base/java.util.concurrent.CompletableFuture.uniHandle(CompletableFuture.java:934)
+	at java.base/java.util.concurrent.CompletableFuture$UniHandle.tryFire(CompletableFuture.java:911)
+	at java.base/java.util.concurrent.CompletableFuture.postComplete(CompletableFuture.java:510)
+	at java.base/java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1773)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.nio.channels.ClosedChannelException
+	at java.base/sun.nio.ch.SocketChannelImpl.ensureOpen(SocketChannelImpl.java:202)
+	at java.base/sun.nio.ch.SocketChannelImpl.beginConnect(SocketChannelImpl.java:786)
+	at java.base/sun.nio.ch.SocketChannelImpl.connect(SocketChannelImpl.java:874)
+	at java.net.http/jdk.internal.net.http.PlainHttpConnection.lambda$connectAsync$1(PlainHttpConnection.java:210)
+	at java.base/java.security.AccessController.doPrivileged(AccessController.java:571)
+	at java.net.http/jdk.internal.net.http.PlainHttpConnection.connectAsync(PlainHttpConnection.java:212)
+	... 9 more
+

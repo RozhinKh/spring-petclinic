@@ -1,0 +1,23 @@
+=== Python Load Tester ===
+Target:    http://localhost:8080
+Duration:  30s per concurrency level
+Output:    C:\Users\BiaDigi\Desktop\Spring Pet Clinic\migration-benchmark-results-improved\20260311_140012-java21-virtual\raw\load-test-results.json
+Levels:    100 / 250 / 500 concurrent users
+
+  [100 users / 30s] warming up...
+  [100 users / 30s] running...
+  [100 users] done: 25692 reqs, avg=117.0ms p50=112.1ms p95=230.0ms p99=279.8ms p99.9=359.8ms tps=853.6 err=0.00%
+  [250 users / 30s] warming up...
+  [250 users / 30s] running...
+  [250 users] done: 27731 reqs, avg=272.1ms p50=249.3ms p95=488.6ms p99=655.3ms p99.9=1667.7ms tps=915.2 err=32.17%
+  [500 users / 30s] warming up...
+  [500 users / 30s] running...
+  [500 users] done: 27157 reqs, avg=555.3ms p50=507.2ms p95=774.2ms p99=2472.5ms p99.9=6924.8ms tps=896.0 err=97.96%
+
+Results saved to: C:\Users\BiaDigi\Desktop\Spring Pet Clinic\migration-benchmark-results-improved\20260311_140012-java21-virtual\raw\load-test-results.json
+
+ Users      TPS      Avg      P50      P95      P99    P99.9   Err%
+-----------------------------------------------------------------
+   100    853.6   117.0ms   112.1ms   230.0ms   279.8ms   359.8ms  0.00%
+   250    915.2   272.1ms   249.3ms   488.6ms   655.3ms  1667.7ms 32.17%
+   500    896.0   555.3ms   507.2ms   774.2ms  2472.5ms  6924.8ms 97.96%
