@@ -46,3 +46,9 @@ out/
 _site/
 *.css
 !petclinic.css
+
+### Large benchmark artifacts ###
+benchmarks/evidence/**/raw/recording.json
+benchmarks/evidence/**/raw/*.jfr
+benchmarks/evidence/**/app.log
+benchmarks/evidence/**/app-full.log
