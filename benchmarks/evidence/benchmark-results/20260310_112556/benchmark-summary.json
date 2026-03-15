@@ -1,0 +1,149 @@
+{
+    "variant":  "java21-virtual",
+    "timestamp":  "2026-03-10T09:25:58.9311968Z",
+    "startup":  {
+                    "cold_ms":  11327,
+                    "warm_ms":  11167
+                },
+    "load_test":  {
+                      "users_100":  {
+                                        "concurrency":  100,
+                                        "duration_seconds":  30.15,
+                                        "total_requests":  22429,
+                                        "successful_requests":  22429,
+                                        "error_count":  0,
+                                        "error_rate_pct":  0.0,
+                                        "throughput_rps":  743.97,
+                                        "latency_ms":  {
+                                                           "min":  4.7,
+                                                           "avg":  134.1,
+                                                           "p50":  108.66,
+                                                           "p95":  320.46,
+                                                           "p99":  383.95,
+                                                           "p99_9":  445.13,
+                                                           "max":  503.82
+                                                       }
+                                    },
+                      "users_250":  {
+                                        "concurrency":  250,
+                                        "duration_seconds":  30.27,
+                                        "total_requests":  22501,
+                                        "successful_requests":  21509,
+                                        "error_count":  992,
+                                        "error_rate_pct":  4.409,
+                                        "throughput_rps":  743.24,
+                                        "latency_ms":  {
+                                                           "min":  13.21,
+                                                           "avg":  334.85,
+                                                           "p50":  299.84,
+                                                           "p95":  762.33,
+                                                           "p99":  855.7,
+                                                           "p99_9":  1028.21,
+                                                           "max":  1357.67
+                                                       }
+                                    },
+                      "users_500":  {
+                                        "concurrency":  500,
+                                        "duration_seconds":  30.83,
+                                        "total_requests":  19008,
+                                        "successful_requests":  658,
+                                        "error_count":  18350,
+                                        "error_rate_pct":  96.538,
+                                        "throughput_rps":  616.6,
+                                        "latency_ms":  {
+                                                           "min":  30.57,
+                                                           "avg":  805.56,
+                                                           "p50":  544.47,
+                                                           "p95":  2031.4,
+                                                           "p99":  6251.79,
+                                                           "p99_9":  10914.11,
+                                                           "max":  12066.96
+                                                       }
+                                    }
+                  },
+    "actuator":  {
+                     "heap_avg_mb":  142.28,
+                     "heap_peak_mb":  181.81,
+                     "allocation_rate_mb_per_sec":  1215.46,
+                     "promotion_rate_mb_per_sec":  0.37,
+                     "allocation_pressure_mb":  74021,
+                     "promotion_total_mb":  51.5
+                 },
+    "jfr":  {
+                "runtime_blocking_event_count":  120213,
+                "runtime_blocking_events":  120213
+            },
+    "jmh":  {
+                "latency":  [
+                                {
+                                    "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerById",
+                                    "mode":  "avgt",
+                                    "score":  5.334664112291662,
+                                    "unit":  "ms/op"
+                                },
+                                {
+                                    "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwnerFind",
+                                    "mode":  "avgt",
+                                    "score":  4.830214525710858,
+                                    "unit":  "ms/op"
+                                },
+                                {
+                                    "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getOwners",
+                                    "mode":  "avgt",
+                                    "score":  9.359800810409686,
+                                    "unit":  "ms/op"
+                                },
+                                {
+                                    "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.getVets",
+                                    "mode":  "avgt",
+                                    "score":  1.431341080359888,
+                                    "unit":  "ms/op"
+                                },
+                                {
+                                    "benchmark":  "org.springframework.samples.petclinic.benchmark.LatencyBenchmark.postNewOwner",
+                                    "mode":  "avgt",
+                                    "score":  3.118130568065952,
+                                    "unit":  "ms/op"
+                                }
+                            ],
+                "throughput":  [
+                                   {
+                                       "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnerByIdThroughput",
+                                       "mode":  "thrpt",
+                                       "score":  186.0966634703291,
+                                       "unit":  "ops/s"
+                                   },
+                                   {
+                                       "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getOwnersThroughput",
+                                       "mode":  "thrpt",
+                                       "score":  106.61209036425457,
+                                       "unit":  "ops/s"
+                                   },
+                                   {
+                                       "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.getVetsThroughput",
+                                       "mode":  "thrpt",
+                                       "score":  632.9994608308858,
+                                       "unit":  "ops/s"
+                                   },
+                                   {
+                                       "benchmark":  "org.springframework.samples.petclinic.benchmark.ThroughputBenchmark.mixedWorkloadThroughput",
+                                       "mode":  "thrpt",
+                                       "score":  172.93075395465283,
+                                       "unit":  "ops/s"
+                                   }
+                               ]
+            },
+    "spotbugs":  {
+                     "report_file":  "C:\\Users\\BiaDigi\\Desktop\\Spring Pet Clinic\\target\\spotbugsXml.xml",
+                     "total_bug_instances":  6526,
+                     "blocking_bug_instances":  18
+                 },
+    "modernization":  {
+                          "total_java_loc":  15238,
+                          "loc_refactored":  181,
+                          "records_used":  1,
+                          "pattern_matching_usage":  6,
+                          "switch_pattern_usage":  8,
+                          "virtual_thread_usage_points":  26
+                      }
+}
